@@ -1,0 +1,799 @@
+/**
+ * Parley Design System - 100% Authentic Tokens, Layout & Micro-interactions
+ * Reference: Overview · Parley (SingleFile)
+ * Filtered by: antislop-ui & antislop craftsmanship standards (C1-C5)
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400..700&display=swap');
+
+:root {
+    /* Parley Exact Palette */
+    --bg: #efe9e1;
+    --surface: #fffdf9;
+    --surface-2: #f7f2eb;
+    --line: #ebe3d8;
+    --line-strong: #e0d6ca;
+    
+    --ink: #221b26;
+    --ink-2: #554b5a;
+    --ink-3: #6b6071;
+    --rail: #221b26;
+    --cream: #fff6ee;
+    
+    --c-tangerine: #e4572e;
+    --c-teal: #1e9a8a;
+    --c-violet: #5b3e8c;
+    --c-tangerine-soft: #f6d6c8;
+    --c-tangerine-deep: #c13d14;
+    --c-violet-soft: #e2d9ef;
+    
+    --good: #176a47;
+    --good-bg: #e2f2e8;
+    --bad: #b3261e;
+    --bad-bg: #f8e1df;
+
+    /* NomCherry Brand Accents */
+    --c-cherry: #7a2228;
+    --c-cherry-soft: #f8e5e6;
+    --c-yellow: #f5ce2b;
+    --c-yellow-soft: #fef7db;
+
+    color-scheme: light;
+    --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+    --fs-xs: .75rem;
+    --fs-sm: .8125rem;
+    --fs-md: .9375rem;
+    --fs-lg: 1.125rem;
+    --fs-fig: clamp(1.875rem, 1.3rem + 1.4vw, 2.5rem);
+    --fs-hero: clamp(2.75rem, 1.9rem + 2.4vw, 3.75rem);
+    --fs-title: clamp(1.625rem, 1.1rem + 1.6vw, 2.375rem);
+
+    --r-card: 22px;
+    --gap: 16px;
+    --edge: clamp(12px, 1.4vw, 28px);
+    --rail-open: 236px;
+    --rail-w: 76px;
+    --pad: 22px;
+
+    --shadow: 0 1px 0 #221b260a, 0 12px 32px -18px #221b262e;
+    --shadow-hover: 0 1px #221b260a, 0 18px 40px -20px #221b2642;
+    --ease-out: cubic-bezier(.22, 1, .36, 1);
+    --hatch: repeating-linear-gradient(135deg, currentColor 0 1.5px, transparent 1.5px 5px);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    min-height: 100dvh;
+    font-family: var(--font-body);
+    font-size: var(--fs-md);
+    color: var(--ink);
+    background: radial-gradient(1100px 600px at 85% -10%, #f6d9c9 0, transparent 60%),
+                radial-gradient(900px 700px at -10% 110%, #e6ddef 0, transparent 60%),
+                var(--bg);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    line-height: 1.45;
+}
+
+button, input, select, textarea {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+svg {
+    display: block;
+}
+
+/* APP SHELL GRID (MATCHING PARLEY EXACTLY) */
+.app {
+    grid-template-columns: var(--rail-w) minmax(0, 1fr);
+    gap: var(--gap) clamp(16px, 1.4vw, 28px);
+    min-height: 100dvh;
+    padding: var(--edge);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "rail top" "rail board";
+    display: grid;
+    position: relative;
+    transition: grid-template-columns 0.45s var(--ease-out);
+}
+
+.app.is-rail-expanded {
+    grid-template-columns: var(--rail-open) minmax(0, 1fr);
+}
+
+/* PARLEY LEFT RAIL */
+.rail {
+    top: var(--edge);
+    z-index: 100;
+    height: calc(100dvh - 2 * var(--edge));
+    grid-area: rail;
+    min-height: 560px;
+    position: sticky;
+}
+
+.rail__panel {
+    width: var(--rail-open);
+    background: var(--rail);
+    color: var(--cream);
+    clip-path: inset(0 calc(var(--rail-open) - 76px) 0 0 round 24px);
+    transition: clip-path 0.45s var(--ease-out), width 0.45s var(--ease-out);
+    border-radius: 24px;
+    flex-direction: column;
+    gap: 22px;
+    height: 100%;
+    padding: 16px 15px;
+    display: flex;
+    box-shadow: var(--shadow);
+}
+
+.rail:hover .rail__panel,
+.app.is-rail-expanded .rail__panel {
+    clip-path: inset(0 0 0 0 round 24px);
+}
+
+/* RAIL BRAND & LOGO */
+.rail__logo {
+    color: inherit;
+    border-radius: 14px;
+    align-items: center;
+    gap: 14px;
+    height: 46px;
+    padding: 0;
+    text-decoration: none;
+    display: flex;
+    flex-shrink: 0;
+}
+
+.rail__mark {
+    background: #fff;
+    border-radius: 14px;
+    flex-shrink: 0;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+
+.rail__mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rail__brand {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
+/* RAIL NAVIGATION LIST */
+.rail__list {
+    position: relative;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* PARLEY FLOATING ACTIVE PILL SLIDER */
+.rail__pill {
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: var(--cream);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s var(--ease-out), opacity 0.25s;
+    z-index: 1;
+}
+
+.rail__ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    z-index: 2;
+}
+
+.rail__item {
+    color: #fff6eeb8;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 14px;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    height: 46px;
+    padding: 0;
+    text-decoration: none;
+    display: flex;
+    transition: color 0.2s;
+    font-weight: 500;
+    font-size: var(--fs-md);
+    cursor: pointer;
+    user-select: none;
+}
+
+.rail__item:hover {
+    color: var(--cream);
+}
+
+.rail__icon {
+    background: #fff6ee0f;
+    border-radius: 14px;
+    flex-shrink: 0;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    position: relative;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.rail__icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 1.8px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.rail__item.is-active .rail__icon {
+    background: var(--cream);
+    color: var(--rail);
+}
+
+.rail__item.is-active {
+    color: var(--cream);
+    font-weight: 600;
+}
+
+.rail__label {
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+}
+
+.rail__badge {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    background: var(--c-tangerine);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 99px;
+    line-height: 1.2;
+}
+
+.rail__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.rail__toggle {
+    color: #fff6ee80;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    height: 46px;
+    padding: 0;
+    display: flex;
+    border-radius: 14px;
+    transition: color 0.2s;
+}
+
+.rail__toggle:hover {
+    color: var(--cream);
+}
+
+/* TOP HEADER (PARLEY GREETING + TOOLS) */
+.top {
+    grid-area: top;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-top: 6px;
+    flex-wrap: wrap;
+}
+
+.top__hello {
+    display: flex;
+    flex-direction: column;
+}
+
+.top__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    letter-spacing: -0.02em;
+    font-weight: 650;
+    line-height: 1.1;
+    margin: 0;
+    color: var(--ink);
+}
+
+.top__title .w {
+    display: inline-block;
+}
+
+.top__sub {
+    color: var(--ink-3);
+    font-size: var(--fs-md);
+    margin: 6px 0 0 0;
+}
+
+.top__tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* PARLEY SEARCH BAR (CMD+K) */
+.search {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    height: 46px;
+    box-shadow: var(--shadow);
+    border-radius: 14px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px 0 14px;
+    display: flex;
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search:focus-within {
+    border-color: var(--c-violet);
+    box-shadow: 0 0 0 3px #5b3e8c24;
+}
+
+.search svg {
+    fill: none;
+    width: 18px;
+    height: 18px;
+    stroke: var(--ink-3);
+    stroke-width: 1.8px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.search input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 180px;
+    font-size: var(--fs-sm);
+    color: var(--ink);
+}
+
+.search kbd {
+    background: var(--surface-2);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+}
+
+/* PARLEY SYNC BUTTON */
+.sync {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    height: 46px;
+    box-shadow: var(--shadow);
+    text-align: left;
+    border-radius: 14px;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px 0 12px;
+    display: flex;
+}
+
+.sync svg {
+    fill: none;
+    width: 18px;
+    height: 18px;
+    stroke: var(--c-teal);
+    stroke-width: 1.8px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.sync__text {
+    line-height: 1.15;
+    display: grid;
+}
+
+.sync__label {
+    font-size: var(--fs-xs);
+    color: var(--ink-3);
+}
+
+.sync__when {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* PARLEY AVATAR */
+.avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: var(--rail);
+    color: var(--cream);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+}
+
+.avatar:hover {
+    transform: scale(1.04);
+}
+
+/* BRANCH PICKER PILL (PARLEY PILL AESTHETIC) */
+.branch-picker {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    height: 46px;
+    padding: 0 34px 0 38px;
+    box-shadow: var(--shadow);
+    transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background-color 0.2s;
+    cursor: pointer;
+    user-select: none;
+}
+
+.branch-picker:hover {
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-hover);
+    background: #fff;
+}
+
+.branch-picker:focus-within {
+    border-color: var(--c-cherry);
+    box-shadow: 0 0 0 3px rgba(122, 34, 40, 0.12);
+}
+
+.branch-picker__icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    stroke: var(--c-cherry);
+    flex-shrink: 0;
+}
+
+.branch-picker__arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    stroke: var(--ink-3);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+
+.branch-picker:hover .branch-picker__arrow {
+    stroke: var(--ink);
+}
+
+.branch-picker select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    color: var(--ink);
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    line-height: 44px;
+    height: 44px;
+    display: block;
+    width: auto;
+}
+
+.branch-picker select::-ms-expand {
+    display: none;
+}
+
+/* MAIN VIEW & BOARD (GRID LAYOUT) */
+.views {
+    grid-area: board;
+    min-width: 0;
+    position: relative;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+    outline: none;
+    align-content: start;
+}
+
+/* PARLEY CARDS */
+.card {
+    min-width: 0;
+    padding: var(--pad);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(34, 27, 38, 0.06);
+    flex-direction: column;
+    gap: 14px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    display: flex;
+    position: relative;
+}
+
+.card:hover {
+    border-color: rgba(34, 27, 38, 0.12);
+    box-shadow: var(--shadow-hover);
+}
+
+.card__head {
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    display: flex;
+}
+
+.card__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    letter-spacing: -0.01em;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin: 0;
+}
+
+/* PARLEY HERO CARD (WARM TERRACOTTA / CHERRY TANGERINE GRADIENT) */
+.card--hero {
+    color: var(--cream);
+    isolation: isolate;
+    background: radial-gradient(60% 45% at 100% 55%, #dc5a2c 0, rgba(0,0,0,0) 100%),
+                linear-gradient(165deg, #bf3f1b 0%, #a23417 55%, #7a2228 100%);
+    border: 0;
+    overflow: hidden;
+    grid-column: span 2;
+}
+
+.card--hero .card__title {
+    color: var(--cream);
+}
+
+/* PARLEY LIVE INDICATOR */
+.live {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 246, 238, 0.9);
+    align-items: center;
+    gap: 7px;
+    font-weight: 600;
+    display: inline-flex;
+}
+
+.live i {
+    background: #9fe3c4;
+    border-radius: 50%;
+    width: 7px;
+    height: 7px;
+    position: relative;
+    display: inline-block;
+}
+
+.live i::after {
+    content: "";
+    background: inherit;
+    animation: ping 1.8s var(--ease-out) infinite;
+    border-radius: 50%;
+    position: absolute;
+    inset: 0;
+}
+
+@keyframes ping {
+    0% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0; transform: scale(2.6); }
+}
+
+/* PARLEY FIGURES */
+.figure {
+    font-family: var(--font-display);
+    font-size: var(--fs-fig);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    font-weight: 600;
+    line-height: 1;
+    display: flex;
+    margin: 0;
+}
+
+.figure--hero {
+    font-size: var(--fs-hero);
+}
+
+.hero__note {
+    align-items: center;
+    gap: 10px;
+    font-size: var(--fs-sm);
+    color: rgba(255, 246, 238, 0.85);
+    display: flex;
+    margin: 0;
+}
+
+/* CHIPS */
+.chip {
+    font-size: var(--fs-xs);
+    letter-spacing: 0;
+    border-radius: 99px;
+    align-self: center;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+}
+
+.chip svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    width: 12px;
+    height: 12px;
+}
+
+.chip--glass {
+    backdrop-filter: blur(8px);
+    background: rgba(255, 246, 238, 0.18);
+    color: var(--cream);
+}
+
+.chip--good {
+    background: var(--good-bg);
+    color: var(--good);
+}
+
+.chip--bad {
+    background: var(--bad-bg);
+    color: var(--bad);
+}
+
+.chip--tangerine {
+    background: var(--c-tangerine-soft);
+    color: var(--c-tangerine-deep);
+}
+
+/* PARLEY ANIMATED BAR CHART */
+.hero__chart {
+    height: 130px;
+    align-items: end;
+    gap: 14px;
+    display: flex;
+    margin-top: 14px;
+}
+
+.hbar {
+    grid-template-rows: 1fr auto;
+    justify-items: center;
+    gap: 8px;
+    height: 100%;
+    display: grid;
+    flex: 1;
+}
+
+.hbar__well {
+    border-radius: 99px 99px 0 0;
+    width: 100%;
+    max-width: 30px;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 246, 238, 0.14);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.hbar__well:hover {
+    background: rgba(255, 246, 238, 0.25);
+}
+
+.hbar__bar {
+    height: var(--h);
+    background: var(--cream);
+    border-radius: 99px 99px 0 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition: height 0.6s var(--ease-out);
+}
+
+.hbar__lab {
+    font-size: var(--fs-xs);
+    color: rgba(255, 246, 238, 0.72);
+    font-weight: 600;
+}
+
+/* RESPONSIVE BREAKPOINTS (ANTISLOP-LAYOUTMOBILE) */
+@media (max-width: 1100px) {
+    .board {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .card--hero {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .app {
+        grid-template-columns: 1fr;
+        grid-template-areas: "top" "board";
+        padding: 12px;
+    }
+    .rail {
+        display: none;
+    }
+    .board {
+        grid-template-columns: 1fr;
+    }
+    .card--hero {
+        grid-column: span 1;
+    }
+}

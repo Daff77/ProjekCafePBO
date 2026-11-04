@@ -1,0 +1,16 @@
+{
+  "name": "nomcherry-web",
+  "version": "1.0.0",
+  "description": "Sistem Informasi Pemesanan dan Kasir NomCherry Café Berbasis Web dengan Desain Parley",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "keywords": ["cafe", "pos", "kasir", "nomcherry", "parley", "rpl"],
+  "author": "Daffa Danendra Fairuzza & Team",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

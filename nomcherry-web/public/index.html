@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>NomCherry Café · Sistem Pemesanan & Kasir Berbasis Web</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <!-- Stylesheets: Parley Theme & NomCherry Components -->
+    <link rel="stylesheet" href="css/parley-theme.css">
+    <link rel="stylesheet" href="css/nomcherry-components.css">
+</head>
+<body>
+    <div class="app" id="app-root">
+        <!-- 1. LEFT NAVIGATION RAIL (PARLEY DESIGN SYSTEM) -->
+        <nav class="rail" id="rail-panel" aria-label="Main Navigation">
+            <div class="rail__panel">
+                <!-- Brand Logo & Name -->
+                <a class="rail__logo" href="#/dashboard" aria-label="NomCherry Café">
+                    <span class="rail__mark">
+                        <img src="assets/logo.png" alt="NomCherry Logo">
+                    </span>
+                    <span class="rail__brand">NomCherry</span>
+                </a>
+
+                <!-- Rail Navigation List -->
+                <div class="rail__list">
+                    <span class="rail__pill" id="rail-pill" aria-hidden="true"></span>
+                    <ul class="rail__ul" role="list">
+                        <li>
+                            <a class="rail__item is-active" href="#/dashboard" data-route="dashboard">
+                                <span class="rail__icon">
+                                    <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="2"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="2"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="2"></rect></svg>
+                                </span>
+                                <span class="rail__label">Overview</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="rail__item" href="#/pos" data-route="pos">
+                                <span class="rail__icon">
+                                    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                </span>
+                                <span class="rail__label">Kasir (POS)</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="rail__item" href="#/orders" data-route="orders">
+                                <span class="rail__icon">
+                                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                </span>
+                                <span class="rail__label">Riwayat Struk</span>
+                            </a>
+                        </li>
+                        <li data-role-guard="admin,manager,owner">
+                            <a class="rail__item" href="#/menu" data-route="menu">
+                                <span class="rail__icon">
+                                    <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                                </span>
+                                <span class="rail__label">Kelola Menu</span>
+                            </a>
+                        </li>
+                        <li data-role-guard="admin,manager,owner">
+                            <a class="rail__item" href="#/stock" data-route="stock">
+                                <span class="rail__icon">
+                                    <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                </span>
+                                <span class="rail__label">Stok & Gudang</span>
+                            </a>
+                        </li>
+                        <li data-role-guard="admin,manager,owner">
+                            <a class="rail__item" href="#/reports" data-route="reports">
+                                <span class="rail__icon">
+                                    <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"></rect><path d="M8 16v-4M12 16V8M16 16v-6"></path></svg>
+                                </span>
+                                <span class="rail__label">Laporan Penjualan</span>
+                            </a>
+                        </li>
+                        <li data-role-guard="admin,owner">
+                            <a class="rail__item" href="#/users" data-route="users">
+                                <span class="rail__icon">
+                                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                </span>
+                                <span class="rail__label">Pengguna & Cabang</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Rail Footer: Toggle & Switch Role -->
+                <div class="rail__footer">
+                    <button class="rail__item rail__toggle" id="rail-toggle" type="button" aria-expanded="false" title="Collapse / Expand Sidebar">
+                        <span class="rail__icon">
+                            <svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="3"></rect><path d="M9.5 4v16"></path><path d="m13.5 10 2 2-2 2"></path></svg>
+                        </span>
+                        <span class="rail__label">Ciutkan Menu</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 2. TOP BAR HEADER (PARLEY SYSTEM) -->
+        <header class="top">
+            <div class="top__hello">
+                <h1 class="top__title" id="page-title">Selamat Datang</h1>
+                <p class="top__sub" id="page-sub">Operasional & Kasir NomCherry Café</p>
+            </div>
+
+            <div class="top__tools">
+                <!-- Branch Selector Pill (Parley Aesthetic) -->
+                <div class="branch-picker" title="Pilih Cabang Operasional">
+                    <svg class="branch-picker__icon" viewBox="0 0 24 24" width="16" height="16" stroke="var(--c-cherry)" stroke-width="2" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <select id="branch-select" aria-label="Pilih Cabang">
+                        <option value="CBG001">Cabang 1: Surabaya Pusat (Jemur)</option>
+                        <option value="CBG002">Cabang 2: Surabaya Timur (Rungkut)</option>
+                    </select>
+                    <svg class="branch-picker__arrow" viewBox="0 0 24 24" width="14" height="14" stroke="var(--ink-3)" stroke-width="2.5" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+
+                <!-- Search Bar (Cmd+K) -->
+                <div class="search" role="search">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+                    <input id="top-search" type="text" placeholder="Cari menu, transaksi..." readonly>
+                    <kbd>⌘K</kbd>
+                </div>
+
+                <!-- Sync Status Indicator -->
+                <div class="sync" title="Data tersinkronisasi langsung ke SQLite/PostgreSQL Database">
+                    <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-14.3 4.9M4 12A8 8 0 0 1 18.3 7.1"></path><path d="M18.5 3v4.3h-4.3M5.5 21v-4.3h4.3"></path></svg>
+                    <span class="sync__text">
+                        <span class="sync__label">Status</span>
+                        <span class="sync__when">Live</span>
+                    </span>
+                </div>
+
+                <!-- User Account Avatar & Role Switcher -->
+                <button class="avatar" id="account-btn" type="button" title="Ganti Peran / Profil">
+                    <span id="user-avatar">NC</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 3. MAIN WORKSPACE VIEWS (GRID AREA: BOARD) -->
+        <main class="views" id="main-views">
+            <!-- VIEW 1: DASHBOARD (OVERVIEW) -->
+            <section class="view-section" id="view-dashboard">
+                <div class="board">
+                    <!-- Hero Revenue Card (Parley Style) -->
+                    <article class="card card--hero">
+                        <div class="card__head">
+                            <h2 class="card__title">Total Pendapatan Hari Ini</h2>
+                            <span class="live"><i></i>Live</span>
+                        </div>
+                        <p class="figure figure--hero" id="dash-hero-revenue">Rp 0</p>
+                        <p class="hero__note">
+                            <span id="dash-hero-orders">0 pesanan hari ini</span>
+                            <span class="chip chip--good">
+                                <svg viewBox="0 0 12 12" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M2 8.5 5 5.5l2 2L10 4.5M7.5 4.5H10V7"></path></svg>
+                                +14.2% vs kemarin
+                            </span>
+                        </p>
+
+                        <!-- Parley Animated Bar Chart -->
+                        <div class="hero__chart" id="dash-chart" role="img" aria-label="Grafik Pendapatan Bulanan">
+                            <!-- Populated dynamically by dashboard.js -->
+                        </div>
+                    </article>
+
+                    <!-- Stat 1: Total All-time Revenue -->
+                    <article class="card card--stat">
+                        <div class="card__head">
+                            <h3 class="card__title" style="font-size:1rem;">Akumulasi Penjualan</h3>
+                            <span class="chip chip--cherry">Semua Periode</span>
+                        </div>
+                        <p class="figure" id="dash-stat-allrevenue">Rp 0</p>
+                        <p class="card__note" id="dash-stat-allorders">0 Transaksi tercatat</p>
+                        <div style="margin-top:auto;padding-top:14px;">
+                            <button class="btn-primary" style="width:100%;justify-content:center;" onclick="App.navigate('pos')">
+                                🛒 Buka Kasir Sekarang
+                            </button>
+                        </div>
+                    </article>
+
+                    <!-- Stat 2: Low Stock Alert -->
+                    <article class="card card--stat">
+                        <div class="card__head">
+                            <h3 class="card__title" style="font-size:1rem;">Peringatan Stok</h3>
+                            <span class="chip" style="background:var(--warn-bg);color:var(--warn);">Inventaris</span>
+                        </div>
+                        <p class="figure" id="dash-stat-lowstock">0 Menu</p>
+                        <p class="card__note">Bahan baku / menu mendekati batas minimum</p>
+                        <div style="margin-top:auto;padding-top:14px;">
+                            <button class="btn-secondary" style="width:100%;justify-content:center;" onclick="App.navigate('stock')">
+                                Kelola Inventaris
+                            </button>
+                        </div>
+                    </article>
+
+                    <!-- Stat 3: Branch Performance Comparison -->
+                    <article class="card card--stat" style="grid-column:span 6;">
+                        <div class="card__head">
+                            <h3 class="card__title">Performa Antar Cabang</h3>
+                            <span class="chip" style="background:var(--surface-2);color:var(--ink-2);">Multi-Cabang</span>
+                        </div>
+                        <div id="dash-branch-comparison" style="margin-top:4px;">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                    <!-- Stat 4: Top 5 Best Selling Menu -->
+                    <article class="card card--stat" style="grid-column:span 6;">
+                        <div class="card__head">
+                            <h3 class="card__title">Menu Terlaris (Favorit Pelanggan)</h3>
+                            <span class="chip chip--cherry">Top Sales</span>
+                        </div>
+                        <div id="dash-top-menu" style="margin-top:4px;">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                    <!-- Recent Orders Live Feed Table -->
+                    <article class="card" style="grid-column:span 12;">
+                        <div class="card__head">
+                            <h3 class="card__title">Transaksi Kasir Terbaru</h3>
+                            <button class="btn-secondary" style="font-size:0.8rem;padding:6px 14px;" onclick="App.navigate('orders')">
+                                Lihat Semua Transaksi →
+                            </button>
+                        </div>
+                        <div class="table-container" style="box-shadow:none;border-radius:14px;margin-top:4px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID Pesanan</th>
+                                        <th>Waktu Transaksi</th>
+                                        <th>Pelanggan</th>
+                                        <th>Metode</th>
+                                        <th>Total</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-recent-orders">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- VIEW 2: KASIR / POS -->
+            <section class="view-section" id="view-pos" style="display:none;">
+                <div class="pos-container">
+                    <!-- Left: Menu Catalog -->
+                    <div>
+                        <!-- POS Toolbar: Category Tabs + Quick Search -->
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+                            <div class="category-tabs" style="margin-bottom:0;">
+                                <button class="cat-tab is-active" data-cat="Semua" onclick="PosModule.setCategory('Semua')">✨ Semua Menu</button>
+                                <button class="cat-tab" data-cat="Minuman" onclick="PosModule.setCategory('Minuman')">☕ Minuman</button>
+                                <button class="cat-tab" data-cat="Makanan" onclick="PosModule.setCategory('Makanan')">🍜 Makanan</button>
+                                <button class="cat-tab" data-cat="Dessert" onclick="PosModule.setCategory('Dessert')">🍰 Dessert</button>
+                                <button class="cat-tab" data-cat="Snack" onclick="PosModule.setCategory('Snack')">🍟 Snack</button>
+                            </div>
+                            <div style="position:relative;flex:1;max-width:260px;min-width:180px;">
+                                <input type="text" id="pos-catalog-search" class="form-control" style="height:40px;padding-left:36px;border-radius:99px;font-size:0.82rem;background:var(--surface);" placeholder="Cari nama menu..." oninput="PosModule.setSearch(this.value)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--ink-3)" stroke-width="2" fill="none" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+                            </div>
+                        </div>
+
+                        <!-- Menu Cards Grid -->
+                        <div class="menu-grid" id="pos-menu-grid">
+                            <!-- Populated dynamically by pos.js -->
+                        </div>
+                    </div>
+
+                    <!-- Right: Shopping Cart Drawer -->
+                    <aside class="cart-panel">
+                        <div class="cart-header">
+                            <h2 class="cart-title">
+                                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                Keranjang
+                            </h2>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <span class="chip chip--cherry" id="cart-item-count">0 Item</span>
+                                <span class="cart-clear-btn" onclick="PosModule.clearCart()">Kosongkan</span>
+                            </div>
+                        </div>
+
+                        <!-- Customer & Table Inputs -->
+                        <div class="cart-meta">
+                            <input type="text" id="cart-customer-input" class="cart-input" placeholder="Nama Pelanggan...">
+                            <input type="text" id="cart-table-input" class="cart-input" placeholder="No. Meja / Takeaway">
+                        </div>
+
+                        <!-- Cart Items List -->
+                        <div class="cart-items" id="cart-items-list">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <!-- Cart Summary & Calculations -->
+                        <div class="cart-summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="cart-subtotal">Rp 0</span>
+                            </div>
+                            <div class="summary-row" style="align-items:center;">
+                                <span>Diskon (Rp)</span>
+                                <input type="number" id="cart-discount-input" value="0" min="0" step="1000" style="width:80px;text-align:right;padding:2px 6px;border:1px solid var(--line);border-radius:6px;font-size:0.8rem;" oninput="PosModule.renderCart()">
+                            </div>
+                            <div class="summary-row">
+                                <span>PB1 Resto (10%)</span>
+                                <span id="cart-tax">Rp 0</span>
+                            </div>
+                            <div class="summary-row is-grand">
+                                <span>TOTAL</span>
+                                <span id="cart-grand-total">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <!-- Checkout Button -->
+                        <button class="btn-checkout" id="btn-checkout" onclick="PosModule.openPaymentModal()" disabled>
+                            💳 Lanjut Pembayaran
+                        </button>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- VIEW 3: RIWAYAT TRANSAKSI / STRUK -->
+            <section class="view-section" id="view-orders" style="display:none;">
+                <div class="card" style="margin-top:10px;">
+                    <div class="card__head">
+                        <div>
+                            <h2 class="card__title">Riwayat Transaksi & Struk Kasir</h2>
+                            <p class="card__note">Daftar seluruh pesanan yang telah diselesaikan pada cabang ini</p>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Pesanan</th>
+                                    <th>Nomor Struk</th>
+                                    <th>Waktu</th>
+                                    <th>Pelanggan</th>
+                                    <th>Metode</th>
+                                    <th>Total Bayar</th>
+                                    <th>Struk</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: KELOLA MENU -->
+            <section class="view-section" id="view-menu" style="display:none;">
+                <div class="card" style="margin-top:10px;">
+                    <div class="card__head">
+                        <div>
+                            <h2 class="card__title">Daftar Menu & Produk Kafe</h2>
+                            <p class="card__note">Tambah, ubah harga, dan perbarui stok menu NomCherry</p>
+                        </div>
+                        <button class="btn-primary" onclick="MenuModule.openCreateModal()">
+                            ➕ Tambah Menu Baru
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ikon</th>
+                                    <th>Nama Menu & Deskripsi</th>
+                                    <th>Kategori</th>
+                                    <th>Harga</th>
+                                    <th>Status Stok</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="menu-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: MANAJEMEN STOK -->
+            <section class="view-section" id="view-stock" style="display:none;">
+                <div class="card" style="margin-top:10px;">
+                    <div class="card__head">
+                        <div>
+                            <h2 class="card__title">Manajemen Stok & Inventaris Bahan</h2>
+                            <p class="card__note">Pantau stok bahan baku, deteksi expired date, dan mutasi barang</p>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Menu</th>
+                                    <th>Nama Produk</th>
+                                    <th>Stok Fisik</th>
+                                    <th>Status</th>
+                                    <th>Expired Date</th>
+                                    <th>Cabang</th>
+                                    <th>Penyesuaian</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Stock Mutation History Logs -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card__head">
+                        <h3 class="card__title" style="font-size:1.05rem;">Riwayat Mutasi Stok (Audit Trail)</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Waktu</th>
+                                    <th>Nama Menu</th>
+                                    <th>Jenis</th>
+                                    <th>Perubahan</th>
+                                    <th>Sisa Stok</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-logs-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 6: LAPORAN PENJUALAN -->
+            <section class="view-section" id="view-reports" style="display:none;">
+                <div class="card" style="margin-top:10px;">
+                    <div class="card__head">
+                        <div>
+                            <h2 class="card__title">Laporan Penjualan & Rekapitulasi</h2>
+                            <p class="card__note">Filter berdasarkan tanggal dan cabang untuk evaluasi performa bisnis</p>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn-secondary" onclick="ReportsModule.exportCSV()">
+                                📥 Ekspor CSV / Excel
+                            </button>
+                            <button class="btn-primary" onclick="ReportsModule.printReport()">
+                                🖨️ Cetak Laporan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Controls -->
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;background:var(--surface-2);padding:14px;border-radius:14px;border:1px solid var(--line);margin-bottom:18px;">
+                        <div style="flex:1;min-width:140px;">
+                            <label class="form-label">Tanggal Mulai</label>
+                            <input type="date" id="report-date-start" class="form-control">
+                        </div>
+                        <div style="flex:1;min-width:140px;">
+                            <label class="form-label">Tanggal Akhir</label>
+                            <input type="date" id="report-date-end" class="form-control">
+                        </div>
+                        <div style="flex:1;min-width:160px;">
+                            <label class="form-label">Pilih Cabang</label>
+                            <select id="report-branch-select" class="form-control">
+                                <option value="all">Semua Cabang (Konsolidasi)</option>
+                                <option value="CBG001">Cabang 1: Surabaya Pusat</option>
+                                <option value="CBG002">Cabang 2: Surabaya Timur</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;align-items:flex-end;">
+                            <button class="btn-primary" onclick="ReportsModule.generateReport()" style="height:42px;">
+                                Terapkan Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Report Summary KPI Grid -->
+                    <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:12px;margin-bottom:18px;">
+                        <div style="background:var(--surface-2);padding:14px;border-radius:14px;border:1px solid var(--line);">
+                            <span class="card__note">Total Omzet Penjualan</span>
+                            <div class="figure" id="report-total-revenue" style="font-size:1.4rem;color:var(--c-cherry);">Rp 0</div>
+                        </div>
+                        <div style="background:var(--surface-2);padding:14px;border-radius:14px;border:1px solid var(--line);">
+                            <span class="card__note">Jumlah Transaksi</span>
+                            <div class="figure" id="report-total-transactions" style="font-size:1.4rem;">0</div>
+                        </div>
+                        <div style="background:var(--surface-2);padding:14px;border-radius:14px;border:1px solid var(--line);">
+                            <span class="card__note">Rata-rata Transaksi (AOV)</span>
+                            <div class="figure" id="report-avg-transaction" style="font-size:1.4rem;">Rp 0</div>
+                        </div>
+                        <div style="background:var(--surface-2);padding:14px;border-radius:14px;border:1px solid var(--line);">
+                            <span class="card__note">Setoran Pajak PB1</span>
+                            <div class="figure" id="report-total-tax" style="font-size:1.4rem;">Rp 0</div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Breakdown -->
+                    <div style="margin-bottom:16px;">
+                        <span class="card__note" style="display:block;margin-bottom:8px;">Distribusi Metode Pembayaran</span>
+                        <div id="report-payment-breakdown" style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Detailed Table -->
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>No. Struk</th>
+                                    <th>Waktu</th>
+                                    <th>Cabang</th>
+                                    <th>Pelanggan</th>
+                                    <th>Metode</th>
+                                    <th>Kasir</th>
+                                    <th style="text-align:right;">Total Omzet</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-table-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 7: PENGGUNA & CABANG -->
+            <section class="view-section" id="view-users" style="display:none;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;">
+                    <!-- Left: Users List -->
+                    <div class="card">
+                        <div class="card__head">
+                            <div>
+                                <h2 class="card__title">Akun & Hak Akses Pengguna</h2>
+                                <p class="card__note">Kelola peran Admin, Manager, Kasir, dan Owner</p>
+                            </div>
+                            <button class="btn-primary" onclick="UsersModule.openAddUserModal()">
+                                ➕ Tambah User
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nama</th>
+                                        <th>Username</th>
+                                        <th>Peran</th>
+                                        <th>Cabang</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Branches List -->
+                    <div class="card">
+                        <div class="card__head">
+                            <div>
+                                <h2 class="card__title">Jaringan Cabang NomCherry</h2>
+                                <p class="card__note">Data master lokasi outlet kafe</p>
+                            </div>
+                        </div>
+                        <div id="branches-cards-container" style="display:flex;flex-direction:column;gap:12px;">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- MODAL 1: PAYMENT CHECKOUT -->
+    <div class="modal-backdrop" id="modal-payment">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Proses Pembayaran Kasir</h3>
+                <button class="modal-close" onclick="document.getElementById('modal-payment').classList.remove('is-open')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center;padding:12px;background:var(--surface-2);border-radius:14px;margin-bottom:16px;">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--ink-3);text-transform:uppercase;">Total Tagihan Pembayaran</span>
+                    <div id="pay-total-display" style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--c-cherry);margin-top:2px;">
+                        Rp 0
+                    </div>
+                </div>
+
+                <!-- Payment Method Tabs -->
+                <div class="pay-methods">
+                    <button class="pay-btn is-selected" data-method="Cash" onclick="PosModule.setPaymentMethod('Cash')">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+                        Tunai (Cash)
+                    </button>
+                    <button class="pay-btn" data-method="QRIS" onclick="PosModule.setPaymentMethod('QRIS')">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        QRIS Digital
+                    </button>
+                    <button class="pay-btn" data-method="Debit" onclick="PosModule.setPaymentMethod('Debit')">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="1" y="4" width="22" height="16" rx="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                        Kartu Debit
+                    </button>
+                    <button class="pay-btn" data-method="Transfer" onclick="PosModule.setPaymentMethod('Transfer')">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                        Transfer
+                    </button>
+                </div>
+
+                <!-- Cash Payment Section -->
+                <div id="pay-cash-area">
+                    <label class="form-label">Nominal Uang Tunai Diterima</label>
+                    <input type="number" id="pay-cash-input" class="form-control" style="font-size:1.2rem;font-weight:700;" oninput="PosModule.updateCashChange()">
+
+                    <div class="cash-quick-chips">
+                        <button class="cash-chip" onclick="PosModule.fillCashInput(PosModule.getCartCalculations().grandTotal)">Uang Pas</button>
+                        <button class="cash-chip" onclick="PosModule.fillCashInput(20000)">Rp 20.000</button>
+                        <button class="cash-chip" onclick="PosModule.fillCashInput(50000)">Rp 50.000</button>
+                        <button class="cash-chip" onclick="PosModule.fillCashInput(100000)">Rp 100.000</button>
+                    </div>
+
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface-2);border-radius:12px;margin-top:14px;border:1px solid var(--line);">
+                        <span style="font-weight:600;font-size:0.9rem;">Kembalian:</span>
+                        <span id="pay-change-display" style="font-size:1.2rem;font-weight:800;color:var(--good);">Rp 0</span>
+                    </div>
+                </div>
+
+                <!-- QRIS Section -->
+                <div id="pay-qris-area" class="qris-display" style="display:none;">
+                    <div style="font-weight:800;font-size:0.9rem;color:var(--c-cherry);margin-bottom:8px;">SCAN QRIS NOMCHERRY</div>
+                    <div class="qris-qr">
+                        <!-- QR Mockup -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=NOMCHERRY-CAFE-PAYMENT-MOCKUP" alt="QRIS QR" width="150" height="150">
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--ink-2);text-align:center;">
+                        BCA, Mandiri, BNI, GoPay, OVO, Dana, ShopeePay
+                    </div>
+                </div>
+
+                <!-- Transfer / Debit Section -->
+                <div id="pay-transfer-area" style="display:none;">
+                    <label class="form-label">Nomor Referensi / Trace / Approval Code</label>
+                    <input type="text" class="form-control" placeholder="Contoh: REF-9832187">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="document.getElementById('modal-payment').classList.remove('is-open')">Batal</button>
+                <button class="btn-primary" onclick="PosModule.processCheckout()">
+                    Selesaikan Transaksi & Cetak Struk
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: THERMAL RECEIPT PREVIEW (58mm/80mm) -->
+    <div class="modal-backdrop" id="modal-receipt">
+        <div class="modal-box" style="max-width:420px;">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title">Struk Kasir Thermal</h3>
+                    <div style="font-size:0.75rem;color:var(--ink-3);margin-top:2px;">Format Standar 80mm / 58mm POS Printer</div>
+                </div>
+                <button class="modal-close" onclick="document.getElementById('modal-receipt').classList.remove('is-open')">✕</button>
+            </div>
+            <div class="modal-body" style="background:#ece4d8;padding:24px 12px;overflow-y:auto;max-height:72vh;">
+                <!-- Printable Receipt Content -->
+                <div id="receipt-print-area">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content:space-between;gap:12px;">
+                <button class="btn-secondary" onclick="document.getElementById('modal-receipt').classList.remove('is-open')">Tutup</button>
+                <button class="btn-primary" onclick="PosModule.printReceipt()" style="background:var(--c-cherry);color:#fff;">
+                    🖨️ Cetak Struk (Print / PDF)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: MENU FORM (TAMBAH / EDIT MENU) -->
+    <div class="modal-backdrop" id="modal-menu-form">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title" id="menu-modal-title">Kelola Menu</h3>
+                <button class="modal-close" onclick="document.getElementById('modal-menu-form').classList.remove('is-open')">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="form-menu-id">
+                <div class="form-group">
+                    <label class="form-label">Nama Menu</label>
+                    <input type="text" id="form-menu-name" class="form-control" placeholder="Contoh: Matcha Espresso">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label">Harga (Rp)</label>
+                        <input type="number" id="form-menu-price" class="form-control" placeholder="20000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Stok Awal</label>
+                        <input type="number" id="form-menu-stock" class="form-control" placeholder="10" min="0">
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label">Kategori</label>
+                        <select id="form-menu-category" class="form-control">
+                            <option value="Minuman">Minuman</option>
+                            <option value="Makanan">Makanan</option>
+                            <option value="Dessert">Dessert</option>
+                            <option value="Snack">Snack</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">URL Foto Menu / Ikon</label>
+                        <input type="text" id="form-menu-icon" class="form-control" placeholder="URL Foto https://... atau ☕">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Deskripsi Singkat</label>
+                    <textarea id="form-menu-desc" class="form-control" rows="2" placeholder="Komposisi dan rasa khas..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="document.getElementById('modal-menu-form').classList.remove('is-open')">Batal</button>
+                <button class="btn-primary" onclick="MenuModule.saveMenu()">Simpan Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: STOCK ADJUSTMENT -->
+    <div class="modal-backdrop" id="modal-stock-adjust">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Penyesuaian Stok Bahan / Menu</h3>
+                <button class="modal-close" onclick="document.getElementById('modal-stock-adjust').classList.remove('is-open')">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="adjust-menu-id">
+                <div style="padding:12px;background:var(--surface-2);border-radius:12px;margin-bottom:14px;">
+                    <div id="adjust-menu-name" style="font-weight:700;font-size:1.05rem;color:var(--ink);">Nama Menu</div>
+                    <div style="font-size:0.8rem;color:var(--ink-2);margin-top:2px;">Stok Saat Ini: <b id="adjust-current-stock">0</b></div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label">Jenis Mutasi</label>
+                        <select id="adjust-type-select" class="form-control">
+                            <option value="MASUK">Stok Masuk (+)</option>
+                            <option value="KELUAR">Stok Keluar (-)</option>
+                            <option value="PENYESUAIAN">Koreksi / Fisik (=)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Jumlah (Unit/Porsi)</label>
+                        <input type="number" id="adjust-qty-input" class="form-control" min="1" value="5">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tanggal Kadaluarsa (Expired Date)</label>
+                    <input type="date" id="adjust-expiry-input" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Catatan / Keterangan</label>
+                    <input type="text" id="adjust-notes-input" class="form-control" placeholder="Contoh: Restock bahan dari supplier">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="document.getElementById('modal-stock-adjust').classList.remove('is-open')">Batal</button>
+                <button class="btn-primary" onclick="StockModule.saveStockAdjustment()">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: ADD USER -->
+    <div class="modal-backdrop" id="modal-user-form">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Tambah Pengguna Baru</h3>
+                <button class="modal-close" onclick="document.getElementById('modal-user-form').classList.remove('is-open')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" id="form-user-name" class="form-control" placeholder="Contoh: Rina Anggraini">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="form-user-username" class="form-control" placeholder="rina_kasir">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kata Sandi</label>
+                        <input type="password" id="form-user-password" class="form-control" placeholder="••••••">
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label">Peran (Role)</label>
+                        <select id="form-user-role" class="form-control">
+                            <option value="kasir">Kasir</option>
+                            <option value="manager">Manager</option>
+                            <option value="admin">Admin</option>
+                            <option value="owner">Owner</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tugas Cabang</label>
+                        <select id="form-user-branch" class="form-control">
+                            <option value="CBG001">Cabang 1: Surabaya Pusat</option>
+                            <option value="CBG002">Cabang 2: Surabaya Timur</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="document.getElementById('modal-user-form').classList.remove('is-open')">Batal</button>
+                <button class="btn-primary" onclick="UsersModule.saveUser()">Simpan Pengguna</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: ROLE SWITCHER (FOR TESTING & DEMO) -->
+    <div class="modal-backdrop" id="modal-role-switcher">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Ganti Peran / Switch User</h3>
+                <button class="modal-close" onclick="document.getElementById('modal-role-switcher').classList.remove('is-open')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.85rem;color:var(--ink-2);margin-top:0;">
+                    Pilih akun pengguna di bawah ini untuk menguji hak akses peran yang berbeda (Admin, Kasir, Manager, Owner) sesuai laporan RPL:
+                </p>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <!-- Admin -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface-2);border-radius:12px;border:1px solid var(--line);cursor:pointer;" onclick="App.switchUser('admin', 'admin123', 'CBG001')">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <span class="avatar" style="background:var(--c-cherry);">AU</span>
+                            <div>
+                                <div style="font-weight:700;font-size:0.92rem;">Admin Utama (admin)</div>
+                                <div style="font-size:0.75rem;color:var(--ink-3);">Hak Akses: Full Sistem & Manajemen User</div>
+                            </div>
+                        </div>
+                        <span class="chip chip--cherry">Admin</span>
+                    </div>
+
+                    <!-- Kasir Cabang 1 -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface-2);border-radius:12px;border:1px solid var(--line);cursor:pointer;" onclick="App.switchUser('daps', '135', 'CBG001')">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <span class="avatar" style="background:var(--c-teal);">DF</span>
+                            <div>
+                                <div style="font-weight:700;font-size:0.92rem;">Daffa Danendra (daps)</div>
+                                <div style="font-size:0.75rem;color:var(--ink-3);">Kasir Cabang 1 (Pusat)</div>
+                            </div>
+                        </div>
+                        <span class="chip" style="background:var(--good-bg);color:var(--good);">Kasir C1</span>
+                    </div>
+
+                    <!-- Kasir Cabang 2 -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface-2);border-radius:12px;border:1px solid var(--line);cursor:pointer;" onclick="App.switchUser('kasir', '123', 'CBG002')">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <span class="avatar" style="background:var(--c-teal);">SM</span>
+                            <div>
+                                <div style="font-weight:700;font-size:0.92rem;">Saman (kasir)</div>
+                                <div style="font-size:0.75rem;color:var(--ink-3);">Kasir Cabang 2 (Timur)</div>
+                            </div>
+                        </div>
+                        <span class="chip" style="background:var(--good-bg);color:var(--good);">Kasir C2</span>
+                    </div>
+
+                    <!-- Manager -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface-2);border-radius:12px;border:1px solid var(--line);cursor:pointer;" onclick="App.switchUser('manager1', '123', 'CBG001')">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <span class="avatar" style="background:var(--c-violet);">CL</span>
+                            <div>
+                                <div style="font-weight:700;font-size:0.92rem;">Clarissa (manager1)</div>
+                                <div style="font-size:0.75rem;color:var(--ink-3);">Manager Operasional & Stok</div>
+                            </div>
+                        </div>
+                        <span class="chip" style="background:var(--c-violet-soft);color:var(--c-violet);">Manager</span>
+                    </div>
+
+                    <!-- Owner -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface-2);border-radius:12px;border:1px solid var(--line);cursor:pointer;" onclick="App.switchUser('owner1', '123', 'CBG001')">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <span class="avatar" style="background:var(--c-yellow);color:#5e161c;">DP</span>
+                            <div>
+                                <div style="font-weight:700;font-size:0.92rem;">Dapp Owner (owner1)</div>
+                                <div style="font-size:0.75rem;color:var(--ink-3);">Pemilik Kafe (Laporan & Monitoring)</div>
+                            </div>
+                        </div>
+                        <span class="chip" style="background:var(--c-yellow-soft);color:var(--warn);">Owner</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 7: QUICK SEARCH (CMD+K) -->
+    <div class="modal-backdrop" id="modal-quick-search">
+        <div class="modal-box" style="max-width:550px;">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--ink-2)" stroke-width="2" fill="none"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+                <input type="text" id="quick-search-input" placeholder="Ketik perintah atau cari menu..." style="flex:1;border:none;outline:none;font-size:1.05rem;background:transparent;color:var(--ink);" oninput="App.renderQuickSearchResults(this.value)">
+                <kbd style="font-size:0.75rem;padding:3px 7px;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;color:var(--ink-3);">ESC</kbd>
+            </div>
+            <div id="quick-search-list" style="padding:10px;max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Application Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/pos.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/stock.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/users.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
