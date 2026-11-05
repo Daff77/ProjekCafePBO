@@ -20,13 +20,7 @@
       <div class="rail__panel" id="rail-panel">
         <a class="rail__logo" href="#/overview" data-route="overview" aria-label="NomCherry Café Overview">
           <span class="rail__mark">
-            <svg viewBox="0 0 32 32" aria-hidden="true">
-              <path d="M18 5c3.5 0 6.5 2.2 7.5 5.5-3.2.2-6 2.1-7.2 5-.8-3.2-3.4-5.7-6.8-6.3C13 6.5 15.3 5 18 5z" fill="#1e9a8a"/>
-              <circle cx="11.5" cy="21" r="6.5" fill="currentColor"/>
-              <circle cx="21" cy="22" r="5.5" fill="#7a2228"/>
-              <circle cx="9.5" cy="19" r="1.5" fill="var(--cream)"/>
-              <circle cx="19.5" cy="20.2" r="1.2" fill="var(--cream)"/>
-            </svg>
+            <img class="rail__logo-img" src="assets/logo.png" alt="NomCherry Logo">
           </span>
           <span class="rail__brand">NomCherry<small>Café & Roastery</small></span>
         </a>
@@ -144,29 +138,51 @@
 
         <!-- AVATAR & USER POPOVER (LOGIN / LOGOUT MENU) -->
         <div class="avatar-wrap">
-          <button class="avatar" id="avatar-btn" type="button" title="Klik untuk melihat profil kasir & logout">DF</button>
+          <button class="avatar" id="avatar-btn" type="button" title="Profil Kasir & Sesi Operasional" aria-expanded="false" aria-haspopup="menu">DF</button>
           
-          <div class="user-popover" id="user-popover" hidden>
-            <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line);">
-              <div class="avatar" id="popover-avatar" style="width:40px;height:40px;font-size:12px;">DF</div>
-              <div style="min-width:0;flex:1;">
-                <div id="popover-name" style="font-weight:700;font-size:var(--fs-sm);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Daffa Danendra</div>
-                <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
-                  <span class="chip chip--up" id="popover-role" style="font-size:10px;text-transform:uppercase;">KASIR</span>
-                  <span id="popover-username" style="font-size:var(--fs-xs);color:var(--ink-3);">@daps</span>
+          <div class="user-popover" id="user-popover" role="menu" hidden>
+            <!-- User Header Section -->
+            <div class="popover-header">
+              <div class="avatar avatar--md" id="popover-avatar">DF</div>
+              <div class="popover-user-info">
+                <div class="popover-name" id="popover-name">Daffa Danendra</div>
+                <div class="popover-meta">
+                  <span class="chip chip--up" id="popover-role">KASIR</span>
+                  <span class="popover-username" id="popover-username">@daps</span>
                 </div>
               </div>
             </div>
-            <div style="font-size:var(--fs-xs);color:var(--ink-2);line-height:1.4;">
-              <div><b>Kafe:</b> NomCherry Roastery</div>
-              <div><b>Status Sesi:</b> Terotentikasi & Aktif</div>
+
+            <!-- Status & Branch Box -->
+            <div class="popover-status-box">
+              <div class="popover-status-row">
+                <span class="popover-status-dot"></span>
+                <span class="popover-status-text">Sesi Kasir Aktif</span>
+              </div>
+              <div class="popover-branch-text" id="popover-branch">NomCherry Café · Cabang Surabaya Pusat</div>
             </div>
-            <div style="display:grid;gap:6px;margin-top:4px;">
-              <button type="button" class="btn-secondary" id="switch-account-btn" style="padding:7px 12px;font-size:var(--fs-xs);justify-content:flex-start;">
-                🔄 Ganti Akun / Peran
+
+            <div class="popover-divider"></div>
+
+            <!-- Action Buttons -->
+            <div class="popover-actions">
+              <button type="button" class="popover-btn" id="switch-account-btn">
+                <span class="popover-btn-icon">
+                  <svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+                </span>
+                <span class="popover-btn-label">
+                  <strong>Ganti Akun / Peran</strong>
+                  <small>Masuk sebagai staff / role lain</small>
+                </span>
               </button>
-              <button type="button" class="btn-secondary" id="logout-btn" style="padding:7px 12px;font-size:var(--fs-xs);justify-content:flex-start;color:var(--bad);border-color:#f3d1cf;">
-                🚪 Keluar (Logout)
+              <button type="button" class="popover-btn popover-btn--danger" id="logout-btn">
+                <span class="popover-btn-icon">
+                  <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                </span>
+                <span class="popover-btn-label">
+                  <strong>Keluar (Logout)</strong>
+                  <small>Akhiri sesi kasir saat ini</small>
+                </span>
               </button>
             </div>
           </div>
@@ -368,8 +384,8 @@
               <span class="chip chip--up" id="cart-count-chip">0 item</span>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <input type="text" id="pos-cust-name" placeholder="Nama Pelanggan (Cth: Kak Raka)" value="Kak Raka" style="padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);font-size:var(--fs-sm)">
-              <select id="pos-order-type" style="padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);font-size:var(--fs-sm);font-weight:600">
+              <input type="text" id="pos-cust-name" placeholder="Nama Pelanggan (Cth: Kak Raka)" value="Kak Raka" style="padding:10px 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface-2);font-size:var(--fs-sm);font-weight:500;">
+              <select id="pos-order-type" class="custom-select" style="padding:10px 14px;font-weight:600;">
                 <option value="Meja 08">Dine-In · Meja 08</option>
                 <option value="Meja 03">Dine-In · Meja 03</option>
                 <option value="Meja 12">Dine-In · Meja 12</option>
@@ -903,6 +919,10 @@
       const roleChip = document.getElementById("popover-role");
       roleChip.textContent = currentUser.peran.toUpperCase();
       roleChip.className = currentUser.peran === "admin" ? "chip chip--dark" : "chip chip--up";
+      const branchEl = document.getElementById("popover-branch");
+      if (branchEl) {
+        branchEl.textContent = currentUser.nama_cabang ? `NomCherry Café · ${currentUser.nama_cabang}` : "NomCherry Roastery · Jemur Andayani";
+      }
 
       // 3. Header Greeting
       const hour = new Date().getHours();
@@ -1837,12 +1857,21 @@
         }
         const matched = CATALOG_PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
         if (matched.length === 0) {
-          searchResults.innerHTML = `<li class="search__item"><span>Tidak ditemukan menu "${q}"</span></li>`;
+          searchResults.innerHTML = `<li class="search__item-empty">Tidak ditemukan menu "${q}"</li>`;
         } else {
           searchResults.innerHTML = matched.map(p => `
             <li class="search__item" data-search-prod="${p.id}">
-              <b>${p.emoji || "☕"} ${p.name}</b>
-              <span>${formatRp(p.price)} · + Tambah Kasir</span>
+              <div class="search__item-left">
+                <span class="search__item-emoji">${p.emoji || "☕"}</span>
+                <div class="search__item-info">
+                  <b>${p.name}</b>
+                  <small>${p.cat} · Sisa Stok: ${p.stock}</small>
+                </div>
+              </div>
+              <div class="search__item-right">
+                <span class="search__item-price">${formatRp(p.price)}</span>
+                <span class="search__item-add">+ Kasir</span>
+              </div>
             </li>
           `).join("");
         }
