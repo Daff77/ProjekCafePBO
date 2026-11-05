@@ -317,55 +317,146 @@ ol, ul { padding: 0; list-style: none; }
   flex-wrap: wrap;
 }
 
-/* BRANCH PICKER */
-.branch-picker {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
+/* STORE BADGE (REPLACING BRANCH PICKER AS REQUESTED) */
+.store-badge {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 14px;
   height: 46px;
-  padding: 0 34px 0 38px;
+  padding: 0 16px;
   box-shadow: var(--shadow);
-  transition: border-color .2s, box-shadow .2s;
-}
-.branch-picker:hover { border-color: var(--line-strong); }
-.branch-picker:focus-within {
-  border-color: var(--c-violet);
-  box-shadow: 0 0 0 3px #5b3e8c24;
-}
-.branch-picker__icon {
-  position: absolute;
-  left: 13px;
-  width: 17px;
-  height: 17px;
-  stroke: var(--c-tangerine);
-  fill: none;
-  stroke-width: 2;
-  pointer-events: none;
-}
-.branch-picker__arrow {
-  position: absolute;
-  right: 12px;
-  width: 14px;
-  height: 14px;
-  stroke: var(--ink-3);
-  fill: none;
-  stroke-width: 2.2;
-  pointer-events: none;
-}
-.branch-picker select {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  outline: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-sm);
   font-weight: 600;
+  color: var(--ink);
+  user-select: none;
+}
+.store-badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 0 3px var(--good-bg);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* USER POPOVER (ACCOUNT & LOGOUT) */
+.avatar-wrap {
+  position: relative;
+}
+.user-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 20px 48px -12px rgba(34, 27, 38, 0.4);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.user-popover[hidden] {
+  display: none !important;
+}
+
+/* LOGIN MODAL & CARD (PARLEY THEME) */
+.login-modal-box {
+  background: var(--surface);
+  border-radius: 26px;
+  width: 100%;
+  max-width: 440px;
+  padding: 32px 28px;
+  box-shadow: 0 24px 60px rgba(34, 27, 38, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border: 1px solid var(--line);
+  animation: modal-enter 0.3s var(--ease-out);
+}
+@keyframes modal-enter {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.login-header {
+  text-align: center;
+}
+.login-header img {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 10px auto;
+  border-radius: 14px;
+  display: block;
+}
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.login-field label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.login-field input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
   font-size: var(--fs-sm);
   color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+.login-field input:focus {
+  border-color: var(--c-cherry);
+  box-shadow: 0 0 0 3px rgba(122, 34, 40, 0.15);
+  background: #ffffff;
+}
+.login-error {
+  background: var(--bad-bg);
+  color: var(--bad);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  display: none;
+  border: 1px solid rgba(179, 38, 30, 0.2);
+}
+.quick-accounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.quick-account-btn {
+  font-size: var(--fs-xs);
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-weight: 600;
   cursor: pointer;
-  height: 100%;
-  padding-right: 4px;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+.quick-account-btn:hover {
+  background: var(--line-strong);
+  color: var(--ink);
+  transform: translateY(-1px);
 }
 
 /* SEARCH */

@@ -153,8 +153,8 @@ exports.getSalesReport = (req, res) => {
             }
         });
 
-        // Test Case 7.4: Support CSV export format
-        if (format === 'csv') {
+        // Test Case 7.4: Support CSV export format (format=csv or export=csv)
+        if (format === 'csv' || req.query.export === 'csv') {
             let csv = 'ID Pesanan,Nomor Struk,Tanggal,Cabang,Pelanggan,Meja,Kasir,Metode,Subtotal,Pajak,Diskon,Total\n';
             orders.forEach(o => {
                 csv += `"${o.id_pesanan}","${o.nomor_struk || '-'}","${o.tanggal_pesanan}","${o.nama_cabang}","${o.nama_pelanggan}","${o.nomor_meja}","${o.nama_kasir}","${o.metode}","${o.subtotal}","${o.pajak}","${o.diskon}","${o.total}"\n`;

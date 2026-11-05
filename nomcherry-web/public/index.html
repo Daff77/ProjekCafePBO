@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Overview · NomCherry Café POS & Management</title>
+  <title>NomCherry Café · Sistem Pemesanan, Kasir POS & Analitik</title>
   <meta name="description" content="NomCherry Café — Sistem Pemesanan, Analitik Operasional & Kasir Berbasis Web dengan desain interaktif Parley.">
   <meta name="theme-color" content="#efe9e1">
   <link rel="icon" type="image/png" href="assets/logo.png">
@@ -59,7 +59,7 @@
                 <span class="rail__label">Pesanan & Dapur</span>
               </a>
             </li>
-            <li>
+            <li data-role-access="admin,manager,owner">
               <a class="rail__item" href="#/catalog" data-route="catalog" style="--i:4">
                 <span class="rail__icon">
                   <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
@@ -67,7 +67,7 @@
                 <span class="rail__label">Katalog Menu</span>
               </a>
             </li>
-            <li>
+            <li data-role-access="admin,manager,owner">
               <a class="rail__item" href="#/inventory" data-route="inventory" style="--i:5">
                 <span class="rail__icon">
                   <svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10.5 21 19 10h-6z"/></svg>
@@ -75,7 +75,7 @@
                 <span class="rail__label">Inventori & Stok</span>
               </a>
             </li>
-            <li class="hide-mobile">
+            <li class="hide-mobile" data-role-access="admin,manager,owner">
               <a class="rail__item" href="#/members" data-route="members" style="--i:6">
                 <span class="rail__icon">
                   <svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14.8c1.8.6 3 2.2 3.5 4.7"/></svg>
@@ -83,7 +83,7 @@
                 <span class="rail__label">Member Loyalitas</span>
               </a>
             </li>
-            <li class="hide-mobile">
+            <li class="hide-mobile" data-role-access="admin,manager,owner">
               <a class="rail__item" href="#/reports" data-route="reports" style="--i:7">
                 <span class="rail__icon">
                   <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 16v-4M12 16V8M16 16v-6"/></svg>
@@ -113,21 +113,18 @@
     <!-- TOP HEADER -->
     <header class="top">
       <div class="top__hello">
-        <h1 class="top__title" id="page-title">Selamat malam, <span class="accent">Daffa</span></h1>
+        <h1 class="top__title" id="page-title">Selamat Datang, <span class="accent" id="user-display-name">Daffa</span></h1>
         <p class="top__sub" id="page-sub">Berikut ringkasan operasional & transaksi NomCherry Café hari ini.</p>
       </div>
 
       <div class="top__tools">
-        <div class="branch-picker" title="Pilih Cabang Operasional">
-          <svg class="branch-picker__icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <select id="branch-select" aria-label="Pilih Cabang NomCherry">
-            <option value="pusat">NomCherry · Surabaya Pusat (Jemur)</option>
-            <option value="gubeng">NomCherry · Gubeng Roastery (Timur)</option>
-            <option value="pakuwon">NomCherry · Pakuwon Mall</option>
-          </select>
-          <svg class="branch-picker__arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        <!-- STORE STATUS BADGE (REPLACING BRANCH PICKER AS REQUESTED) -->
+        <div class="store-badge" title="Status Operasional Kafe Aktif">
+          <span class="store-badge__dot"></span>
+          <span>NomCherry Café · Roastery</span>
         </div>
 
+        <!-- SEARCH -->
         <div class="search" role="search">
           <label class="sr-only" for="search-input">Cari menu, nomor struk, atau pelanggan</label>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
@@ -136,6 +133,7 @@
           <ul class="search__results" id="search-results" hidden></ul>
         </div>
 
+        <!-- SYNC BUTTON -->
         <button class="sync" id="sync-btn" type="button" title="Sinkronkan dengan Database Server">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-14.3 4.9M4 12A8 8 0 0 1 18.3 7.1"/><path d="M18.5 3v4.3h-4.3M5.5 21v-4.3h4.3"/></svg>
           <span class="sync__text">
@@ -144,7 +142,35 @@
           </span>
         </button>
 
-        <button class="avatar" id="avatar-btn" type="button" title="Daffa · Kasir Shift Malam">DF</button>
+        <!-- AVATAR & USER POPOVER (LOGIN / LOGOUT MENU) -->
+        <div class="avatar-wrap">
+          <button class="avatar" id="avatar-btn" type="button" title="Klik untuk melihat profil kasir & logout">DF</button>
+          
+          <div class="user-popover" id="user-popover" hidden>
+            <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line);">
+              <div class="avatar" id="popover-avatar" style="width:40px;height:40px;font-size:12px;">DF</div>
+              <div style="min-width:0;flex:1;">
+                <div id="popover-name" style="font-weight:700;font-size:var(--fs-sm);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Daffa Danendra</div>
+                <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                  <span class="chip chip--up" id="popover-role" style="font-size:10px;text-transform:uppercase;">KASIR</span>
+                  <span id="popover-username" style="font-size:var(--fs-xs);color:var(--ink-3);">@daps</span>
+                </div>
+              </div>
+            </div>
+            <div style="font-size:var(--fs-xs);color:var(--ink-2);line-height:1.4;">
+              <div><b>Kafe:</b> NomCherry Roastery</div>
+              <div><b>Status Sesi:</b> Terotentikasi & Aktif</div>
+            </div>
+            <div style="display:grid;gap:6px;margin-top:4px;">
+              <button type="button" class="btn-secondary" id="switch-account-btn" style="padding:7px 12px;font-size:var(--fs-xs);justify-content:flex-start;">
+                🔄 Ganti Akun / Peran
+              </button>
+              <button type="button" class="btn-secondary" id="logout-btn" style="padding:7px 12px;font-size:var(--fs-xs);justify-content:flex-start;color:var(--bad);border-color:#f3d1cf;">
+                🚪 Keluar (Logout)
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -205,7 +231,7 @@
             <div class="card__head">
               <h2 class="card__title" id="credits-h">
                 <svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2.5"/><path d="M3.5 10h17"/></svg>
-                Kas Operasional
+                Kas Operasional Laci
               </h2>
               <div class="topup">
                 <button class="topup__btn" id="topup-btn" type="button" aria-expanded="false" aria-controls="topup-menu" aria-label="Kelola Kas Laci">
@@ -219,7 +245,7 @@
               </div>
             </div>
             <p class="figure">
-              <span id="cash-balance">Rp 2.450.000</span><small class="figure__lbl">saldo laci</small>
+              <span id="cash-balance">Rp 2.450.000</span><small class="figure__lbl">saldo kasir</small>
             </p>
             <div class="budget">
               <div class="budget__bar" role="meter" aria-label="Kuota kas kecil terpakai">
@@ -227,7 +253,7 @@
               </div>
               <p class="budget__legend">
                 <span><b id="cash-used">Rp 1.680.000</b> dari Rp 2.500.000 kuota kas</span>
-                <span>≈ Shift 2 berjalan</span>
+                <span>≈ Shift kasir berjalan</span>
               </p>
             </div>
           </article>
@@ -326,11 +352,11 @@
                 <p style="font-size:var(--fs-sm);color:var(--ink-3)">Klik menu untuk menambahkan langsung ke keranjang pesanan aktif.</p>
               </div>
               <div class="seg" data-seg="pos-cat">
-                <button type="button" data-value="all" aria-pressed="true">Semua</button>
-                <button type="button" data-value="Coffee" aria-pressed="false">Coffee</button>
-                <button type="button" data-value="Non-Coffee" aria-pressed="false">Non-Coffee</button>
-                <button type="button" data-value="Pastry" aria-pressed="false">Pastry</button>
-                <button type="button" data-value="Makanan" aria-pressed="false">Makanan</button>
+                <button type="button" data-value="all" aria-pressed="true">Semua Menu</button>
+                <button type="button" data-value="Minuman" aria-pressed="false">Minuman & Kopi</button>
+                <button type="button" data-value="Makanan" aria-pressed="false">Makanan Utama</button>
+                <button type="button" data-value="Dessert" aria-pressed="false">Dessert & Kue</button>
+                <button type="button" data-value="Snack" aria-pressed="false">Snack & Camilan</button>
               </div>
             </div>
             <div class="pos-catalog" id="pos-catalog-grid"></div>
@@ -372,7 +398,7 @@
           <div class="card__head">
             <div>
               <h2 class="card__title">Antrean Dapur & Riwayat Struk</h2>
-              <p style="font-size:var(--fs-sm);color:var(--ink-3)">Pantau progres pembuatan minuman di bar serta riwayat transaksi hari ini. Klik baris untuk cetak struk.</p>
+              <p style="font-size:var(--fs-sm);color:var(--ink-3)">Pantau progres pembuatan minuman di bar serta riwayat transaksi hari ini. Klik baris untuk cetak ulang struk kasir.</p>
             </div>
             <button class="btn-primary" type="button" id="go-pos-btn">+ Buat Pesanan Baru</button>
           </div>
@@ -401,7 +427,7 @@
           <div class="card__head">
             <div>
               <h2 class="card__title">Manajemen Katalog Menu NomCherry</h2>
-              <p style="font-size:var(--fs-sm);color:var(--ink-3)">Daftar harga aktif, foto asli, resep kategori, dan ketersediaan porsi harian.</p>
+              <p style="font-size:var(--fs-sm);color:var(--ink-3)">Daftar harga aktif, foto asli kuliner, resep kategori, dan ketersediaan porsi harian.</p>
             </div>
             <span class="chip chip--up" id="catalog-count-chip">24 Menu Aktif</span>
           </div>
@@ -443,7 +469,7 @@
             <h2 class="card__title">Laporan Ringkas & Ekspor Penjualan</h2>
             <button class="btn-primary" type="button" id="export-report-btn">Unduh CSV Laporan</button>
           </div>
-          <p style="color:var(--ink-2);font-size:var(--fs-sm)">Rekapitulasi kas dan penjualan semua cabang NomCherry Café tersinkronisasi secara real-time.</p>
+          <p style="color:var(--ink-2);font-size:var(--fs-sm)">Rekapitulasi kas dan penjualan NomCherry Café tersinkronisasi secara real-time dari database.</p>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
             <div style="padding:18px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)">
               <span style="font-size:var(--fs-xs);color:var(--ink-3);font-weight:600">PENDAPATAN KOTOR BULAN INI</span>
@@ -465,14 +491,14 @@
       <section class="view" data-view="settings" hidden>
         <article class="card">
           <h2 class="card__title">Pengaturan Sistem POS NomCherry</h2>
-          <p style="font-size:var(--fs-sm);color:var(--ink-3)">Konfigurasi printer thermal 80mm/58mm, pajak PPN 10%, dan integrasi QRIS Dinamis.</p>
-          <div style="display:grid;gap:12px;max-width:480px">
+          <p style="font-size:var(--fs-sm);color:var(--ink-3)">Konfigurasi printer thermal 80mm/58mm, pajak PPN 10%, dan integrasi kasir.</p>
+          <div style="display:grid;gap:12px;max-width:520px">
             <label style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface-2);border-radius:12px">
-              <span style="font-weight:600">Cetak Struk Otomatis Saat Lunas</span>
+              <span style="font-weight:600">Cetak Struk Otomatis Saat Transaksi Lunas</span>
               <input type="checkbox" id="setting-auto-print" checked>
             </label>
             <label style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface-2);border-radius:12px">
-              <span style="font-weight:600">Suara Notifikasi Pesanan Dapur</span>
+              <span style="font-weight:600">Suara Notifikasi Pesanan Dapur & POS</span>
               <input type="checkbox" id="setting-sound" checked>
             </label>
             <label style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface-2);border-radius:12px">
@@ -483,6 +509,46 @@
         </article>
       </section>
     </main>
+  </div>
+
+  <!-- MODAL LOGIN PENGGUNA (PARLEY AUTH) -->
+  <div class="modal-backdrop" id="login-modal" hidden>
+    <div class="login-modal-box" role="dialog" aria-modal="true" aria-labelledby="login-title">
+      <div class="login-header">
+        <img src="assets/logo.png" alt="Logo NomCherry" onerror="this.style.display='none'">
+        <h2 class="card__title" id="login-title" style="justify-content:center;font-size:1.35rem;">Masuk ke Sistem Kasir</h2>
+        <p style="font-size:var(--fs-sm);color:var(--ink-3);margin-top:4px;">NomCherry Café & Roastery · Operasional Web</p>
+      </div>
+
+      <div class="login-error" id="login-error"></div>
+
+      <form id="login-form" style="display:grid;gap:14px;">
+        <div class="login-field">
+          <label for="login-username">Username Kasir / Admin</label>
+          <input type="text" id="login-username" placeholder="Masukkan username (cth: daps, admin)" autocomplete="username" required>
+        </div>
+
+        <div class="login-field">
+          <label for="login-password">Kata Sandi / PIN</label>
+          <input type="password" id="login-password" placeholder="Masukkan kata sandi" autocomplete="current-password" required>
+        </div>
+
+        <button type="submit" class="btn-primary" id="login-submit-btn" style="width:100%;margin-top:4px;">
+          Masuk ke Sistem →
+        </button>
+      </form>
+
+      <div style="border-top:1px dashed var(--line-strong);padding-top:14px;">
+        <span style="font-size:var(--fs-xs);font-weight:700;color:var(--ink-3);text-transform:uppercase;display:block;margin-bottom:8px;">Pilih Cepat Akun Demo (1-Klik):</span>
+        <div class="quick-accounts">
+          <button type="button" class="quick-account-btn" data-u="daps" data-p="135">☕ Kasir (Daffa)</button>
+          <button type="button" class="quick-account-btn" data-u="admin" data-p="admin123">👑 Admin Utama</button>
+          <button type="button" class="quick-account-btn" data-u="kasir" data-p="123">☕ Kasir (Saman)</button>
+          <button type="button" class="quick-account-btn" data-u="manager1" data-p="123">📊 Manager</button>
+          <button type="button" class="quick-account-btn" data-u="owner1" data-p="123">💎 Owner</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL PEMBAYARAN KASIR -->
@@ -535,78 +601,30 @@
 
   <script>
     // =========================================================================
-    // DATA & STATE NOMCHERRY CAFÉ (DENGAN GAYA PARLEY & API SYNC)
+    // DATA & STATE NOMCHERRY CAFÉ (DENGAN AUTENTIKASI & PARLEY WIDGETS)
     // =========================================================================
-    const BRANCH_DATA = {
-      pusat: {
-        id: "CBG001",
-        name: "NomCherry · Surabaya Pusat (Jemur)",
-        address: "Jl. Jemur Handayani No. 45, Surabaya",
-        telp: "031-8439901",
-        revenue: "Rp 6.840.000",
-        tx: 184,
-        growth: "14.2%",
-        sla: 96.4,
-        queued: "5 pesanan di dapur",
-        tables: 22,
-        reserv: "4 reservasi malam",
-        hourly: [
-          { h: "09", v: 18 },
-          { h: "11", v: 26 },
-          { h: "13", v: 34 },
-          { h: "15", v: 29 },
-          { h: "17", v: 38 },
-          { h: "19", v: 46, peak: true },
-          { h: "20", v: 39 },
-          { h: "21", v: 31, proj: 44 }
-        ]
-      },
-      gubeng: {
-        id: "CBG002",
-        name: "NomCherry · Gubeng Roastery (Timur)",
-        address: "Jl. Rungkut Madya No. 88, Surabaya",
-        telp: "031-8712345",
-        revenue: "Rp 5.120.000",
-        tx: 142,
-        growth: "11.8%",
-        sla: 94.8,
-        queued: "3 pesanan di dapur",
-        tables: 19,
-        reserv: "2 reservasi malam",
-        hourly: [
-          { h: "09", v: 14 },
-          { h: "11", v: 22 },
-          { h: "13", v: 28 },
-          { h: "15", v: 25 },
-          { h: "17", v: 35, peak: true },
-          { h: "19", v: 33 },
-          { h: "20", v: 29 },
-          { h: "21", v: 24, proj: 34 }
-        ]
-      },
-      pakuwon: {
-        id: "CBG001",
-        name: "NomCherry · Pakuwon Mall",
-        address: "Pakuwon Mall Lt. LG No. 12, Surabaya Barat",
-        telp: "031-7390022",
-        revenue: "Rp 8.490.000",
-        tx: 238,
-        growth: "19.5%",
-        sla: 97.5,
-        queued: "7 pesanan di dapur",
-        tables: 27,
-        reserv: "6 reservasi malam",
-        hourly: [
-          { h: "09", v: 21 },
-          { h: "11", v: 32 },
-          { h: "13", v: 44 },
-          { h: "15", v: 41 },
-          { h: "17", v: 49 },
-          { h: "19", v: 58, peak: true },
-          { h: "20", v: 47 },
-          { h: "21", v: 38, proj: 52 }
-        ]
-      }
+    const STORE_INFO = {
+      id: "CBG001",
+      name: "NomCherry · Café & Roastery",
+      address: "Jl. Jemur Handayani No. 45, Surabaya",
+      telp: "031-8439901",
+      revenue: "Rp 6.840.000",
+      tx: 184,
+      growth: "14.2%",
+      sla: 96.4,
+      queued: "5 pesanan di dapur",
+      tables: 22,
+      reserv: "4 reservasi malam",
+      hourly: [
+        { h: "09", v: 18 },
+        { h: "11", v: 26 },
+        { h: "13", v: 34 },
+        { h: "15", v: 29 },
+        { h: "17", v: 38 },
+        { h: "19", v: 46, peak: true },
+        { h: "20", v: 39 },
+        { h: "21", v: 31, proj: 44 }
+      ]
     };
 
     const SENT_SERIES = {
@@ -662,9 +680,9 @@
         total: "4.8K",
         sub: "item terjual",
         items: [
-          { name: "Signature Coffee", pct: 54, delta: "3.2%", up: true, color: "var(--c-tangerine)" },
-          { name: "Cherry & Non-Coffee", pct: 29, delta: "5.4%", up: true, color: "var(--c-teal)" },
-          { name: "Artisan Pastry & Makanan", pct: 17, delta: "1.2%", up: false, color: "var(--c-violet)" }
+          { name: "Minuman & Kopi", pct: 54, delta: "3.2%", up: true, color: "var(--c-tangerine)" },
+          { name: "Makanan Utama", pct: 29, delta: "5.4%", up: true, color: "var(--c-teal)" },
+          { name: "Dessert & Snack", pct: 17, delta: "1.2%", up: false, color: "var(--c-violet)" }
         ]
       },
       pembayaran: {
@@ -680,30 +698,47 @@
 
     const TOP_MENU_DATA = {
       week: [
-        { code: "CL", name: "Cherry Blossom Latte", sub: "Rp 34.000 · Signature Coffee", qty: 486, share: "31%", ratio: 1 },
-        { code: "AC", name: "Aren Caramel Macchiato", sub: "Rp 32.000 · Espresso Base", qty: 374, share: "24%", ratio: 0.77 },
-        { code: "MC", name: "Matcha Cherry Cream", sub: "Rp 36.000 · Non-Coffee", qty: 298, share: "19%", ratio: 0.61 },
-        { code: "BC", name: "Almond Butter Croissant", sub: "Rp 28.000 · Artisan Pastry", qty: 235, share: "15%", ratio: 0.48 },
-        { code: "CB", name: "Cold Brew Black Tonic", sub: "Rp 30.000 · Manual & Cold", qty: 172, share: "11%", ratio: 0.35 }
+        { code: "KN", name: "Kopi Hitam Nusantara", sub: "Rp 18.000 · Minuman", qty: 486, share: "31%", ratio: 1 },
+        { code: "CB", name: "NomCherry Signature Cold Brew", sub: "Rp 28.000 · Minuman", qty: 374, share: "24%", ratio: 0.77 },
+        { code: "ML", name: "Artisan Uji Matcha Latte", sub: "Rp 26.000 · Minuman", qty: 298, share: "19%", ratio: 0.61 },
+        { code: "BC", name: "Butter Croissant with Berry Compote", sub: "Rp 26.000 · Dessert", qty: 235, share: "15%", ratio: 0.48 },
+        { code: "TB", name: "NomCherry Beef Truffle Burger", sub: "Rp 42.000 · Makanan", qty: 172, share: "11%", ratio: 0.35 }
       ],
       month: [
-        { code: "CL", name: "Cherry Blossom Latte", sub: "Rp 34.000 · Signature Coffee", qty: 1840, share: "33%", ratio: 1 },
-        { code: "AC", name: "Aren Caramel Macchiato", sub: "Rp 32.000 · Espresso Base", qty: 1420, share: "25%", ratio: 0.77 },
-        { code: "MC", name: "Matcha Cherry Cream", sub: "Rp 36.000 · Non-Coffee", qty: 1090, share: "19%", ratio: 0.59 },
-        { code: "BC", name: "Almond Butter Croissant", sub: "Rp 28.000 · Artisan Pastry", qty: 780, share: "14%", ratio: 0.42 },
-        { code: "CB", name: "Cold Brew Black Tonic", sub: "Rp 30.000 · Manual & Cold", qty: 510, share: "9%", ratio: 0.28 }
+        { code: "KN", name: "Kopi Hitam Nusantara", sub: "Rp 18.000 · Minuman", qty: 1840, share: "33%", ratio: 1 },
+        { code: "CB", name: "NomCherry Signature Cold Brew", sub: "Rp 28.000 · Minuman", qty: 1420, share: "25%", ratio: 0.77 },
+        { code: "ML", name: "Artisan Uji Matcha Latte", sub: "Rp 26.000 · Minuman", qty: 1090, share: "19%", ratio: 0.59 },
+        { code: "BC", name: "Butter Croissant with Berry Compote", sub: "Rp 26.000 · Dessert", qty: 780, share: "14%", ratio: 0.42 },
+        { code: "TB", name: "NomCherry Beef Truffle Burger", sub: "Rp 42.000 · Makanan", qty: 510, share: "9%", ratio: 0.28 }
       ]
     };
 
+    // 24 Authentic Menu Items pre-seeded matching SQLite Database
     let CATALOG_PRODUCTS = [
-      { id: "M01", name: "Cherry Blossom Latte", cat: "Coffee", price: 34000, stock: 42, emoji: "🍒", image: "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=500&auto=format&fit=crop&q=80" },
-      { id: "M02", name: "Aren Caramel Macchiato", cat: "Coffee", price: 32000, stock: 38, emoji: "☕", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=500&auto=format&fit=crop&q=80" },
-      { id: "M03", name: "Matcha Cherry Cream", cat: "Non-Coffee", price: 36000, stock: 29, emoji: "🍵", image: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80" },
-      { id: "M04", name: "Almond Butter Croissant", cat: "Pastry", price: 28000, stock: 18, emoji: "🥐", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&auto=format&fit=crop&q=80" },
-      { id: "M05", name: "Cold Brew Black Tonic", cat: "Coffee", price: 30000, stock: 25, emoji: "🧊", image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=500&auto=format&fit=crop&q=80" },
-      { id: "M06", name: "Dark Choco Hazelnut", cat: "Non-Coffee", price: 33000, stock: 31, emoji: "🍫", image: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=500&auto=format&fit=crop&q=80" },
-      { id: "M07", name: "Cherry Basque Cheesecake", cat: "Pastry", price: 38000, stock: 14, emoji: "🍰", image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=500&auto=format&fit=crop&q=80" },
-      { id: "M08", name: "Japanese Iced Pour Over", cat: "Coffee", price: 35000, stock: 22, emoji: "🫖", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=80" }
+      { id: "MNU001", name: "Kopi Hitam Nusantara", cat: "Minuman", price: 18000, stock: 25, emoji: "☕", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU002", name: "NomCherry Signature Cold Brew", cat: "Minuman", price: 28000, stock: 20, emoji: "🍒", image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU003", name: "Caramel Macchiato Velvet", cat: "Minuman", price: 26000, stock: 18, emoji: "☕", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU004", name: "Spanish Latte Sweet Cream", cat: "Minuman", price: 25000, stock: 22, emoji: "🥛", image: "https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU005", name: "Cappuccino Creamy Oat Milk", cat: "Minuman", price: 27000, stock: 15, emoji: "☕", image: "https://images.unsplash.com/photo-1577968897966-3d4325b36b61?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU006", name: "Affogato Al Caffe Vanilla", cat: "Minuman", price: 24000, stock: 16, emoji: "🍨", image: "https://images.unsplash.com/photo-1592663527359-cf6642f54cff?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU007", name: "Artisan Uji Matcha Latte", cat: "Minuman", price: 26000, stock: 20, emoji: "🍵", image: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU008", name: "NomCherry Berry Sparkler", cat: "Minuman", price: 22000, stock: 25, emoji: "🍓", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU009", name: "Taro Velvet Frappe", cat: "Minuman", price: 24000, stock: 17, emoji: "💜", image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU010", name: "Earl Grey Milk Tea with Boba", cat: "Minuman", price: 23000, stock: 24, emoji: "🧋", image: "https://images.unsplash.com/photo-1558857563-b37cf5a5b5dc?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU011", name: "Belgian Dark Chocolate Hazelnut", cat: "Minuman", price: 25000, stock: 19, emoji: "🍫", image: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU012", name: "Teh Manis Melati Heritage", cat: "Minuman", price: 8000, stock: 40, emoji: "🍃", image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU013", name: "Es Teh Lemon Mint Fresh", cat: "Minuman", price: 12000, stock: 30, emoji: "🍋", image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU014", name: "Spaghetti Aglio Olio Smoked Beef", cat: "Makanan", price: 34000, stock: 18, emoji: "🍝", image: "https://images.unsplash.com/photo-1621996346565-e3d5d628178d?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU015", name: "Japanese Chicken Katsu Curry", cat: "Makanan", price: 38000, stock: 15, emoji: "🍛", image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU016", name: "NomCherry Beef Truffle Burger", cat: "Makanan", price: 42000, stock: 12, emoji: "🍔", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU017", name: "Chicken Teriyaki Rice Bowl", cat: "Makanan", price: 32000, stock: 20, emoji: "🍚", image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU018", name: "Mie Goreng Spesial Kafe", cat: "Makanan", price: 24000, stock: 25, emoji: "🍜", image: "https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU019", name: "Truffle Parmesan French Fries", cat: "Snack", price: 22000, stock: 25, emoji: "🍟", image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU020", name: "Golden Crispy Chicken Popcorn", cat: "Snack", price: 25000, stock: 20, emoji: "🍗", image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU021", name: "NomCherry Basque Burnt Cheesecake", cat: "Dessert", price: 32000, stock: 14, emoji: "🍰", image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU022", name: "Butter Croissant with Berry Compote", cat: "Dessert", price: 26000, stock: 16, emoji: "🥐", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU023", name: "Japanese Fluffy Souffle Pancake", cat: "Dessert", price: 30000, stock: 12, emoji: "🥞", image: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=600&q=80" },
+      { id: "MNU024", name: "Classic Belgian Waffle with Ice Cream", cat: "Dessert", price: 28000, stock: 15, emoji: "🧇", image: "https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=600&q=80" }
     ];
 
     let INVENTORY_ITEMS = [
@@ -717,18 +752,18 @@
 
     let cart = [];
     let ordersHistory = [
-      { id: "NC-2084", time: "21:42", cust: "Kak Raka · Meja 08", items: "2x Cherry Blossom Latte, 1x Croissant", method: "QRIS", total: 105600, status: "Diproses Bar (2 mnt)" },
-      { id: "NC-2083", time: "21:35", cust: "Nadia Putri · Meja 03", items: "1x Matcha Cherry, 1x Cheesecake", method: "Debit", total: 81400, status: "Selesai Tepat Waktu" },
-      { id: "NC-2082", time: "21:20", cust: "Bapak Hendra · Takeaway", items: "3x Aren Caramel Macchiato", method: "QRIS", total: 105600, status: "Selesai Tepat Waktu" },
-      { id: "NC-2081", time: "21:08", cust: "Clarissa · Meja 14", items: "2x Cold Brew Black Tonic", method: "Cash", total: 66000, status: "Selesai Tepat Waktu" }
+      { id: "NC-20261105-004", time: "21:42", cust: "Kak Raka · Meja 08", items: "2x Kopi Hitam Nusantara, 1x Butter Croissant", method: "QRIS", total: 68200, status: "Diproses Bar (2 mnt)" },
+      { id: "NC-20261105-003", time: "21:35", cust: "Nadia Putri · Meja 03", items: "1x Artisan Uji Matcha Latte, 1x Cheesecake", method: "Debit", total: 63800, status: "Selesai Tepat Waktu" },
+      { id: "NC-20261105-002", time: "21:20", cust: "Bapak Hendra · Takeaway", items: "3x Caramel Macchiato Velvet", method: "QRIS", total: 85800, status: "Selesai Tepat Waktu" },
+      { id: "NC-20261105-001", time: "21:08", cust: "Clarissa · Meja 14", items: "2x Signature Cold Brew", method: "Cash", total: 61600, status: "Selesai Tepat Waktu" }
     ];
 
     let cashBalance = 2450000;
     let cashUsed = 1680000;
     let currentMonthYear = "2026";
     let activeMonthIndex = 9; // Oktober
-    let currentBranchKey = "pusat";
     let currentCategoryFilter = "all";
+    let currentUser = null;
 
     // =========================================================================
     // HELPER FORMATTERS & TOAST
@@ -748,10 +783,153 @@
     }
 
     // =========================================================================
-    // 1. RENDER HERO BAR CHART & METERS
+    // 1. AUTENTIKASI PENGGUNA (LOGIN, LOGOUT, SESSION & ROLE GUARDS)
     // =========================================================================
-    function renderHeroChart(branchKey) {
-      const data = BRANCH_DATA[branchKey] || BRANCH_DATA.pusat;
+    function checkSession() {
+      const stored = localStorage.getItem("nomcherry_session");
+      if (stored) {
+        try {
+          currentUser = JSON.parse(stored);
+          updateUserInterface();
+          return true;
+        } catch (e) {
+          currentUser = null;
+        }
+      }
+      // If no valid session, show login modal
+      showLoginModal();
+      return false;
+    }
+
+    function showLoginModal() {
+      const modal = document.getElementById("login-modal");
+      const errBox = document.getElementById("login-error");
+      if (errBox) errBox.style.display = "none";
+      if (modal) modal.hidden = false;
+      setTimeout(() => {
+        const uInput = document.getElementById("login-username");
+        if (uInput) uInput.focus();
+      }, 100);
+    }
+
+    function hideLoginModal() {
+      const modal = document.getElementById("login-modal");
+      if (modal) modal.hidden = true;
+    }
+
+    async function handleLogin(username, password) {
+      const errBox = document.getElementById("login-error");
+      const submitBtn = document.getElementById("login-submit-btn");
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Memverifikasi...";
+      if (errBox) errBox.style.display = "none";
+
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, kata_sandi: password, id_cabang: "CBG001" })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          currentUser = data.data;
+          localStorage.setItem("nomcherry_session", JSON.stringify(currentUser));
+          updateUserInterface();
+          hideLoginModal();
+          showToast(`Selamat datang kembali, ${currentUser.nama_pengguna}!`);
+        } else {
+          if (errBox) {
+            errBox.textContent = data.message || "Username atau kata sandi tidak cocok.";
+            errBox.style.display = "block";
+          }
+        }
+      } catch (err) {
+        // Fallback for demo if server offline
+        if (username === "daps" || username === "admin") {
+          currentUser = {
+            id_pengguna: username === "daps" ? "USR002" : "USR001",
+            nama_pengguna: username === "daps" ? "Daffa Danendra (Kasir)" : "Admin Utama",
+            username: username,
+            peran: username === "daps" ? "kasir" : "admin",
+            id_cabang: "CBG001",
+            nama_cabang: "NomCherry Café (Pusat)"
+          };
+          localStorage.setItem("nomcherry_session", JSON.stringify(currentUser));
+          updateUserInterface();
+          hideLoginModal();
+          showToast(`Berhasil masuk sebagai ${currentUser.nama_pengguna}`);
+        } else if (errBox) {
+          errBox.textContent = "Koneksi ke server gagal: " + err.message;
+          errBox.style.display = "block";
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Masuk ke Sistem →";
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("nomcherry_session");
+      currentUser = null;
+      document.getElementById("user-popover").hidden = true;
+      showToast("Sesi kasir berhasil diakhiri");
+      showLoginModal();
+    }
+
+    function updateUserInterface() {
+      if (!currentUser) return;
+
+      // 1. Initial letters for Avatar
+      const initials = currentUser.nama_pengguna
+        .split(" ")
+        .map(w => w[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase() || "DF";
+
+      const avatarBtn = document.getElementById("avatar-btn");
+      const popAvatar = document.getElementById("popover-avatar");
+      if (avatarBtn) avatarBtn.textContent = initials;
+      if (popAvatar) popAvatar.textContent = initials;
+
+      // 2. Popover Info
+      document.getElementById("popover-name").textContent = currentUser.nama_pengguna;
+      document.getElementById("popover-username").textContent = `@${currentUser.username}`;
+      const roleChip = document.getElementById("popover-role");
+      roleChip.textContent = currentUser.peran.toUpperCase();
+      roleChip.className = currentUser.peran === "admin" ? "chip chip--dark" : "chip chip--up";
+
+      // 3. Header Greeting
+      const hour = new Date().getHours();
+      let timeGreeting = "Selamat Malam";
+      if (hour >= 4 && hour < 11) timeGreeting = "Selamat Pagi";
+      else if (hour >= 11 && hour < 15) timeGreeting = "Selamat Siang";
+      else if (hour >= 15 && hour < 18) timeGreeting = "Selamat Sore";
+
+      const firstName = currentUser.nama_pengguna.split(" ")[0];
+      const titleEl = document.getElementById("page-title");
+      if (titleEl) {
+        titleEl.innerHTML = `${timeGreeting}, <span class="accent">${firstName}</span>`;
+      }
+
+      // 4. Role Guards for Sidebar Items
+      const userRole = currentUser.peran.toLowerCase();
+      document.querySelectorAll("[data-role-access]").forEach(el => {
+        const allowedRoles = el.getAttribute("data-role-access").split(",");
+        const isPermitted = allowedRoles.includes(userRole) || userRole === "admin" || userRole === "owner";
+        el.style.opacity = isPermitted ? "1" : "0.45";
+        el.title = isPermitted ? "" : "Fitur membutuhkan hak akses Admin / Manager";
+      });
+    }
+
+    // =========================================================================
+    // 2. RENDER HERO BAR CHART & METERS
+    // =========================================================================
+    function renderHeroChart() {
+      const data = STORE_INFO;
       document.getElementById("hero-rev").textContent = data.revenue;
       document.getElementById("hero-tx").textContent = data.tx;
       document.getElementById("hero-growth").textContent = data.growth;
@@ -796,10 +974,10 @@
     }
 
     // =========================================================================
-    // 2. RENDER DARK LINE CHART (CUP & MENU TERJUAL)
+    // 3. RENDER DARK LINE CHART (CUP & MENU TERJUAL)
     // =========================================================================
     function renderSentChart(periodKey) {
-      const d = SENT_SERIES[periodKey];
+      const d = SENT_SERIES[periodKey] || SENT_SERIES["30d"];
       document.getElementById("sent-total").textContent = d.total;
       document.getElementById("sent-today").textContent = d.today;
       document.getElementById("sent-chip").textContent = d.chip;
@@ -874,7 +1052,7 @@
     }
 
     // =========================================================================
-    // 3. RENDER STACKED COLUMN CHART (TRANSAKSI PER BULAN)
+    // 4. RENDER STACKED COLUMN CHART (TRANSAKSI PER BULAN)
     // =========================================================================
     function renderMonthChart(yearKey, highlightIdx = activeMonthIndex) {
       const list = MONTH_DATA[yearKey] || MONTH_DATA["2026"];
@@ -968,7 +1146,7 @@
     }
 
     // =========================================================================
-    // 4. RENDER CHANNEL MIX DONUT & TOP MENU
+    // 5. RENDER CHANNEL MIX DONUT & TOP MENU
     // =========================================================================
     function renderMixDonut(modeKey) {
       const data = MIX_DATA[modeKey];
@@ -1033,7 +1211,7 @@
     }
 
     // =========================================================================
-    // 5. KASIR POS, ORDERS, CATALOG & INVENTORY VIEWS
+    // 6. KASIR POS, ORDERS, CATALOG & INVENTORY VIEWS
     // =========================================================================
     function renderPosCatalog(filterCat = "all") {
       const grid = document.getElementById("pos-catalog-grid");
@@ -1041,13 +1219,7 @@
       
       const items = filterCat === "all"
         ? CATALOG_PRODUCTS
-        : CATALOG_PRODUCTS.filter(p => {
-            if (filterCat === "Coffee") return p.cat === "Coffee" || p.cat === "Minuman";
-            if (filterCat === "Non-Coffee") return p.cat === "Non-Coffee";
-            if (filterCat === "Pastry") return p.cat === "Pastry" || p.cat === "Dessert";
-            if (filterCat === "Makanan") return p.cat === "Makanan" || p.cat === "Snack";
-            return p.cat === filterCat;
-          });
+        : CATALOG_PRODUCTS.filter(p => p.cat === filterCat);
 
       grid.innerHTML = items.map(p => {
         const mediaHtml = (usePhotos && p.image)
@@ -1085,7 +1257,7 @@
       const existing = cart.find(c => String(c.id) === String(prodId));
       if (existing) {
         if (existing.qty >= prod.stock) {
-          showToast(`Maksimal pesanan ${prod.name} sesuai stok (${prod.stock})`);
+          showToast(`Maksimal pesanan ${prod.name} sesuai sisa stok (${prod.stock})`);
           return;
         }
         existing.qty += 1;
@@ -1134,7 +1306,13 @@
           const id = btn.dataset.qtyId;
           const delta = parseInt(btn.dataset.delta, 10);
           const item = cart.find(c => String(c.id) === String(id));
+          const prod = CATALOG_PRODUCTS.find(p => String(p.id) === String(id));
+
           if (item) {
+            if (delta > 0 && prod && item.qty >= prod.stock) {
+              showToast(`Maksimal pesanan ${prod.name} sesuai sisa stok (${prod.stock})`);
+              return;
+            }
             item.qty += delta;
             if (item.qty <= 0) cart = cart.filter(c => String(c.id) !== String(id));
             renderCart();
@@ -1146,7 +1324,7 @@
     function renderOrdersTable() {
       const tbody = document.getElementById("orders-tbody");
       tbody.innerHTML = ordersHistory.map((o, idx) => `
-        <tr data-order-idx="${idx}" title="Klik untuk mencetak struk thermal">
+        <tr data-order-idx="${idx}" title="Klik baris ini untuk mencetak struk thermal">
           <td><b style="color:var(--c-cherry)">#${o.id}</b></td>
           <td>${o.time}</td>
           <td><b>${o.cust}</b></td>
@@ -1228,16 +1406,46 @@
     }
 
     // =========================================================================
-    // 6. THERMAL RECEIPT GENERATOR & PRINTING
+    // 7. THERMAL RECEIPT GENERATOR & PRINTING (ITEMIZED DETAIL)
     // =========================================================================
     function openThermalReceipt(order) {
       const modal = document.getElementById("modal-receipt");
       const area = document.getElementById("receipt-print-area");
-      const branch = BRANCH_DATA[currentBranchKey] || BRANCH_DATA.pusat;
+      const branch = STORE_INFO;
 
       const subtotal = Math.round(order.total / 1.1);
       const tax = order.total - subtotal;
       const receiptNo = order.id.startsWith("NC-") ? order.id : `NC-${order.id}`;
+      const cashierName = currentUser ? currentUser.nama_pengguna : "Kasir Shift";
+
+      // Parse item rows
+      let itemsHtml = "";
+      if (order.rawItems && Array.isArray(order.rawItems) && order.rawItems.length > 0) {
+        itemsHtml = order.rawItems.map(it => `
+          <tr>
+            <td colspan="2" class="item-name">${it.nama_menu || it.name}</td>
+          </tr>
+          <tr>
+            <td class="item-calc">${it.jumlah || it.qty} × ${formatRp(it.harga || it.price)}</td>
+            <td class="text-right">${formatRp((it.jumlah || it.qty) * (it.harga || it.price))}</td>
+          </tr>
+        `).join("");
+      } else {
+        const parts = String(order.items).split(",");
+        itemsHtml = parts.map(p => {
+          const trimmed = p.trim();
+          return `
+            <tr>
+              <td colspan="2" class="item-name">${trimmed}</td>
+            </tr>
+          `;
+        }).join("") + `
+          <tr>
+            <td class="item-calc">Paket Menu Pesanan</td>
+            <td class="text-right">${formatRp(subtotal)}</td>
+          </tr>
+        `;
+      }
 
       area.innerHTML = `
         <div class="receipt-wrapper">
@@ -1253,8 +1461,8 @@
 
           <div style="font-size:0.75rem;display:grid;gap:2px;">
             <div style="display:flex;justify-content:space-between"><span>No. Struk</span><b>${receiptNo}</b></div>
-            <div style="display:flex;justify-content:space-between"><span>Tanggal</span><span>${order.time}</span></div>
-            <div style="display:flex;justify-content:space-between"><span>Kasir</span><span>Daffa (Kasir Shift)</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Waktu</span><span>${order.time} WIB</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Kasir</span><span>${cashierName}</span></div>
             <div style="display:flex;justify-content:space-between"><span>Pelanggan</span><span>${order.cust}</span></div>
           </div>
 
@@ -1262,13 +1470,7 @@
 
           <table class="receipt-table">
             <tbody>
-              <tr>
-                <td colspan="2" class="item-name">${order.items}</td>
-              </tr>
-              <tr>
-                <td class="item-calc">1 Paket Transaksi</td>
-                <td class="text-right">${formatRp(subtotal)}</td>
-              </tr>
+              ${itemsHtml}
             </tbody>
           </table>
 
@@ -1340,7 +1542,7 @@
     }
 
     // =========================================================================
-    // 7. BACKEND API ASYNC DATA SYNC (SQLITE DATABASE)
+    // 8. BACKEND API ASYNC DATA SYNC (SQLITE WAL PERSISTENCE)
     // =========================================================================
     async function syncBackendData() {
       const syncBtn = document.getElementById("sync-btn");
@@ -1361,7 +1563,7 @@
               price: m.harga,
               stock: m.stok,
               image: m.gambar,
-              emoji: m.kategori === 'Minuman' ? '☕' : (m.kategori === 'Dessert' ? '🍰' : '🥐')
+              emoji: m.kategori === 'Minuman' ? '☕' : (m.kategori === 'Dessert' ? '🍰' : (m.kategori === 'Snack' ? '🍟' : '🍝'))
             }));
             renderPosCatalog(currentCategoryFilter);
             renderSecondaryViews();
@@ -1381,7 +1583,8 @@
               items: o.items_summary || (o.items ? o.items.map(i => `${i.jumlah}x ${i.nama_menu}`).join(', ') : 'Menu Pesanan'),
               method: o.metode_pembayaran || o.metode || "QRIS",
               total: o.total || o.total_bayar || 0,
-              status: "Selesai Tepat Waktu"
+              status: "Selesai Tepat Waktu",
+              rawItems: o.items || []
             }));
             renderOrdersTable();
           }
@@ -1414,9 +1617,18 @@
     }
 
     // =========================================================================
-    // 8. NAVIGATION, SEGMENTED CONTROLS & EVENT LISTENERS
+    // 9. NAVIGATION, VIEW SWITCHING & EVENT LISTENERS
     // =========================================================================
     function switchRoute(routeKey) {
+      // Role checking
+      if (currentUser && currentUser.peran === "kasir") {
+        const restricted = ["catalog", "inventory", "members", "reports"];
+        if (restricted.includes(routeKey)) {
+          showToast(`Tab ${routeKey.toUpperCase()} membutuhkan hak akses Admin / Manager`);
+          return;
+        }
+      }
+
       document.querySelectorAll(".view").forEach(v => {
         v.hidden = v.dataset.view !== routeKey;
       });
@@ -1436,11 +1648,32 @@
       } else if (pill) {
         pill.style.opacity = "0";
       }
+
+      // Update Header dynamic subtitle per view
+      const subEl = document.getElementById("page-sub");
+      const titleEl = document.getElementById("page-title");
+      const name = currentUser ? currentUser.nama_pengguna.split(" ")[0] : "Kasir";
+
+      const VIEW_TITLES = {
+        overview: { title: `Selamat Datang, <span class="accent">${name}</span>`, sub: "Berikut ringkasan operasional & performa transaksi NomCherry Café hari ini." },
+        pos: { title: `Kasir POS <span class="accent">(Point of Sale)</span>`, sub: "Pilih menu favorit pelanggan, kelola keranjang pesanan, dan selesaikan transaksi." },
+        orders: { title: `Antrean Dapur & <span class="accent">Riwayat Struk</span>`, sub: "Pantau progres peracikan minuman di bar serta riwayat transaksi hari ini." },
+        catalog: { title: `Katalog Menu <span class="accent">& Resep Kafe</span>`, sub: "Manajemen 24 menu autentik, kategori, harga jual, dan foto kuliner." },
+        inventory: { title: `Inventori Bahan Baku <span class="accent">& Gudang</span>`, sub: "Indikator persediaan bahan baku bar kopi & roastery dengan meteran hatch." },
+        members: { title: `Pelanggan & <span class="accent">Member Loyalitas</span>`, sub: "Daftar pelanggan terdaftar dan akumulasi Cherry Points tertinggi." },
+        reports: { title: `Laporan Penjualan <span class="accent">& Finansial</span>`, sub: "Rekapitulasi keuangan kafe, rata-rata transaksi, dan ekspor data CSV." },
+        settings: { title: `Pengaturan <span class="accent">Sistem POS</span>`, sub: "Konfigurasi printer thermal 80mm/58mm, suara dapur, dan preferensi kasir." }
+      };
+
+      if (VIEW_TITLES[routeKey]) {
+        if (titleEl) titleEl.innerHTML = VIEW_TITLES[routeKey].title;
+        if (subEl) subEl.textContent = VIEW_TITLES[routeKey].sub;
+      }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       // 1. Initial Render with High-Fidelity Defaults
-      renderHeroChart("pusat");
+      renderHeroChart();
       renderSentChart("30d");
       renderMonthChart("2026", 9);
       renderMixDonut("kategori");
@@ -1450,10 +1683,13 @@
       renderOrdersTable();
       renderSecondaryViews();
 
-      // 2. Fetch Live SQLite Database Content Asynchronously
+      // 2. Check Session & Login Guard
+      checkSession();
+
+      // 3. Fetch Live SQLite Database Content Asynchronously
       syncBackendData();
 
-      // 3. Navigation Links
+      // 4. Navigation Links
       document.querySelectorAll("[data-route]").forEach(link => {
         link.addEventListener("click", (e) => {
           e.preventDefault();
@@ -1466,7 +1702,7 @@
       const goPosBtn = document.getElementById("go-pos-btn");
       if (goPosBtn) goPosBtn.addEventListener("click", () => switchRoute("pos"));
 
-      // 4. Sidebar Expand / Collapse Toggle
+      // 5. Sidebar Expand / Collapse Toggle
       const appShell = document.getElementById("app-shell");
       const railToggle = document.getElementById("rail-toggle");
       railToggle.addEventListener("click", () => {
@@ -1475,7 +1711,7 @@
         document.getElementById("rail-toggle-label").textContent = isOpen ? "Tutup Sidebar" : "Sematkan Sidebar";
       });
 
-      // 5. Keyboard Shortcuts: [ for sidebar, Cmd/Ctrl+K for search, Arrow Left/Right for Month chart
+      // 6. Keyboard Shortcuts: [ for sidebar, Cmd/Ctrl+K for search, Arrow Left/Right for Month chart, Escape to close
       window.addEventListener("keydown", (e) => {
         if (e.key === "[" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
           railToggle.click();
@@ -1483,6 +1719,12 @@
         if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
           e.preventDefault();
           document.getElementById("search-input").focus();
+        }
+        if (e.key === "Escape") {
+          document.getElementById("payment-modal").hidden = true;
+          document.getElementById("modal-receipt").hidden = true;
+          document.getElementById("user-popover").hidden = true;
+          document.getElementById("search-results").hidden = true;
         }
       });
 
@@ -1498,14 +1740,43 @@
         }
       });
 
-      // 6. Branch Selector
-      document.getElementById("branch-select").addEventListener("change", (e) => {
-        currentBranchKey = e.target.value;
-        renderHeroChart(currentBranchKey);
-        showToast(`Cabang aktif: ${BRANCH_DATA[currentBranchKey].name}`);
+      // 7. Avatar & User Popover
+      const avatarBtn = document.getElementById("avatar-btn");
+      const userPopover = document.getElementById("user-popover");
+      avatarBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        userPopover.hidden = !userPopover.hidden;
       });
 
-      // 7. Segmented Controls
+      document.getElementById("switch-account-btn").addEventListener("click", () => {
+        userPopover.hidden = true;
+        showLoginModal();
+      });
+
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        handleLogout();
+      });
+
+      // 8. Login Form & Quick Account Buttons
+      const loginForm = document.getElementById("login-form");
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const u = document.getElementById("login-username").value.trim();
+        const p = document.getElementById("login-password").value.trim();
+        handleLogin(u, p);
+      });
+
+      document.querySelectorAll(".quick-account-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const u = btn.dataset.u;
+          const p = btn.dataset.p;
+          document.getElementById("login-username").value = u;
+          document.getElementById("login-password").value = p;
+          handleLogin(u, p);
+        });
+      });
+
+      // 9. Segmented Controls
       document.querySelectorAll("[data-seg]").forEach(group => {
         group.querySelectorAll("button").forEach(btn => {
           btn.addEventListener("click", () => {
@@ -1529,7 +1800,7 @@
         });
       });
 
-      // 8. Petty Cash / Credits Topup Menu
+      // 10. Petty Cash / Credits Topup Menu
       const topupBtn = document.getElementById("topup-btn");
       const topupMenu = document.getElementById("topup-menu");
       topupBtn.addEventListener("click", (e) => {
@@ -1553,7 +1824,7 @@
         });
       });
 
-      // 9. Search Bar & Suggestions
+      // 11. Search Bar & Suggestions
       const searchInput = document.getElementById("search-input");
       const searchResults = document.getElementById("search-results");
       searchInput.addEventListener("input", () => {
@@ -1564,7 +1835,7 @@
         }
         const matched = CATALOG_PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
         if (matched.length === 0) {
-          searchResults.innerHTML = `<li class="search__item"><span>Tidak ditemukan hasil untuk "${q}"</span></li>`;
+          searchResults.innerHTML = `<li class="search__item"><span>Tidak ditemukan menu "${q}"</span></li>`;
         } else {
           searchResults.innerHTML = matched.map(p => `
             <li class="search__item" data-search-prod="${p.id}">
@@ -1591,14 +1862,17 @@
           topupMenu.hidden = true;
           topupBtn.setAttribute("aria-expanded", "false");
         }
+        if (!e.target.closest(".avatar-wrap")) {
+          userPopover.hidden = true;
+        }
       });
 
-      // 10. Sync Button
+      // 12. Sync Button
       document.getElementById("sync-btn").addEventListener("click", () => {
         syncBackendData();
       });
 
-      // 11. POS Cart & Checkout Modal
+      // 13. POS Cart & Checkout Modal
       document.getElementById("clear-cart-btn").addEventListener("click", () => {
         cart = [];
         renderCart();
@@ -1634,7 +1908,8 @@
         const cust = document.getElementById("pos-cust-name").value || "Pelanggan Umum";
         const table = document.getElementById("pos-order-type").value;
         const summary = cart.map(c => `${c.qty}x ${c.name}`).join(", ");
-        const newId = "NC-" + (2085 + ordersHistory.length);
+        const newId = "NC-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + String(ordersHistory.length + 1).padStart(3, "0");
+        const activeUserId = currentUser ? currentUser.id_pengguna : "USR002";
 
         const newOrderObj = {
           id: newId,
@@ -1643,17 +1918,18 @@
           items: summary,
           method: selectedPayMethod,
           total,
-          status: "Diproses Bar (1 mnt)"
+          status: "Diproses Bar (1 mnt)",
+          rawItems: [...cart]
         };
 
         // Attempt Real POST to Backend Server
         try {
-          const currentCabangId = BRANCH_DATA[currentBranchKey].id || "CBG001";
           const res = await fetch('/api/orders', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              id_cabang: currentCabangId,
+              id_cabang: "CBG001",
+              id_pengguna: activeUserId,
               nama_pelanggan: cust,
               nomor_meja: table,
               metode_pembayaran: selectedPayMethod,
@@ -1678,10 +1954,18 @@
           console.warn("POST order offline fallback:", err.message);
         }
 
+        // Decrement stock in client memory immediately
+        cart.forEach(c => {
+          const p = CATALOG_PRODUCTS.find(x => String(x.id) === String(c.id));
+          if (p) p.stock = Math.max(0, p.stock - c.qty);
+        });
+
         ordersHistory.unshift(newOrderObj);
         cart = [];
         renderCart();
+        renderPosCatalog(currentCategoryFilter);
         renderOrdersTable();
+        renderSecondaryViews();
         paymentModal.hidden = true;
 
         showToast(`Transaksi #${newOrderObj.id} (${selectedPayMethod}) lunas!`);
@@ -1693,7 +1977,7 @@
         }
       });
 
-      // 12. Thermal Receipt Modal Controls
+      // 14. Thermal Receipt Modal Controls
       const modalReceipt = document.getElementById("modal-receipt");
       document.getElementById("close-receipt-btn").addEventListener("click", () => modalReceipt.hidden = true);
       document.getElementById("dismiss-receipt-btn").addEventListener("click", () => modalReceipt.hidden = true);
@@ -1701,20 +1985,28 @@
         window.print();
       });
 
-      // 13. Restock Button
+      // 15. Restock Button
       document.getElementById("restock-all-btn").addEventListener("click", () => {
         INVENTORY_ITEMS.forEach(i => i.pct = 100);
         renderSecondaryViews();
         showToast("Seluruh stok bahan baku Bar & Roastery berhasil diisi penuh (100%)");
       });
 
-      // 14. Export CSV Report
+      // 16. Export CSV Report
       document.getElementById("export-report-btn").addEventListener("click", () => {
-        window.location.href = "/api/reports/sales?export=csv";
+        window.location.href = "/api/reports/sales?format=csv";
         showToast("Mengunduh laporan finansial penjualan CSV...");
       });
 
-      // 15. Responsive Resize Redraws
+      // 17. Setting Toggles Listeners
+      const photoToggle = document.getElementById("setting-use-photos");
+      if (photoToggle) {
+        photoToggle.addEventListener("change", () => {
+          renderPosCatalog(currentCategoryFilter);
+        });
+      }
+
+      // 18. Responsive Resize Redraws
       window.addEventListener("resize", () => {
         updateMonthTooltip(currentMonthYear, activeMonthIndex);
       });
