@@ -17,6 +17,11 @@ app.use(express.urlencoded({ extended: true }));
 // Serve Static Frontend Assets
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Explicit Login Page Routes
+app.get(['/login', '/masuk'], (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/login.html'));
+});
+
 // Mount API Routes
 app.use('/api', apiRoutes);
 

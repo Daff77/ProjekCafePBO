@@ -796,8 +796,8 @@
           currentUser = null;
         }
       }
-      // If no valid session, show login modal
-      showLoginModal();
+      // If no valid session, redirect to dedicated login page
+      window.location.replace("login.html");
       return false;
     }
 
@@ -876,7 +876,9 @@
       currentUser = null;
       document.getElementById("user-popover").hidden = true;
       showToast("Sesi kasir berhasil diakhiri");
-      showLoginModal();
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 350);
     }
 
     function updateUserInterface() {
@@ -1750,7 +1752,7 @@
 
       document.getElementById("switch-account-btn").addEventListener("click", () => {
         userPopover.hidden = true;
-        showLoginModal();
+        window.location.href = "login.html";
       });
 
       document.getElementById("logout-btn").addEventListener("click", () => {

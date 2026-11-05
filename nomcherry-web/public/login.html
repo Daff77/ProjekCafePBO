@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Masuk · NomCherry Café</title>
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#7a2228;--paper:#fff6ee;--field:#fbeadb;--rule:#cdb9a6;
+  --ink:#3b3042;--ink-2:#64586b;--ink-3:#75687b;
+  --cherry:#7a2228;--tangerine:#d9481f;--tangerine-deep:#b93612;--teal:#1e9a8a;
+  --bad:#a8231b;--bad-bg:#fbe0dc;
+  --good:#15803d;--good-bg:#dcfce7;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#5c181d;--paper:#f6e9dd;--field:#efdac8}}
+:root[data-theme="dark"]{--page:#5c181d;--paper:#f6e9dd;--field:#efdac8}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;
+  background:var(--page);color:var(--ink);
+  font-family:var(--body);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:clamp(20px,6vh,64px) 16px 48px;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(217, 72, 31, 0.22) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(30, 154, 138, 0.18) 0%, transparent 40%);
+}
+.wrap{width:100%;max-width:420px;filter:drop-shadow(0 28px 36px rgba(25,4,8,.45))}
+.receipt{
+  background:var(--paper);padding:34px 30px 46px;border-radius:10px 10px 0 0;
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/16px 100%;
+  mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/16px 100%;
+  position:relative;
+}
+.head{text-align:center}
+.head svg{width:56px;height:56px;display:block;margin:0 auto 10px;filter:drop-shadow(0 2px 4px rgba(122,34,40,.15))}
+.brand{font-family:var(--display);font-weight:800;font-size:1.75rem;letter-spacing:-.02em;color:var(--cherry);line-height:1}
+.tag{margin:6px 0 0;font-size:.8125rem;color:var(--ink-3)}
+hr{border:0;border-top:2px dashed var(--rule);margin:22px 0}
+.meta{display:flex;justify-content:space-between;gap:12px;font-size:.8125rem;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.meta span:last-child{font-weight:700;color:var(--ink)}
+h1{font-family:var(--display);font-weight:700;font-size:2.15rem;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}
+.lead{margin:0 0 22px;color:var(--ink-2);line-height:1.55;font-size:.9375rem}
+.field{margin-bottom:16px}
+label{display:block;font-size:.8125rem;font-weight:700;color:var(--ink-2);margin-bottom:6px}
+.input{position:relative}
+input{
+  width:100%;padding:14px 14px 12px;
+  border:0;border-bottom:2px dashed var(--rule);
+  border-radius:10px 10px 0 0;background:var(--field);
+  color:var(--ink);font:600 1rem var(--body);
+  transition:background .2s,border-color .2s,box-shadow .2s;
+}
+input::placeholder{color:var(--ink-3);font-weight:400}
+input:focus{outline:none;background:#fff;border-bottom:2px solid var(--cherry);box-shadow:0 6px 0 -3px rgba(122,34,40,.18)}
+.input input{padding-right:104px}
+.toggle{
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  border:0;background:none;color:var(--ink-2);
+  font:700 .8125rem var(--body);padding:9px 10px;
+  border-radius:8px;cursor:pointer;
+}
+.toggle:hover{color:var(--cherry);text-decoration:underline}
+.toggle:focus-visible,.btn:focus-visible,.opts a:focus-visible,.pill:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.opts{display:flex;justify-content:space-between;align-items:center;margin:2px 0 20px;font-size:.8125rem;color:var(--ink-2)}
+.opts label{display:flex;align-items:center;gap:8px;margin:0;font-weight:500;cursor:pointer}
+.opts input{width:18px;height:18px;padding:0;accent-color:var(--cherry);border-radius:4px}
+.opts a{color:var(--cherry);font-weight:700;text-decoration:none;cursor:pointer}
+.opts a:hover{text-decoration:underline}
+.btn{
+  width:100%;border:0;border-radius:10px;padding:16px 18px;
+  background:var(--tangerine);color:#fff;
+  font:700 1.0625rem var(--body);cursor:pointer;
+  transition:background .2s,transform .1s,box-shadow .2s;
+  box-shadow:0 4px 12px rgba(217,72,31,.25);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn:hover{background:var(--tangerine-deep)}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{opacity:.75;cursor:progress}
+
+.error{
+  display:none;background:var(--bad-bg);color:var(--bad);
+  border-radius:8px;padding:11px 14px;
+  font-size:.8125rem;font-weight:600;margin-bottom:16px;
+  border-left:3px solid var(--bad);
+  animation:shake .25s ease-in-out;
+}
+.error.show{display:block}
+
+.success{
+  display:none;background:var(--good-bg);color:var(--good);
+  border-radius:8px;padding:11px 14px;
+  font-size:.8125rem;font-weight:600;margin-bottom:16px;
+  border-left:3px solid var(--good);
+}
+.success.show{display:block}
+
+.session-banner{
+  display:none;background:#fdf2e9;border:1px solid #f3d1cf;
+  border-radius:10px;padding:12px 14px;margin-bottom:18px;
+  font-size:.8125rem;color:var(--ink);
+}
+.session-banner.show{display:block}
+.session-banner-btns{display:flex;gap:8px;margin-top:8px}
+.session-banner-btns button{
+  padding:6px 12px;border-radius:6px;font-size:.75rem;font-weight:700;
+  cursor:pointer;border:1px solid transparent;font-family:var(--body);
+}
+.btn-continue{background:var(--cherry);color:#fff}
+.btn-switch{background:transparent;border-color:var(--rule);color:var(--ink-2)}
+
+/* QUICK DEMO PILLS */
+.demo-section{
+  margin-top:20px;padding-top:16px;
+  border-top:1px dashed var(--rule);
+}
+.demo-title{
+  font-size:.75rem;font-weight:700;color:var(--ink-3);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pill{
+  background:var(--field);border:1px solid rgba(205,185,166,.5);
+  border-radius:6px;padding:7px 9px;
+  text-align:left;font-family:var(--body);cursor:pointer;
+  transition:all .15s ease;
+}
+.pill:hover{
+  background:#fff;border-color:var(--cherry);
+  transform:translateY(-1px);box-shadow:0 2px 6px rgba(122,34,40,.08);
+}
+.pill-role{display:block;font-size:.6875rem;font-weight:800;color:var(--cherry);text-transform:uppercase}
+.pill-name{display:block;font-size:.75rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill-user{display:block;font-size:.6875rem;color:var(--ink-3)}
+
+.foot{margin:22px 0 0;text-align:center;font-size:.75rem;color:var(--ink-3)}
+.foot a{color:var(--cherry);text-decoration:none;font-weight:600}
+.foot a:hover{text-decoration:underline}
+
+/* MODAL LUPA PASSWORD */
+.help-modal{
+  display:none;position:fixed;inset:0;background:rgba(25,4,8,.65);
+  backdrop-filter:blur(3px);z-index:99;
+  align-items:center;justify-content:center;padding:16px;
+}
+.help-modal.show{display:flex}
+.help-box{
+  background:var(--paper);border-radius:12px;padding:24px;
+  max-width:380px;width:100%;box-shadow:0 20px 30px rgba(0,0,0,.3);
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  75%{transform:translateX(4px)}
+}
+
+@media (max-width:420px){
+  .receipt{padding:28px 20px 42px}
+  h1{font-size:1.85rem}
+  .demo-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main class="receipt">
+    <div class="head">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M21 6c2 5 6 8 11 8M21 6c-3 7-5 13-8 17M21 6c1 6 2 11 7 17" fill="none" stroke="#1e9a8a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="12" cy="29" r="8" fill="#7a2228"/>
+        <circle cx="28" cy="28" r="8" fill="#e4572e"/>
+      </svg>
+      <div class="brand">NomCherry Café</div>
+      <p class="tag">Sistem pemesanan dan kasir</p>
+    </div>
+
+    <hr>
+    <div class="meta"><span id="d">&nbsp;</span><span id="c">&nbsp;</span></div>
+    <hr>
+
+    <!-- ACTIVE SESSION BANNER (IF ALREADY LOGGED IN) -->
+    <div class="session-banner" id="session-banner">
+      <div>Sesi aktif: <strong id="active-user-name">-</strong> (<span id="active-user-role">-</span>)</div>
+      <div class="session-banner-btns">
+        <button type="button" class="btn-continue" id="btn-resume">Lanjut ke Kasir →</button>
+        <button type="button" class="btn-switch" id="btn-logout-here">Ganti Akun</button>
+      </div>
+    </div>
+
+    <h1 id="g">Selamat datang</h1>
+    <p class="lead">Masuk untuk membuka kasir, pesanan, dan laporan penjualan.</p>
+
+    <form id="f" novalidate>
+      <div class="error" id="err" role="alert"></div>
+      <div class="success" id="succ" role="status"></div>
+
+      <div class="field">
+        <label for="u">Username</label>
+        <input id="u" name="username" type="text" autocomplete="username" placeholder="Masukkan username" autofocus required>
+      </div>
+
+      <div class="field">
+        <label for="p">Kata sandi</label>
+        <div class="input">
+          <input id="p" name="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
+          <button type="button" class="toggle" id="t" aria-label="Tampilkan kata sandi">Lihat</button>
+        </div>
+      </div>
+
+      <div class="opts">
+        <label><input type="checkbox" id="r" checked> Ingat saya</label>
+        <a id="lupa-btn">Lupa kata sandi?</a>
+      </div>
+
+      <button class="btn" id="b" type="submit">
+        <span>Masuk ke Sistem</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </button>
+    </form>
+
+    <!-- QUICK DEMO LOGINS -->
+    <div class="demo-section">
+      <div class="demo-title">
+        <span>Akses Cepat (Akun Demo)</span>
+        <span style="font-size:0.6875rem;color:var(--teal);font-weight:600;">1-Klik Isi</span>
+      </div>
+      <div class="demo-grid">
+        <button type="button" class="pill" data-u="daps" data-p="135" title="Login sebagai Kasir Cabang 1 (Daffa)">
+          <span class="pill-role">Kasir · Cabang 1</span>
+          <span class="pill-name">Daffa Danendra</span>
+          <span class="pill-user">user: daps | pwd: 135</span>
+        </button>
+
+        <button type="button" class="pill" data-u="admin" data-p="admin123" title="Login sebagai Admin Utama (Full Akses)">
+          <span class="pill-role" style="color:var(--tangerine);">Admin Utama</span>
+          <span class="pill-name">Administrator</span>
+          <span class="pill-user">user: admin | pwd: admin123</span>
+        </button>
+
+        <button type="button" class="pill" data-u="kasir" data-p="123" title="Login sebagai Kasir Cabang 2 (Saman)">
+          <span class="pill-role">Kasir · Cabang 2</span>
+          <span class="pill-name">Saman</span>
+          <span class="pill-user">user: kasir | pwd: 123</span>
+        </button>
+
+        <button type="button" class="pill" data-u="manager1" data-p="123" title="Login sebagai Manager Operasional">
+          <span class="pill-role" style="color:#0891b2;">Manager</span>
+          <span class="pill-name">Clarissa</span>
+          <span class="pill-user">user: manager1 | pwd: 123</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="foot">Untuk kasir, supervisor, manager & owner · <a href="index.html">Buka POS Langsung</a></p>
+  </main>
+</div>
+
+<!-- MODAL BANTUAN LUPA KATA SANDI -->
+<div class="help-modal" id="help-modal">
+  <div class="help-box">
+    <div style="font-family:var(--display);font-weight:700;font-size:1.25rem;color:var(--cherry);margin-bottom:8px;">Bantuan Akses Akun</div>
+    <p style="font-size:0.875rem;color:var(--ink-2);line-height:1.5;margin-bottom:14px;">
+      Untuk mereset kata sandi kasir atau staff, silakan hubungi <b>Admin IT Kafe</b> atau gunakan salah satu akun demo di bawah formulir login.
+    </p>
+    <div style="background:var(--field);padding:10px 12px;border-radius:8px;font-size:0.8125rem;color:var(--ink-2);margin-bottom:16px;">
+      <div>• <b>Kasir 1:</b> <code>daps</code> / <code>135</code></div>
+      <div>• <b>Admin:</b> <code>admin</code> / <code>admin123</code></div>
+      <div>• <b>Manager:</b> <code>manager1</code> / <code>123</code></div>
+    </div>
+    <button type="button" class="btn" id="close-help-btn" style="padding:10px;font-size:0.875rem;">Mengerti</button>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const f = $('f'), u = $('u'), p = $('p'), err = $('err'), succ = $('succ'), b = $('b'), t = $('t');
+const sessionBanner = $('session-banner');
+const activeUserName = $('active-user-name');
+const activeUserRole = $('active-user-role');
+const btnResume = $('btn-resume');
+const btnLogoutHere = $('btn-logout-here');
+const lupaBtn = $('lupa-btn');
+const helpModal = $('help-modal');
+const closeHelpBtn = $('close-help-btn');
+
+// 1. LIVE TIME & GREETING
+function tick(){
+  const n = new Date(), h = n.getHours();
+  $('g').textContent = 'Selamat ' + (h < 11 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam');
+  $('d').textContent = n.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  $('c').textContent = n.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace(':', '.');
+}
+tick();
+setInterval(tick, 30000);
+
+// 2. PASSWORD TOGGLE
+t.addEventListener('click', () => {
+  const show = p.type === 'password';
+  p.type = show ? 'text' : 'password';
+  t.textContent = show ? 'Sembunyikan' : 'Lihat';
+  t.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+});
+
+// 3. CHECK EXISTING SESSION
+function checkExistingSession() {
+  const stored = localStorage.getItem('nomcherry_session');
+  if (stored) {
+    try {
+      const user = JSON.parse(stored);
+      if (user && user.nama_pengguna) {
+        activeUserName.textContent = user.nama_pengguna;
+        activeUserRole.textContent = (user.peran || 'kasir').toUpperCase();
+        sessionBanner.classList.add('show');
+      }
+    } catch (e) {}
+  }
+}
+checkExistingSession();
+
+btnResume.addEventListener('click', () => {
+  window.location.href = 'index.html';
+});
+
+btnLogoutHere.addEventListener('click', () => {
+  localStorage.removeItem('nomcherry_session');
+  sessionBanner.classList.remove('show');
+  succ.textContent = 'Sesi sebelumnya berhasil dibersihkan. Silakan masuk kembali.';
+  succ.classList.add('show');
+  setTimeout(() => succ.classList.remove('show'), 3000);
+});
+
+// 4. ERROR & SUCCESS NOTIFICATIONS
+function fail(m){
+  err.textContent = m;
+  err.classList.add('show');
+  succ.classList.remove('show');
+}
+function succeed(m){
+  succ.textContent = m;
+  succ.classList.add('show');
+  err.classList.remove('show');
+}
+
+// 5. QUICK DEMO ACCOUNT PILLS
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    u.value = pill.getAttribute('data-u');
+    p.value = pill.getAttribute('data-p');
+    err.classList.remove('show');
+    p.focus();
+  });
+});
+
+// 6. FORGOT PASSWORD MODAL
+lupaBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  helpModal.classList.add('show');
+});
+closeHelpBtn.addEventListener('click', () => {
+  helpModal.classList.remove('show');
+});
+helpModal.addEventListener('click', (e) => {
+  if (e.target === helpModal) helpModal.classList.remove('show');
+});
+
+// 7. LOGIN FORM SUBMISSION (CONNECTS TO /api/auth/login)
+f.addEventListener('submit', async e => {
+  e.preventDefault();
+  err.classList.remove('show');
+  succ.classList.remove('show');
+
+  const username = u.value.trim();
+  const password = p.value;
+
+  if (!username) {
+    fail('Username belum diisi.');
+    u.focus();
+    return;
+  }
+  if (!password) {
+    fail('Kata sandi belum diisi.');
+    p.focus();
+    return;
+  }
+
+  b.disabled = true;
+  const originalBtnHTML = b.innerHTML;
+  b.innerHTML = '<span>Memverifikasi…</span>';
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: username,
+        kata_sandi: password,
+        id_cabang: 'CBG001'
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      const user = data.data;
+      localStorage.setItem('nomcherry_session', JSON.stringify(user));
+      succeed(`Berhasil masuk! Mengalihkan ke sistem kasir…`);
+      b.innerHTML = '<span>Berhasil Masuk ✓</span>';
+      setTimeout(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get('redirect') || 'index.html';
+        window.location.href = redirect;
+      }, 700);
+    } else {
+      fail(data.message || 'Username atau kata sandi tidak cocok.');
+      b.disabled = false;
+      b.innerHTML = originalBtnHTML;
+    }
+  } catch (netErr) {
+    // Offline fallback for known accounts
+    if ((username === 'daps' && password === '135') || (username === 'admin' && password === 'admin123')) {
+      const fallbackUser = {
+        id_pengguna: username === 'daps' ? 'USR002' : 'USR001',
+        nama_pengguna: username === 'daps' ? 'Daffa Danendra (Kasir)' : 'Admin Utama',
+        username: username,
+        peran: username === 'daps' ? 'kasir' : 'admin',
+        id_cabang: 'CBG001',
+        nama_cabang: 'NomCherry Café (Pusat)'
+      };
+      localStorage.setItem('nomcherry_session', JSON.stringify(fallbackUser));
+      succeed('Mode Offline: Berhasil masuk.');
+      setTimeout(() => { window.location.href = 'index.html'; }, 600);
+    } else {
+      fail('Koneksi ke server gagal: ' + netErr.message);
+      b.disabled = false;
+      b.innerHTML = originalBtnHTML;
+    }
+  }
+});
+</script>
+</body>
+</html>
