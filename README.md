@@ -284,3 +284,4 @@ ProjekCafePBO/
 Proyek ini dikembangkan oleh **Daffa Danendra (Daff77)** untuk memenuhi tugas **Rekayasa Perangkat Lunak (RPL)** dengan spesifikasi sistem informasi pemesanan dan kasir berbasis web pada **NomCherry Café**.
 
 *"Sweet Moments, Perfect Sips — Powered by Clean Architecture & Parley Design"*
+
