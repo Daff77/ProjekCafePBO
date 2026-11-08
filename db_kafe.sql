@@ -145,7 +145,7 @@ CREATE TABLE public.pembayaran (
     metode character varying(20),
     total_bayar numeric(10,2),
     tanggal_bayar timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT pembayaran_metode_check CHECK (((metode)::text = ANY (ARRAY[('Chash'::character varying)::text, ('QRIS'::character varying)::text, ('Debit'::character varying)::text, ('Transfer'::character varying)::text])))
+    CONSTRAINT pembayaran_metode_check CHECK (((metode)::text = ANY (ARRAY[('Cash'::character varying)::text, ('QRIS'::character varying)::text, ('Debit'::character varying)::text, ('Transfer'::character varying)::text])))
 );
 
 
@@ -285,12 +285,12 @@ COPY public.pembayaran (id_pembayaran, id_pesanan, metode, total_bayar, tanggal_
 --
 
 COPY public.pengguna (id_pengguna, nama_pengguna, username, kata_sandi, peran) FROM stdin;
-USR001      	Admin Utama	admin	admin123	admin
-USR002      	dap	daps	135	kasir
-USR003      	Saman	kasir	123	kasir
-USR004      	hai	admin2	123	admin
-USR005      	clar	manager1	123	manager
-USR006      	dapp	owner1	123	owner
+USR001      	Admin Utama	admin	[REDACTED]	admin
+USR002      	dap	daps	[REDACTED]	kasir
+USR003      	Saman	kasir	[REDACTED]	kasir
+USR004      	hai	admin2	[REDACTED]	admin
+USR005      	clar	manager1	[REDACTED]	manager
+USR006      	dapp	owner1	[REDACTED]	owner
 \.
 
 

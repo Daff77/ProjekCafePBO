@@ -1,4 +1,12 @@
 const assert = require('node:assert');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+
+const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nomcherry-audit-'));
+process.env.NOMCHERRY_DB = path.join(tempDir, 'audit.db');
+process.env.SESSION_SECRET = 'test-session-secret';
+
 const db = require('../src/database/db');
 const authController = require('../src/controllers/authController');
 const menuController = require('../src/controllers/menuController');
@@ -237,7 +245,7 @@ audit('Ekspor CSV Mengembalikan Format File Valid & Header Lengkap', () => {
 // -------------------------------------------------------------
 console.log('\n--- 7. AUDIT METRIK DASHBOARD PARLEY ---');
 
-audit('Dashboard Metrics Memuat 12 Bulan Grafik Bar Parley & Best Sellers', () => {
+audit('Dashboard Metrics Memuat Grafik Tren Aktual & Best Sellers', () => {
     const res = mockRes();
     reportController.getDashboardMetrics({ query: { cabang: 'CBG001' } }, res);
     assert.strictEqual(res.data.success, true);
@@ -261,6 +269,9 @@ audit('Daftar Cabang Aktif Tersedia (Pusat & Timur)', () => {
 console.log('\n============================================================');
 console.log(`   HASIL AUDIT: ${passedAudits} / ${totalAudits} FITUR LULUS (100% SUCCESS)`);
 console.log('============================================================\n');
+
+db.db.close();
+fs.rmSync(tempDir, { recursive: true, force: true });
 
 if (passedAudits === totalAudits) {
     process.exit(0);

@@ -15,11 +15,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:postgresql://localhost:5432/db_kafe";
-    private static final String USER = "postgres"; 
-    private static final String PASSWORD = "Danendra07"; 
+    private static final String URL = System.getenv().getOrDefault("NOMCHERRY_DB_URL", "jdbc:postgresql://localhost:5432/db_kafe");
+    private static final String USER = System.getenv().getOrDefault("NOMCHERRY_DB_USER", "postgres");
+    private static final String PASSWORD = System.getenv("NOMCHERRY_DB_PASSWORD");
     
     public static Connection getConnection() {
+        if (PASSWORD == null || PASSWORD.trim().isEmpty()) {
+            System.out.println("Koneksi database gagal: NOMCHERRY_DB_PASSWORD belum diatur.");
+            return null;
+        }
         try {
             Class.forName("org.postgresql.Driver");
             Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);

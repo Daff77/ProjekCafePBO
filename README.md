@@ -1,7 +1,7 @@
 # 🍒 NomCherry Café
 **Sistem Informasi Pemesanan & Kasir Kafe Berbasis Web dengan Metode Waterfall**
 
-[![Node.js](https://img.shields.io/badge/Node.js-v18%20%7C%20v20%20%7C%20v26-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-v22.5%2B%20%7C%20v26-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Express.js](https://img.shields.io/badge/Framework-Express%20v4.21-000000?logo=express&logoColor=white)](https://expressjs.com/)
 [![Database](https://img.shields.io/badge/Database-SQLite%203.53%20(Native%20DatabaseSync)-003B57?logo=sqlite&logoColor=white)](https://nodejs.org/api/sqlite.html)
 [![Design](https://img.shields.io/badge/Design%20System-Parley%20Dashboard%20Tokens-7a2228)](https://github.com/Daff77/ProjekCafePBO)
@@ -157,6 +157,9 @@ Sistem dilengkapi **24 menu kafe bervariasi** lengkap dengan foto resolusi tingg
 | **Manager** | `manager1` | `123` | Semua Cabang | Pengelolaan Stok Gudang, Kadaluarsa, Katalog Menu & Laporan |
 | **Owner** | `owner1` | `123` | Semua Cabang | Monitoring Omset Eksekutif & Analitik Antar Cabang |
 
+> [!WARNING]
+> Kredensial di atas hanya untuk demo lokal. Password disimpan sebagai hash scrypt, dan server tidak lagi menampilkan kredensial saat startup. Ganti seluruh akun default dan set `SESSION_SECRET` sebelum deployment.
+
 ---
 
 ## 🧪 Matriks Pengujian Black Box (Tabel 5.1.2 RPL)
@@ -187,7 +190,7 @@ Seluruh 16 skenario pengujian fungsional pada Bab 5 Laporan RPL telah divalidasi
 ## 🚀 Panduan Menjalankan Aplikasi
 
 ### Prasyarat
-- **Node.js** versi 18.x, 20.x, atau 26.x ([Unduh Node.js](https://nodejs.org/))
+- **Node.js** versi 22.5 atau lebih baru (modul bawaan `node:sqlite`), disarankan v26.x ([Unduh Node.js](https://nodejs.org/))
 - Web browser modern (Chrome, Edge, Firefox, Safari)
 
 ### Cara 1: Menggunakan Launcher Sekali Klik (Rekomendasi Windows)
@@ -215,12 +218,32 @@ npm start
 ```bash
 cd nomcherry-web
 
-# Menjalankan 12 uji Black Box spesifikasi RPL
-node tests/test-nomcherry.js
+# Menjalankan seluruh suite (unit controller, audit fitur, dan keamanan HTTP)
+npm test
 
-# Menjalankan audit menyeluruh 16 fitur sistem
-node tests/audit-all-features.js
+# Menjalankan E2E browser (Playwright core + Chrome/Edge terpasang)
+npm run test:e2e
+
+# Menjalankan semuanya
+npm run test:all
 ```
+
+Test suite menggunakan database sementara (`NOMCHERRY_DB`) dan tidak mengubah database aplikasi utama. E2E memerlukan Google Chrome atau Microsoft Edge yang terpasang.
+
+### Konfigurasi Lingkungan
+| Variabel | Wajib | Keterangan |
+| :--- | :---: | :--- |
+| `PORT` | Tidak | Port HTTP (default `3000`). |
+| `HOST` | Tidak | Alamat bind (default `127.0.0.1`, hanya lokal). Set `0.0.0.0` bila perlu diakses dari LAN. |
+| `SESSION_SECRET` | Produksi | Kunci HMAC untuk cookie sesi. Jika kosong, server memakai secret sementara dan sesi hilang saat restart. |
+| `NOMCHERRY_DB` | Tidak | Lokasi file SQLite. Default `src/database/nomcherry.db`. |
+| `NODE_ENV` | Tidak | Set `production` agar cookie sesi memakai flag `Secure`. |
+| `APP_TZ_OFFSET_MINUTES` | Tidak | Offset zona waktu bisnis dalam menit (default `420` = UTC+7). |
+| `LOG_REQUESTS` | Tidak | Set `false` untuk menonaktifkan structured request log JSON. |
+
+Salin `.env.example` menjadi `.env` untuk konfigurasi lokal. File `.env` dimuat otomatis oleh server (tanpa dependency tambahan) dan tidak boleh di-commit.
+
+Autentikasi menggunakan cookie `HttpOnly`, `SameSite=Strict`, bertanda tangan HMAC, dengan sesi server-side yang dapat dicabut (revocation). Password disimpan dengan hash scrypt. Sesi disimpan di tabel `sessions`; logout mencabut sesi aktif. Pengaturan kafe, pajak, dan footer struk disimpan di tabel `app_settings`.
 
 ---
 
@@ -276,6 +299,9 @@ ProjekCafePBO/
     ├── nbproject/
     └── src/                       # Source Java MVC (Model, View, Controller)
 ```
+
+> [!NOTE]
+> Struktur aktual frontend: `public/index.html` dan `public/login.html` memuat script eksternal `public/js/index-app.js` dan `public/js/login.js` (CSP tanpa `unsafe-inline` untuk script) serta `public/css/cofra-theme.css`. Modul lama `public/js/api.js`, `app.js`, `dashboard.js`, `pos.js`, `menu.js`, `stock.js`, `reports.js`, dan `users.js` tidak dimuat oleh halaman aktif. Backend memiliki service `authService` (sesi server-side yang dapat dicabut), `passwordService` (scrypt), `settingsService`, dan `dateService`, serta test `tests/test-security.js` dan `tests/e2e/e2e.test.js`.
 
 ---
 

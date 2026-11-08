@@ -1,2055 +1,1272 @@
 <!DOCTYPE html>
-<html lang="id" class="js">
+<html lang="id" data-theme="light">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>NomCherry Café · Sistem Pemesanan, Kasir POS & Analitik</title>
-  <meta name="description" content="NomCherry Café — Sistem Pemesanan, Analitik Operasional & Kasir Berbasis Web dengan desain interaktif Parley.">
-  <meta name="theme-color" content="#efe9e1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NomCherry Café — Point of Sale &amp; Manajemen Kafe</title>
   <link rel="icon" type="image/png" href="assets/logo.png">
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/parley-theme.css">
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/cofra-theme.css">
 </head>
 <body>
-  <div class="app" id="app-shell">
-    <!-- SIDEBAR RAIL (PARLEY INTERACTIVE) -->
-    <nav class="rail" aria-label="Navigasi Utama">
-      <div class="rail__panel" id="rail-panel">
-        <a class="rail__logo" href="#/overview" data-route="overview" aria-label="NomCherry Café Overview">
-          <span class="rail__mark">
-            <img class="rail__logo-img" src="assets/logo.png" alt="NomCherry Logo">
-          </span>
-          <span class="rail__brand">NomCherry<small>Café & Roastery</small></span>
+<div class="app" id="app-shell">
+
+  <!-- MOBILE DRAWER BACKDROP -->
+  <div class="mobile-backdrop" id="mobile-backdrop"></div>
+
+  <!-- ============================================================
+       SIDEBAR (COFRA ARCHITECTURE)
+       ============================================================ -->
+  <aside class="side" aria-label="Navigasi Utama">
+    <div class="side__top">
+      <a href="#overview" class="brand" id="brand-home-link">
+        <span class="brand__mark" aria-hidden="true">
+          <img src="assets/logo.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+        </span>
+        <span>NomCherry</span>
+      </a>
+      <span class="pill pill--good">POS v2.5</span>
+    </div>
+
+    <button class="side__search" type="button" id="side-search-btn" title="Cari menu atau nomor struk (Ctrl+K)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <span>Cari menu, struk...</span>
+      <kbd>⌘K</kbd>
+    </button>
+
+    <nav class="snav" aria-label="Menu Kafe">
+      <div class="snav__group">
+        <div class="snav__label">Operasional Kasir</div>
+        <a class="snav__item is-active" href="#overview" data-view="overview" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="2"></rect><rect x="14" y="3" width="7" height="5" rx="2"></rect><rect x="14" y="12" width="7" height="9" rx="2"></rect><rect x="3" y="16" width="7" height="5" rx="2"></rect></svg>
+          <span>Ringkasan Kafe</span>
         </a>
-
-        <div class="rail__list">
-          <span class="rail__pill" id="rail-pill" aria-hidden="true"></span>
-          <ul class="rail__ul" role="list" id="rail-menu">
-            <li>
-              <a class="rail__item is-active" href="#/overview" data-route="overview" style="--i:1">
-                <span class="rail__icon">
-                  <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>
-                </span>
-                <span class="rail__label">Overview</span>
-              </a>
-            </li>
-            <li>
-              <a class="rail__item" href="#/pos" data-route="pos" style="--i:2">
-                <span class="rail__icon">
-                  <svg viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17A2.5 2.5 0 0 1 4 14.5z"/></svg>
-                  <span class="rail__badge" id="pos-badge">0</span>
-                </span>
-                <span class="rail__label">Kasir POS</span>
-              </a>
-            </li>
-            <li>
-              <a class="rail__item" href="#/orders" data-route="orders" style="--i:3">
-                <span class="rail__icon">
-                  <svg viewBox="0 0 24 24"><path d="M20.5 3.5 3.5 10.6l6.6 2.8 2.8 6.6z"/><path d="m10.1 13.4 4.2-4.2"/></svg>
-                </span>
-                <span class="rail__label">Pesanan & Dapur</span>
-              </a>
-            </li>
-            <li data-role-access="admin,manager,owner">
-              <a class="rail__item" href="#/catalog" data-route="catalog" style="--i:4">
-                <span class="rail__icon">
-                  <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-                </span>
-                <span class="rail__label">Katalog Menu</span>
-              </a>
-            </li>
-            <li data-role-access="admin,manager,owner">
-              <a class="rail__item" href="#/inventory" data-route="inventory" style="--i:5">
-                <span class="rail__icon">
-                  <svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10.5 21 19 10h-6z"/></svg>
-                </span>
-                <span class="rail__label">Inventori & Stok</span>
-              </a>
-            </li>
-            <li class="hide-mobile" data-role-access="admin,manager,owner">
-              <a class="rail__item" href="#/members" data-route="members" style="--i:6">
-                <span class="rail__icon">
-                  <svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 19.5c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14.8c1.8.6 3 2.2 3.5 4.7"/></svg>
-                </span>
-                <span class="rail__label">Member Loyalitas</span>
-              </a>
-            </li>
-            <li class="hide-mobile" data-role-access="admin,manager,owner">
-              <a class="rail__item" href="#/reports" data-route="reports" style="--i:7">
-                <span class="rail__icon">
-                  <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 16v-4M12 16V8M16 16v-6"/></svg>
-                </span>
-                <span class="rail__label">Laporan</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <a class="rail__item rail__settings" href="#/settings" data-route="settings" style="--i:8">
-          <span class="rail__icon">
-            <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
-          </span>
-          <span class="rail__label">Pengaturan</span>
+        <a class="snav__item" href="#pos" data-view="pos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span>Kasir POS</span>
+          <span class="snav__badge" id="nav-cart-badge">24 Menu</span>
         </a>
+        <a class="snav__item" href="#orders" data-view="orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>
+          <span>Pesanan &amp; Dapur</span>
+          <span class="snav__badge" id="nav-orders-badge">3</span>
+        </a>
+      </div>
 
-        <button class="rail__item rail__toggle" id="rail-toggle" type="button" aria-expanded="false" title="Pintasan keyboard: [">
-          <span class="rail__icon">
-            <svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M9.5 4v16"/><path class="rail__chev" d="m13.5 10 2 2-2 2"/></svg>
-          </span>
-          <span class="rail__label" id="rail-toggle-label">Sematkan Sidebar</span>
-        </button>
+      <div class="snav__group">
+        <div class="snav__label">Manajemen Kafe</div>
+        <a class="snav__item" href="#catalog" data-view="catalog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+          <span>Katalog Menu</span>
+        </a>
+        <a class="snav__item" href="#inventory" data-view="inventory">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10"></path><path d="M6 7h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z"></path><path d="M6 12h12"></path></svg>
+          <span>Inventori Bahan</span>
+          <span class="snav__badge" id="nav-inv-badge">2 Low</span>
+        </a>
+        <a class="snav__item" href="#members" data-view="members">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Member Loyalitas</span>
+        </a>
+      </div>
+
+      <div class="snav__group">
+        <div class="snav__label">Analitik &amp; Sistem</div>
+        <a class="snav__item" href="#reports" data-view="reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M22 20H2"></path></svg>
+          <span>Laporan &amp; Analitik</span>
+        </a>
+        <a class="snav__item" href="#settings" data-view="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+          <span>Pengaturan</span>
+        </a>
       </div>
     </nav>
 
-    <!-- TOP HEADER -->
+    <div class="side__foot">
+      <button type="button" class="side__user" id="sidebar-user-btn" title="Profil Sesi Kasir &amp; Ganti Akun">
+        <span class="av" id="user-avatar">DD</span>
+        <div class="side__user-meta">
+          <div class="side__user-name" id="user-name-label">Daffa Danendra</div>
+          <div class="side__user-plan" id="user-role-label">Kasir · Cabang Pusat</div>
+        </div>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"></path></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       MAIN WORKSPACE
+       ============================================================ -->
+  <div class="main">
     <header class="top">
-      <div class="top__hello">
-        <h1 class="top__title" id="page-title">Selamat Datang, <span class="accent" id="user-display-name">Daffa</span></h1>
-        <p class="top__sub" id="page-sub">Berikut ringkasan operasional & transaksi NomCherry Café hari ini.</p>
+      <button class="ibtn mobile-toggle" id="mobile-menu-btn" type="button" aria-label="Buka Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+
+      <div class="top__crumbs">
+        <span>NomCherry POS</span>
+        <span class="top__sep">/</span>
+        <strong id="top-crumb-current">Ringkasan Kafe</strong>
       </div>
 
-      <div class="top__tools">
-        <!-- STORE STATUS BADGE (REPLACING BRANCH PICKER AS REQUESTED) -->
-        <div class="store-badge" title="Status Operasional Kafe Aktif">
-          <span class="store-badge__dot"></span>
-          <span>NomCherry Café · Roastery</span>
-        </div>
+      <div class="top__spacer"></div>
 
-        <!-- SEARCH -->
-        <div class="search" role="search">
-          <label class="sr-only" for="search-input">Cari menu, nomor struk, atau pelanggan</label>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-          <input id="search-input" type="text" placeholder="Cari menu, struk..." autocomplete="off">
-          <kbd aria-hidden="true">⌘K</kbd>
-          <ul class="search__results" id="search-results" hidden></ul>
-        </div>
+      <div class="top__right">
+        <select class="select" id="branch-selector" aria-label="Pilih Cabang Kafe">
+          <option value="CBG001">🍒 Cabang Surabaya Pusat</option>
+          <option value="CBG002">🍒 Cabang Surabaya Timur</option>
+        </select>
 
-        <!-- SYNC BUTTON -->
-        <button class="sync" id="sync-btn" type="button" title="Sinkronkan dengan Database Server">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-14.3 4.9M4 12A8 8 0 0 1 18.3 7.1"/><path d="M18.5 3v4.3h-4.3M5.5 21v-4.3h4.3"/></svg>
-          <span class="sync__text">
-            <span class="sync__label">Sinkronisasi</span>
-            <span class="sync__when" id="sync-when">Baru saja</span>
-          </span>
+        <span class="top__status" title="Status Server &amp; Printer Thermal">
+          <span class="dot"></span>
+          <span id="live-clock-chip">Shift Pagi · Aktif</span>
+        </span>
+
+        <button class="ibtn" id="priv-toggle-btn" type="button" aria-label="Sembunyikan/Tampilkan Nominal" title="Mode Privasi Angka">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
         </button>
 
-        <!-- AVATAR & USER POPOVER (LOGIN / LOGOUT MENU) -->
-        <div class="avatar-wrap">
-          <button class="avatar" id="avatar-btn" type="button" title="Profil Kasir & Sesi Operasional" aria-expanded="false" aria-haspopup="menu">DF</button>
-          
-          <div class="user-popover" id="user-popover" role="menu" hidden>
-            <!-- User Header Section -->
-            <div class="popover-header">
-              <div class="avatar avatar--md" id="popover-avatar">DF</div>
-              <div class="popover-user-info">
-                <div class="popover-name" id="popover-name">Daffa Danendra</div>
-                <div class="popover-meta">
-                  <span class="chip chip--up" id="popover-role">KASIR</span>
-                  <span class="popover-username" id="popover-username">@daps</span>
-                </div>
-              </div>
-            </div>
+        <button class="ibtn" id="theme-toggle" type="button" aria-label="Ganti Tema Terang/Gelap" title="Ganti Tema">
+          <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+        </button>
 
-            <!-- Status & Branch Box -->
-            <div class="popover-status-box">
-              <div class="popover-status-row">
-                <span class="popover-status-dot"></span>
-                <span class="popover-status-text">Sesi Kasir Aktif</span>
-              </div>
-              <div class="popover-branch-text" id="popover-branch">NomCherry Café · Cabang Surabaya Pusat</div>
-            </div>
+        <button class="ibtn" type="button" id="notif-btn" aria-label="Notifikasi Dapur &amp; Stok" title="Notifikasi Operasional">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+          <span class="ibtn__dot" id="notif-dot"></span>
+        </button>
 
-            <div class="popover-divider"></div>
-
-            <!-- Action Buttons -->
-            <div class="popover-actions">
-              <button type="button" class="popover-btn" id="switch-account-btn">
-                <span class="popover-btn-icon">
-                  <svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
-                </span>
-                <span class="popover-btn-label">
-                  <strong>Ganti Akun / Peran</strong>
-                  <small>Masuk sebagai staff / role lain</small>
-                </span>
-              </button>
-              <button type="button" class="popover-btn popover-btn--danger" id="logout-btn">
-                <span class="popover-btn-icon">
-                  <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-                </span>
-                <span class="popover-btn-label">
-                  <strong>Keluar (Logout)</strong>
-                  <small>Akhiri sesi kasir saat ini</small>
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
+        <button class="btn btn--primary" type="button" id="top-quick-pos-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+          <span>Kasir POS</span>
+        </button>
       </div>
     </header>
 
-    <!-- MAIN VIEWS -->
-    <main class="views" id="main">
-      <!-- 1. OVERVIEW VIEW (PARLEY BENTO GRID) -->
-      <section class="view" data-view="overview" aria-labelledby="page-title">
-        <div class="board">
-          <!-- CARD 1: HERO AUDIENCE / PENDAPATAN HARI INI -->
-          <article class="card card--hero" id="audience" aria-labelledby="audience-h">
-            <div class="card__head">
-              <h2 class="card__title" id="audience-h">Pendapatan Hari Ini</h2>
-              <span class="live" aria-hidden="true"><i></i>Live</span>
-            </div>
-            <p class="figure figure--hero"><span id="hero-rev">Rp 6.840.000</span></p>
-            <p class="hero__note">
-              <span><b id="hero-tx">184</b> transaksi selesai hari ini</span>
-              <span class="chip chip--glass">
-                <svg viewBox="0 0 12 12"><path d="M2 8.5 5 5.5l2 2L10 4.5M7.5 4.5H10V7"/></svg>
-                <span id="hero-growth">14.2%</span>
-              </span>
-            </p>
-            <div class="hero__chart" id="audience-chart" role="img" aria-label="Pertumbuhan pesanan per jam operasional, 09:00 hingga 21:00"></div>
-          </article>
+    <main class="page">
 
-          <!-- CARD 2: DELIVERY RATE / KECEPATAN SAJI (SLA) -->
-          <article class="card" id="delivery" aria-labelledby="delivery-h">
-            <div class="card__head">
-              <h2 class="card__title" id="delivery-h">Kecepatan Saji (SLA)</h2>
-              <span class="card__aside" id="sla-aside">5 pesanan di dapur</span>
-            </div>
-            <p class="figure">
-              <span id="sla-val">96.4</span><small>%</small>
-              <span class="chip chip--up">
-                <svg viewBox="0 0 12 12"><path d="M2 8.5 5 5.5l2 2L10 4.5M7.5 4.5H10V7"/></svg>1.8%
-              </span>
-            </p>
-            <div class="meter" id="meter-sla" role="meter" aria-label="Kecepatan Saji SLA" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96.4"></div>
-          </article>
+      <!-- ============================================================
+           VIEW 1: OVERVIEW (COFRA OVERVIEW ARCHITECTURE)
+           ============================================================ -->
+      <section class="view-section is-active" id="view-overview" aria-label="Ringkasan Kafe">
+        <div class="phead">
+          <div>
+            <div class="phead__eyebrow" id="ov-date-eyebrow">Sabtu, 8 November · Shift Operasional Aktif</div>
+            <h1 class="phead__title" id="ov-greeting-title">Selamat Pagi, Daffa</h1>
+          </div>
+          <div class="phead__right">
+            <button class="btn" type="button" id="export-csv-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Ekspor CSV</span>
+            </button>
+            <button class="btn btn--primary" type="button" data-goto-view="pos">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+              <span>Transaksi Baru</span>
+            </button>
+          </div>
+        </div>
 
-          <!-- CARD 3: ACTIVE CAMPAIGNS / OKUPANSI MEJA -->
-          <article class="card" id="campaigns" aria-labelledby="campaigns-h">
-            <div class="card__head">
-              <h2 class="card__title" id="campaigns-h">Okupansi Meja</h2>
-              <span class="card__aside" id="table-aside">4 reservasi malam</span>
-            </div>
-            <p class="figure">
-              <span id="table-val">22</span><small>/ 30 meja</small>
-              <span class="chip chip--up">
-                <svg viewBox="0 0 12 12"><path d="M2 8.5 5 5.5l2 2L10 4.5M7.5 4.5H10V7"/></svg>+5 sejam terakhir
-              </span>
-            </p>
-            <div class="meter meter--violet" id="meter-tables" role="meter" aria-label="Slot meja terpakai" aria-valuemin="0" aria-valuemax="30" aria-valuenow="22"></div>
-          </article>
-
-          <!-- CARD 4: CREDITS / KAS OPERASIONAL & PETTY CASH -->
-          <article class="card" id="credits" aria-labelledby="credits-h">
-            <div class="card__head">
-              <h2 class="card__title" id="credits-h">
-                <svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2.5"/><path d="M3.5 10h17"/></svg>
-                Kas Operasional Laci
-              </h2>
-              <div class="topup">
-                <button class="topup__btn" id="topup-btn" type="button" aria-expanded="false" aria-controls="topup-menu" aria-label="Kelola Kas Laci">
-                  <svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg>
-                </button>
-                <div class="topup__menu" id="topup-menu" role="group" aria-label="Mutasi Kas Cepat" hidden>
-                  <button type="button" data-cash="200000"><span>+ Tambah Kembalian</span><b>Rp 200rb</b></button>
-                  <button type="button" data-cash="500000"><span>+ Kas Kecil Shift</span><b>Rp 500rb</b></button>
-                  <button type="button" data-cash="-500000"><span>− Setor Brankas</span><b>Rp 500rb</b></button>
-                </div>
-              </div>
-            </div>
-            <p class="figure">
-              <span id="cash-balance">Rp 2.450.000</span><small class="figure__lbl">saldo kasir</small>
-            </p>
-            <div class="budget">
-              <div class="budget__bar" role="meter" aria-label="Kuota kas kecil terpakai">
-                <i id="cash-bar" style="width: 68%"></i>
-              </div>
-              <p class="budget__legend">
-                <span><b id="cash-used">Rp 1.680.000</b> dari Rp 2.500.000 kuota kas</span>
-                <span>≈ Shift kasir berjalan</span>
-              </p>
-            </div>
-          </article>
-
-          <!-- CARD 5: MESSAGES SENT / CUP & MENU TERJUAL (DARK CARD) -->
-          <article class="card card--dark" id="sent" aria-labelledby="sent-h">
-            <div class="card__head">
-              <h2 class="card__title" id="sent-h">Cup & Menu Terjual</h2>
-              <div class="seg seg--dark" role="group" aria-label="Rentang Waktu" data-seg="sent">
-                <button type="button" data-value="30d" aria-pressed="true">30h</button>
-                <button type="button" data-value="7d" aria-pressed="false">7h</button>
-              </div>
-            </div>
-            <p class="figure"><span id="sent-total">4,892</span><small style="color:#fff6ee9e">item</small></p>
-            <p class="sent__note">
-              <span><b id="sent-today">312</b> cup hari ini</span>
-              <span class="chip chip--dark">
-                <svg viewBox="0 0 12 12"><path d="M2 8.5 5 5.5l2 2L10 4.5M7.5 4.5H10V7"/></svg>
-                <span id="sent-chip">16%</span>
-              </span>
-            </p>
-            <div class="line" id="sent-chart" role="img" aria-label="Grafik penjualan menu harian">
-              <svg id="sent-svg" viewBox="0 0 820 165" preserveAspectRatio="none" aria-hidden="true"></svg>
-              <div class="line__tip" id="sent-tip"></div>
-            </div>
-          </article>
-
-          <!-- CARD 6: MESSAGES BY MONTH / TRANSAKSI PER BULAN -->
-          <article class="card card--month" id="month" aria-labelledby="month-h">
-            <div class="card__head">
+        <div class="ov-grid">
+          <!-- Total Omzet + Area Chart + Split + Accounts (8 cols) -->
+          <article class="card ov-bal">
+            <div class="ov-bal__top">
               <div>
-                <h2 class="card__title" id="month-h">Transaksi per Bulan</h2>
-                <ul class="legend" role="list">
-                  <li><i class="key key--solid"></i>Dine-in & Takeaway</li>
-                  <li><i class="key key--hatch"></i>Delivery Online</li>
-                </ul>
-              </div>
-              <div class="seg" role="group" aria-label="Tahun" data-seg="month">
-                <button type="button" data-value="2026" aria-pressed="true">2026</button>
-                <button type="button" data-value="2025" aria-pressed="false">2025</button>
-              </div>
-            </div>
-            <div class="cols" id="month-chart" tabindex="0" role="group" aria-label="Transaksi per bulan. Gunakan panah kiri/kanan atau arahkan kursor untuk melihat rincian bulan.">
-              <svg id="month-svg" viewBox="0 0 1260 305" preserveAspectRatio="none" aria-hidden="true"></svg>
-              <div class="cols__tip" id="month-tip" aria-hidden="true"></div>
-            </div>
-          </article>
-
-          <!-- CARD 7: CHANNEL MIX / BAURAN PENJUALAN -->
-          <article class="card" id="mix" aria-labelledby="mix-h">
-            <div class="card__head">
-              <h2 class="card__title" id="mix-h">Bauran Penjualan</h2>
-              <div class="seg" role="group" aria-label="Mode Bauran" data-seg="mix">
-                <button type="button" data-value="kategori" aria-pressed="true">Kategori</button>
-                <button type="button" data-value="pembayaran" aria-pressed="false">Pembayaran</button>
-              </div>
-            </div>
-            <div class="mix">
-              <div class="donut" id="mix-chart" role="img" aria-label="Donut bauran penjualan">
-                <svg viewBox="0 0 140 140" aria-hidden="true">
-                  <circle class="donut__track" cx="70" cy="70" r="52" fill="none" stroke-width="16"/>
-                  <circle id="donut-seg-0" cx="70" cy="70" r="52" fill="none" stroke="var(--c-tangerine)" stroke-width="16" stroke-linecap="round"/>
-                  <circle id="donut-seg-1" cx="70" cy="70" r="52" fill="none" stroke="var(--c-teal)" stroke-width="16" stroke-linecap="round"/>
-                  <circle id="donut-seg-2" cx="70" cy="70" r="52" fill="none" stroke="var(--c-violet)" stroke-width="16" stroke-linecap="round"/>
-                </svg>
-                <div class="donut__center">
-                  <b id="donut-total">4.8K</b>
-                  <span id="donut-sub">item terjual</span>
+                <div class="ov-bal__label">
+                  <span>Total Omzet Penjualan Bersih</span>
+                  <span class="delta" id="ov-hero-delta">↑ 14.8%</span>
+                </div>
+                <div class="ov-bal__fig priv" id="ov-hero-rev">Rp 6.840.000</div>
+                <div class="ov-bal__sub">
+                  <span id="ov-hero-subtext">+Rp 880.000 dibanding rata-rata shift kemarin</span>
+                  <span>·</span>
+                  <span>Pajak PB1 10% tercatat otomatis</span>
                 </div>
               </div>
-              <ul class="mix__legend" role="list" id="mix-legend"></ul>
+              <div class="seg" role="group" aria-label="Rentang Waktu Grafik" id="ov-range-seg">
+                <button type="button" data-range="today" aria-pressed="true" class="is-active">Hari Ini</button>
+                <button type="button" data-range="7d" aria-pressed="false">7 Hari</button>
+                <button type="button" data-range="30d" aria-pressed="false">30 Hari</button>
+              </div>
+            </div>
+
+            <div class="area" aria-label="Grafik Tren Penjualan Kafe">
+              <div class="area__grid" id="ov-area-grid">
+                <span>Rp 7 Jt</span>
+                <span>Rp 4,5 Jt</span>
+                <span>Rp 2 Jt</span>
+              </div>
+              <svg class="area__svg" viewBox="0 0 640 170" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.28"></stop>
+                    <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"></stop>
+                  </linearGradient>
+                </defs>
+                <path id="ov-area-fill" d="M0,142 C70,136 115,118 165,112 C220,105 260,120 315,92 C370,64 415,58 470,46 C525,34 580,28 640,18 L640,170 L0,170 Z" fill="url(#areaGrad)"></path>
+                <path id="ov-area-line" d="M0,142 C70,136 115,118 165,112 C220,105 260,120 315,92 C370,64 415,58 470,46 C525,34 580,28 640,18" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"></path>
+                <circle id="ov-area-dot" cx="640" cy="18" r="4.5" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5"></circle>
+              </svg>
+              <div class="area__x" id="ov-area-x">
+                <span>08:00</span>
+                <span>10:00</span>
+                <span>12:00</span>
+                <span>14:00</span>
+                <span>16:00</span>
+                <span>18:00</span>
+                <span>Sekarang</span>
+              </div>
+            </div>
+
+            <div class="split">
+              <div class="split__bar" aria-hidden="true">
+                <i style="width:52%;background:var(--accent)"></i>
+                <i style="width:24%;background:var(--tangerine)"></i>
+                <i style="width:15%;background:var(--good)"></i>
+                <i style="width:9%;background:var(--c-work)"></i>
+              </div>
+              <div class="split__leg">
+                <span><i class="sw" style="background:var(--accent)"></i>Minuman Kopi &amp; Matcha <b>52%</b></span>
+                <span><i class="sw" style="background:var(--tangerine)"></i>Makanan Utama <b>24%</b></span>
+                <span><i class="sw" style="background:var(--good)"></i>Snack &amp; Pastry <b>15%</b></span>
+                <span><i class="sw" style="background:var(--c-work)"></i>Dessert <b>9%</b></span>
+              </div>
+            </div>
+
+            <div class="ov-bal__accs">
+              <div class="ov-acc">
+                <div class="ov-acc__top"><span>Total Pesanan</span><span class="delta">Lunas</span></div>
+                <div class="ov-acc__val num" id="ov-kpi-orders">142 Struk</div>
+                <div class="ov-acc__meta" id="ov-kpi-orders-meta">Dine-In 68% · Takeaway 32%</div>
+              </div>
+              <div class="ov-acc">
+                <div class="ov-acc__top"><span>Rata-rata Struk (AOV)</span><span class="delta">Optimal</span></div>
+                <div class="ov-acc__val num priv" id="ov-kpi-aov">Rp 48.169</div>
+                <div class="ov-acc__meta">2,4 item per transaksi</div>
+              </div>
+              <div class="ov-acc">
+                <div class="ov-acc__top"><span>Total Cup &amp; Porsi</span><span class="delta">Aktif</span></div>
+                <div class="ov-acc__val num" id="ov-kpi-items">318 Item</div>
+                <div class="ov-acc__meta" id="ov-kpi-best-menu">Best: NomCherry Cold Brew</div>
+              </div>
             </div>
           </article>
 
-          <!-- CARD 8: TOP CONTACTS / MENU TERLARIS -->
-          <article class="card" id="top-contacts" aria-labelledby="top-h">
-            <div class="card__head">
-              <h2 class="card__title" id="top-h">Menu Terlaris</h2>
-              <div class="seg" role="group" aria-label="Periode Menu Terlaris" data-seg="top">
-                <button type="button" data-value="week" aria-pressed="true">Minggu Ini</button>
-                <button type="button" data-value="month" aria-pressed="false">Bulan Ini</button>
+          <!-- Interactive Payment Methods Card Stack (4 cols) -->
+          <article class="card ov-cards">
+            <div class="chead">
+              <div>
+                <h2>Metode Pembayaran Kasir</h2>
+                <p id="cstack-sub">3 kanal pembayaran aktif · Klik kartu untuk detail</p>
+              </div>
+              <a class="chead__link" href="#reports" data-goto-view="reports">Rekap →</a>
+            </div>
+
+            <div class="cstack">
+              <div class="cstack__pile" id="cstack-pile">
+                <!-- Card 0: QRIS -->
+                <div class="paydeck paydeck--1" data-card-idx="0" data-pos="0" role="button" tabindex="0" aria-label="Kanal Pembayaran QRIS Dinamis">
+                  <div class="paydeck__inner">
+                    <div class="paydeck__row">
+                      <span class="paydeck__tag">QRIS Dinamis · Instan</span>
+                      <span class="paydeck__brand">NOMCHERRY PAY</span>
+                    </div>
+                    <div class="paydeck__mid">
+                      <span class="paydeck__chip"></span>
+                      <span class="paydeck__num">NMID ···· 8821</span>
+                    </div>
+                    <div class="paydeck__row">
+                      <div class="paydeck__bal">
+                        <small>Penerimaan QRIS Hari Ini</small>
+                        <strong class="priv" id="ov-qris-val">Rp 4.380.000</strong>
+                      </div>
+                      <div class="paydeck__exp">
+                        <small>Porsi QRIS</small>
+                        <b id="ov-qris-pct">64%</b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 1: Cash Drawer -->
+                <div class="paydeck paydeck--2" data-card-idx="1" data-pos="1" role="button" tabindex="0" aria-label="Kanal Kas Tunai Laci">
+                  <div class="paydeck__inner">
+                    <div class="paydeck__row">
+                      <span class="paydeck__tag">Laci Kasir #01</span>
+                      <span class="paydeck__brand">TUNAI / CASH</span>
+                    </div>
+                    <div class="paydeck__mid">
+                      <span class="paydeck__chip"></span>
+                      <span class="paydeck__num">DRAWER ···· 01</span>
+                    </div>
+                    <div class="paydeck__row">
+                      <div class="paydeck__bal">
+                        <small>Uang Tunai di Laci</small>
+                        <strong class="priv" id="ov-cash-val">Rp 1.640.000</strong>
+                      </div>
+                      <div class="paydeck__exp">
+                        <small>Porsi Tunai</small>
+                        <b id="ov-cash-pct">24%</b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 2: EDC Card -->
+                <div class="paydeck paydeck--3" data-card-idx="2" data-pos="2" role="button" tabindex="0" aria-label="Kanal EDC Debit dan Kredit">
+                  <div class="paydeck__inner">
+                    <div class="paydeck__row">
+                      <span class="paydeck__tag">EDC BCA &amp; Mandiri</span>
+                      <span class="paydeck__brand">DEBIT / KREDIT</span>
+                    </div>
+                    <div class="paydeck__mid">
+                      <span class="paydeck__chip"></span>
+                      <span class="paydeck__num">TERM ···· 4092</span>
+                    </div>
+                    <div class="paydeck__row">
+                      <div class="paydeck__bal">
+                        <small>Settlement Kartu</small>
+                        <strong class="priv" id="ov-card-val">Rp 820.000</strong>
+                      </div>
+                      <div class="paydeck__exp">
+                        <small>Porsi Kartu</small>
+                        <b id="ov-card-pct">12%</b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cstack__bar">
+                <button class="ibtn" type="button" id="cstack-prev" aria-label="Kartu Sebelumnya">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"></path></svg>
+                </button>
+                <div class="cstack__dots" id="cstack-dots">
+                  <button type="button" data-dot="0" aria-current="true" aria-label="QRIS"></button>
+                  <button type="button" data-dot="1" aria-label="Tunai"></button>
+                  <button type="button" data-dot="2" aria-label="Kartu EDC"></button>
+                </div>
+                <button class="ibtn" type="button" id="cstack-next" aria-label="Kartu Berikutnya">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"></path></svg>
+                </button>
+              </div>
+
+              <div class="cstack__meta">
+                <div><small>Status Kanal</small><b id="cstack-meta-status">Online · Otomatis</b></div>
+                <div><small>Biaya MDR</small><b id="cstack-meta-mdr">0.7% QRIS</b></div>
+                <div><small>Settlement</small><b id="cstack-meta-settle">H+0 Instan</b></div>
+              </div>
+
+              <div class="cstack__limit">
+                <div class="cstack__limit-top">
+                  <span>Rasio Pembayaran Non-Tunai</span>
+                  <b class="num" id="ov-cashless-ratio">76% Cashless</b>
+                </div>
+                <div class="meter"><i id="ov-cashless-bar" style="width:76%"></i></div>
               </div>
             </div>
-            <ol class="people" id="top-menu-list"></ol>
+          </article>
+
+          <!-- Cofra Jars: Tangki Bahan Baku Barista (7 cols) -->
+          <article class="card ov-jars">
+            <div class="chead">
+              <div>
+                <h2>Tangki Stok Bahan Baku Utama</h2>
+                <p>Kapasitas bahan barista real-time · Klik tangki untuk restock</p>
+              </div>
+              <a class="chead__link" href="#inventory" data-goto-view="inventory">Kelola Stok →</a>
+            </div>
+            <div class="jars" id="ov-jars-container"></div>
+          </article>
+
+          <!-- Cofra Safe to Spend: Target Shift & Pajak PB1 (5 cols) -->
+          <article class="card ov-safe">
+            <div class="chead">
+              <div>
+                <h2>Target Penjualan Shift &amp; Pajak</h2>
+                <p>Pencapaian target harian Rp 8.000.000</p>
+              </div>
+              <span class="ov-safe__ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </span>
+            </div>
+
+            <div>
+              <div class="ov-safe__fig priv" id="ov-tax-val">Rp 621.818 <small>/ pajak PB1 10%</small></div>
+            </div>
+
+            <div class="ov-safe__days" aria-label="Progres Jam Operasional Shift">
+              <i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i>
+              <i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i>
+              <i class="is-over"></i><i class="is-over"></i><i class="is-past"></i><i class="is-past"></i><i class="is-today"></i><i></i>
+              <i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+
+            <dl class="dl">
+              <div><dt>Penjualan Kotor (Gross)</dt><dd class="num priv" id="ov-gross-val">Rp 6.840.000</dd></div>
+              <div><dt>Penjualan Bersih (Nett)</dt><dd class="num priv" id="ov-nett-val">Rp 6.218.182</dd></div>
+              <div><dt>Modal Kas Awal Laci</dt><dd class="num">Rp 500.000</dd></div>
+            </dl>
+          </article>
+
+          <!-- Recent Transactions (6 cols) -->
+          <article class="card ov-recent">
+            <div class="chead">
+              <div>
+                <h2>Transaksi Struk Terkini</h2>
+                <p>Klik baris transaksi untuk melihat atau mencetak ulang struk thermal</p>
+              </div>
+              <a class="chead__link" href="#orders" data-goto-view="orders">Semua Struk →</a>
+            </div>
+            <div class="txlist" id="ov-recent-tx-list"></div>
+          </article>
+
+          <!-- Active Kitchen Queue (3 cols) -->
+          <article class="card ov-up">
+            <div class="chead">
+              <div>
+                <h2>Antrean Barista</h2>
+                <p id="ov-queue-subtitle">Pesanan aktif di bar</p>
+              </div>
+              <span class="pill pill--warn" id="ov-queue-pill">3 Aktif</span>
+            </div>
+            <div class="uplist" id="ov-kitchen-queue"></div>
+          </article>
+
+          <!-- Active Loyalty Members (3 cols) -->
+          <article class="card ov-people">
+            <div class="chead">
+              <div>
+                <h2>Member Loyalitas</h2>
+                <p>Kunjungan pelanggan tetap</p>
+              </div>
+              <a class="chead__link" href="#members" data-goto-view="members">Semua →</a>
+            </div>
+            <div class="people" id="ov-members-preview"></div>
           </article>
         </div>
       </section>
 
-      <!-- 2. KASIR POS VIEW -->
-      <section class="view" data-view="pos" hidden>
-        <div class="pos-grid">
-          <article class="card">
-            <div class="card__head">
-              <div>
-                <h2 class="card__title">Katalog Kasir (Point of Sale)</h2>
-                <p style="font-size:var(--fs-sm);color:var(--ink-3)">Klik menu untuk menambahkan langsung ke keranjang pesanan aktif.</p>
-              </div>
-              <div class="seg" data-seg="pos-cat">
-                <button type="button" data-value="all" aria-pressed="true">Semua Menu</button>
-                <button type="button" data-value="Minuman" aria-pressed="false">Minuman & Kopi</button>
-                <button type="button" data-value="Makanan" aria-pressed="false">Makanan Utama</button>
-                <button type="button" data-value="Dessert" aria-pressed="false">Dessert & Kue</button>
-                <button type="button" data-value="Snack" aria-pressed="false">Snack & Camilan</button>
-              </div>
+      <!-- ============================================================
+           VIEW 2: KASIR POS (POINT OF SALE)
+           ============================================================ -->
+      <section class="view-section" id="view-pos" aria-label="Kasir Point of Sale">
+        <div class="phead">
+          <div>
+            <div class="phead__eyebrow">Terminal Kasir Cepat · Sinkronisasi Stok Otomatis</div>
+            <h1 class="phead__title">Kasir Point of Sale (POS)</h1>
+          </div>
+          <div class="phead__right">
+            <div class="input">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              <input type="search" id="pos-search-input" placeholder="Cari kopi, matcha, croissant...">
             </div>
-            <div class="pos-catalog" id="pos-catalog-grid"></div>
-          </article>
+            <button class="btn" type="button" id="toggle-photo-btn">Sembunyikan Foto</button>
+          </div>
+        </div>
 
-          <article class="card" style="position:sticky;top:var(--edge)">
-            <div class="card__head">
-              <h2 class="card__title">Keranjang Pesanan</h2>
-              <span class="chip chip--up" id="cart-count-chip">0 item</span>
+        <div class="pos-layout">
+          <div class="pos-main">
+            <div class="tabs" role="tablist" aria-label="Kategori Menu POS" id="pos-category-tabs">
+              <button type="button" role="tab" aria-selected="true" class="is-active" data-cat="all">Semua Menu (24)</button>
+              <button type="button" role="tab" aria-selected="false" data-cat="Minuman">☕ Minuman</button>
+              <button type="button" role="tab" aria-selected="false" data-cat="Makanan">🍝 Makanan</button>
+              <button type="button" role="tab" aria-selected="false" data-cat="Snack">🥐 Snack &amp; Pastry</button>
+              <button type="button" role="tab" aria-selected="false" data-cat="Dessert">🍰 Dessert</button>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <input type="text" id="pos-cust-name" placeholder="Nama Pelanggan (Cth: Kak Raka)" value="Kak Raka" style="padding:10px 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface-2);font-size:var(--fs-sm);font-weight:500;">
-              <select id="pos-order-type" class="custom-select" style="padding:10px 14px;font-weight:600;">
-                <option value="Meja 08">Dine-In · Meja 08</option>
-                <option value="Meja 03">Dine-In · Meja 03</option>
-                <option value="Meja 12">Dine-In · Meja 12</option>
-                <option value="Takeaway">Takeaway / Bungkus</option>
+
+            <div class="pos-grid" id="pos-products-grid"></div>
+          </div>
+
+          <!-- Sticky POS Order Cart -->
+          <aside class="card pos-cart-card" aria-label="Keranjang Pesanan Kasir">
+            <div class="chead">
+              <div>
+                <h2>Pesanan Baru</h2>
+                <p id="cart-order-code">Struk Otomatis · Shift Aktif</p>
+              </div>
+              <button class="btn btn--ghost btn--sm" type="button" id="clear-cart-btn">Reset</button>
+            </div>
+
+            <div class="seg" role="group" aria-label="Tipe Pesanan" id="pos-order-type-seg">
+              <button type="button" data-type="Dine-In" aria-pressed="true" class="is-active">Dine-In</button>
+              <button type="button" data-type="Takeaway" aria-pressed="false">Takeaway</button>
+              <button type="button" data-type="Delivery" aria-pressed="false">Delivery</button>
+            </div>
+
+            <div class="formgrid">
+              <div class="field" id="field-customer-name">
+                <label for="cart-customer-name">Nama Pelanggan</label>
+                <input type="text" id="cart-customer-name" placeholder="Pelanggan Umum" value="Pelanggan Umum">
+              </div>
+              <div class="field" id="field-table-num">
+                <label for="cart-table-num">Nomor Meja (Wajib Dine-In)</label>
+                <input type="text" id="cart-table-num" placeholder="Contoh: Meja 04" value="Meja 04">
+              </div>
+              <div class="field field--full" id="field-delivery-note" style="display:none;">
+                <label for="cart-delivery-note">Alamat / Catatan Pengiriman (Delivery)</label>
+                <input type="text" id="cart-delivery-note" placeholder="Masukkan alamat atau catatan kurir...">
+              </div>
+            </div>
+
+            <div class="cart-items" id="pos-cart-items"></div>
+
+            <div class="field">
+              <label>Promo / Diskon Member</label>
+              <div class="chips" id="pos-discount-chips">
+                <button type="button" class="chip is-active" data-disc="0" aria-pressed="true">Tanpa Diskon</button>
+                <button type="button" class="chip" data-disc="5000" aria-pressed="false">Member -Rp 5rb</button>
+                <button type="button" class="chip" data-disc="10000" aria-pressed="false">VIP -Rp 10rb</button>
+              </div>
+            </div>
+
+            <div class="cart-summary">
+              <div class="summary-row"><span>Subtotal (<span id="cart-qty-count">0</span> item)</span><span id="cart-subtotal-val">Rp 0</span></div>
+              <div class="summary-row"><span>Diskon Promo</span><span id="cart-discount-val">-Rp 0</span></div>
+              <div class="summary-row"><span>Pajak Restoran PB1 (10%)</span><span id="cart-tax-val">Rp 0</span></div>
+              <div class="summary-row is-total"><span>Total Tagihan</span><span id="cart-total-val">Rp 0</span></div>
+            </div>
+
+            <div class="field">
+              <label>Metode Pembayaran</label>
+              <div class="seg seg--accent" role="group" id="pos-pay-method-seg">
+                <button type="button" data-pay="QRIS" aria-pressed="true" class="is-active">QRIS</button>
+                <button type="button" data-pay="Cash" aria-pressed="false">Tunai (Cash)</button>
+                <button type="button" data-pay="Debit" aria-pressed="false">Kartu EDC</button>
+              </div>
+            </div>
+
+            <div class="field" id="qris-input-group">
+              <div style="border:1px dashed var(--line-2);border-radius:var(--r-sm);padding:10px 12px;background:var(--surface-2);">
+                <div class="summary-row" style="margin-bottom:4px;">
+                  <span style="font-size:var(--fs-2xs);color:var(--muted);">QRIS Dinamis · NMID ID1026008821</span>
+                  <strong id="qris-bill-val" style="color:var(--accent);">Rp 0</strong>
+                </div>
+                <label for="qris-confirm-check" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:var(--fs-xs);margin-top:6px;">
+                  <input type="checkbox" id="qris-confirm-check" style="width:16px;height:16px;accent-color:var(--accent);">
+                  <span>Pembayaran QRIS telah terverifikasi masuk</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field" id="cash-input-group" style="display:none;">
+              <label for="cart-cash-received">Nominal Uang Diterima (Rp)</label>
+              <input type="number" id="cart-cash-received" placeholder="Masukkan nominal tunai" step="1000" value="">
+              <div class="chips" style="margin-top:4px;">
+                <button type="button" class="chip" data-quick-cash="exact">Uang Pas</button>
+                <button type="button" class="chip" data-quick-cash="50000">Rp 50.000</button>
+                <button type="button" class="chip" data-quick-cash="100000">Rp 100.000</button>
+              </div>
+              <div class="summary-row" style="margin-top:4px;">
+                <span>Kembalian Tunai:</span>
+                <strong id="cart-change-val" style="color:var(--good)">Rp 0</strong>
+              </div>
+            </div>
+
+            <div class="field" id="edc-input-group" style="display:none;">
+              <label for="cart-edc-ref">Pembayaran Kartu EDC (Debit)</label>
+              <input type="text" id="cart-edc-ref" placeholder="Nomor Approval / Ref EDC (Opsional)">
+              <div class="summary-row" style="margin-top:4px;">
+                <span>Tagihan Kartu EDC (Tanpa Kembalian):</span>
+                <strong id="edc-bill-val" style="color:var(--good)">Rp 0</strong>
+              </div>
+            </div>
+
+            <button class="btn btn--primary" type="button" id="checkout-btn" style="height:42px;width:100%;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              <span>Bayar &amp; Cetak Struk Thermal</span>
+            </button>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW 3: PESANAN & ANTREAN DAPUR (COFRA ACTIVITY PATTERN)
+           ============================================================ -->
+      <section class="view-section" id="view-orders" aria-label="Pesanan dan Antrean Dapur">
+        <div class="phead">
+          <div>
+            <div class="phead__eyebrow">Riwayat Struk &amp; Monitor Barista Real-Time</div>
+            <h1 class="phead__title">Pesanan &amp; Antrean Dapur</h1>
+          </div>
+          <div class="phead__right">
+            <button class="btn" type="button" id="orders-refresh-btn">Segarkan Data</button>
+            <button class="btn btn--primary" type="button" data-goto-view="pos">+ Pesanan Baru</button>
+          </div>
+        </div>
+
+        <div class="ac-sum">
+          <div class="card ac-sum__card">
+            <small>Total Struk Hari Ini</small>
+            <strong class="num" id="ord-sum-total">18 Transaksi</strong>
+            <span class="delta">100% tercatat</span>
+          </div>
+          <div class="card ac-sum__card">
+            <small>Sedang Disiapkan Barista</small>
+            <strong class="num" id="ord-sum-prep">3 Pesanan</strong>
+            <span class="delta delta--warn">SLA &lt; 5 menit</span>
+          </div>
+          <div class="card ac-sum__card">
+            <small>Selesai Disajikan</small>
+            <strong class="num" id="ord-sum-done">15 Pesanan</strong>
+            <span class="delta">Tepat waktu</span>
+          </div>
+          <div class="card ac-sum__card">
+            <small>Nilai Transaksi Masuk</small>
+            <strong class="num priv" id="ord-sum-rev">Rp 6.840.000</strong>
+            <span>Termasuk PB1 10%</span>
+          </div>
+        </div>
+
+        <article class="card">
+          <div class="toolbar">
+            <div class="toolbar__left">
+              <div class="input">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                <input type="search" id="orders-search-input" placeholder="Cari nomor struk atau nama pelanggan...">
+              </div>
+              <div class="chips" id="orders-status-chips">
+                <button type="button" class="chip is-active" data-ord-status="all" aria-pressed="true">Semua Status</button>
+                <button type="button" class="chip" data-ord-status="Diproses" aria-pressed="false"><span class="chip__dot" style="background:var(--warn)"></span>Diproses Barista</button>
+                <button type="button" class="chip" data-ord-status="Selesai" aria-pressed="false"><span class="chip__dot" style="background:var(--good)"></span>Selesai / Lunas</button>
+              </div>
+            </div>
+            <div class="toolbar__right">
+              <select class="select" id="orders-pay-select" aria-label="Filter Metode Pembayaran">
+                <option value="all">Semua Metode Bayar</option>
+                <option value="QRIS">QRIS Dinamis</option>
+                <option value="Cash">Tunai (Cash)</option>
+                <option value="Debit">Kartu EDC</option>
               </select>
             </div>
-            <div class="cart-list" id="pos-cart-list"></div>
-            <div style="border-top:1px dashed var(--line-strong);padding-top:12px;display:grid;gap:6px;font-size:var(--fs-sm)">
-              <div style="display:flex;justify-content:space-between;color:var(--ink-3)"><span>Subtotal</span><b id="cart-subtotal">Rp 0</b></div>
-              <div style="display:flex;justify-content:space-between;color:var(--ink-3)"><span>PPN Resto (10%)</span><b id="cart-tax">Rp 0</b></div>
-              <div style="display:flex;justify-content:space-between;font-size:1.15rem;font-family:var(--font-display);font-weight:700;padding-top:4px">
-                <span>Total Tagihan</span><span style="color:var(--c-cherry)" id="cart-total">Rp 0</span>
+          </div>
+
+          <div id="orders-activity-list"></div>
+        </article>
+      </section>
+
+      <!-- ============================================================
+           VIEW 4: MANAJEMEN KATALOG MENU
+           ============================================================ -->
+      <section class="view-section" id="view-catalog" aria-label="Manajemen Katalog Menu">
+        <div class="phead">
+          <div>
+            <div class="phead__eyebrow">Database Produk, Harga Jual &amp; Kuota Porsi Harian</div>
+            <h1 class="phead__title">Manajemen Katalog Menu</h1>
+          </div>
+          <div class="phead__right">
+            <div class="input">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              <input type="search" id="catalog-search-input" placeholder="Cari nama menu atau kode...">
+            </div>
+            <button class="btn btn--primary" type="button" id="add-menu-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"></path></svg>
+              <span>Tambah Menu Baru</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="chips" id="catalog-filter-chips">
+          <button type="button" class="chip is-active" data-cat-filter="all" aria-pressed="true">Semua Kategori</button>
+          <button type="button" class="chip" data-cat-filter="Minuman" aria-pressed="false">Minuman</button>
+          <button type="button" class="chip" data-cat-filter="Makanan" aria-pressed="false">Makanan</button>
+          <button type="button" class="chip" data-cat-filter="Snack" aria-pressed="false">Snack &amp; Pastry</button>
+          <button type="button" class="chip" data-cat-filter="Dessert" aria-pressed="false">Dessert</button>
+        </div>
+
+        <div class="pos-grid" id="catalog-manage-grid"></div>
+      </section>
+
+      <!-- ============================================================
+           VIEW 5: INVENTORI & MANAJEMEN STOK MULTI-CABANG
+           ============================================================ -->
+      <section class="view-section" id="view-inventory" aria-label="Inventori dan Manajemen Stok">
+        <div class="phead">
+          <div>
+            <div class="phead__eyebrow">Manajemen Stok Multi-Cabang, Stock Opname, Kedaluwarsa &amp; Riwayat Mutasi</div>
+            <h1 class="phead__title">Inventori &amp; Manajemen Stok</h1>
+          </div>
+          <div class="phead__right">
+            <button class="btn" type="button" id="stock-opname-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              <span>Stock Opname Fisik</span>
+            </button>
+            <button class="btn btn--primary" type="button" id="restock-all-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"></path></svg>
+              <span>Restock Terkontrol</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="ac-sum">
+          <div class="card ac-sum__card">
+            <small>Total Item Aktif Cabang</small>
+            <strong class="num" id="inv-sum-total">0 Item Stok</strong>
+            <span class="delta" id="inv-sum-safe">0 Aman</span>
+          </div>
+          <div class="card ac-sum__card">
+            <small>Stok Menipis (Low Alert)</small>
+            <strong class="num" id="inv-sum-low">0 Menipis</strong>
+            <span class="delta delta--warn" id="inv-sum-low-names">Batas minimum aman</span>
+          </div>
+          <div class="card ac-sum__card">
+            <small>Stok Habis (Out of Stock)</small>
+            <strong class="num" id="inv-sum-out">0 Habis</strong>
+            <span class="delta" id="inv-sum-out-names">Semua menu tersedia</span>
+          </div>
+          <div class="card ac-sum__card">
+            <small>Kedaluwarsa &amp; Near-Expiry</small>
+            <strong class="num" id="inv-sum-exp">0 Item</strong>
+            <span class="delta" id="inv-sum-exp-sub">Quality Control Lulus</span>
+          </div>
+        </div>
+
+        <article class="card">
+          <div class="chead">
+            <div>
+              <h2>Daftar Persediaan Stok per Cabang</h2>
+              <p>Kelola tambah/kurang stok, batas minimum (Low Stock Alert), tanggal kedaluwarsa, atau penyesuaian manual</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <div class="toolbar__left">
+              <div class="input">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                <input type="search" id="inv-search-input" placeholder="Cari nama item atau kode menu...">
+              </div>
+              <div class="chips" id="inv-status-chips">
+                <button type="button" class="chip is-active" data-inv-status="all" aria-pressed="true">Semua</button>
+                <button type="button" class="chip" data-inv-status="Aman" aria-pressed="false"><span class="chip__dot" style="background:var(--good)"></span>Aman</button>
+                <button type="button" class="chip" data-inv-status="Menipis" aria-pressed="false"><span class="chip__dot" style="background:var(--warn)"></span>Menipis</button>
+                <button type="button" class="chip" data-inv-status="Habis" aria-pressed="false"><span class="chip__dot" style="background:var(--bad)"></span>Habis</button>
+                <button type="button" class="chip" data-inv-status="Expired" aria-pressed="false">Kedaluwarsa / Near Exp</button>
               </div>
             </div>
-            <div style="display:grid;grid-template-columns:auto 1fr;gap:8px;margin-top:4px">
-              <button class="btn-secondary" id="clear-cart-btn" type="button">Reset</button>
-              <button class="btn-primary" id="checkout-btn" type="button">Proses Pembayaran →</button>
+            <div class="toolbar__right">
+              <select class="select" id="inv-cat-select" aria-label="Filter Kategori Inventori">
+                <option value="all">Semua Kategori</option>
+                <option value="Minuman">Minuman</option>
+                <option value="Makanan">Makanan</option>
+                <option value="Snack">Snack</option>
+                <option value="Dessert">Dessert</option>
+              </select>
             </div>
+          </div>
+          <div id="inventory-rows-container"></div>
+        </article>
+
+        <article class="card" style="margin-top:16px;">
+          <div class="chead">
+            <div>
+              <h2>Riwayat Mutasi &amp; Aktivitas Stok</h2>
+              <p>Catatan audit seluruh perubahan stok: restock, penjualan POS, stock opname, barang rusak, dan kedaluwarsa</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <div class="toolbar__left">
+              <div class="input">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                <input type="search" id="inv-log-search-input" placeholder="Cari menu, pengguna, atau alasan mutasi...">
+              </div>
+              <div class="chips" id="inv-log-type-chips">
+                <button type="button" class="chip is-active" data-log-type="all" aria-pressed="true">Semua</button>
+                <button type="button" class="chip" data-log-type="MASUK" aria-pressed="false">Restock (Masuk)</button>
+                <button type="button" class="chip" data-log-type="PENJUALAN" aria-pressed="false">Penjualan POS</button>
+                <button type="button" class="chip" data-log-type="OPNAME" aria-pressed="false">Stock Opname</button>
+                <button type="button" class="chip" data-log-type="PENYESUAIAN" aria-pressed="false">Penyesuaian</button>
+                <button type="button" class="chip" data-log-type="WASTE" aria-pressed="false">Rusak / Expired / Keluar</button>
+              </div>
+            </div>
+          </div>
+          <div id="inventory-logs-container"></div>
+        </article>
+      </section>
+
+      <!-- ============================================================
+           VIEW 6: LAPORAN & ANALITIK (COFRA ANALYTICS PATTERN)
+           ============================================================ -->
+      <section class="view-section" id="view-reports" aria-label="Laporan Keuangan dan Analitik">
+        <div class="phead">
+          <div>
+            <div class="phead__eyebrow">Analisis Pendapatan, Kategori &amp; Jam Sibuk Kafe</div>
+            <h1 class="phead__title">Laporan Keuangan &amp; Analitik</h1>
+          </div>
+          <div class="phead__right">
+            <button class="btn" type="button" id="reports-export-csv-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Unduh Laporan CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi kpi--1">
+            <div class="kpi__label"><span>Omzet Bulan Berjalan</span><span>↑ 18.4%</span></div>
+            <div class="kpi__val priv" id="rep-kpi-month">Rp 148.650.000</div>
+            <div class="kpi__foot"><span>Target Rp 160 Jt</span><span>92.9% Tercapai</span></div>
+          </div>
+          <div class="kpi kpi--plain">
+            <div class="kpi__label"><span>Gross Profit Margin</span><span class="delta">Sehat</span></div>
+            <div class="kpi__val">64.2%</div>
+            <div class="kpi__foot"><span>HPP Bahan 35.8%</span><span>Standar Specialty Café</span></div>
+          </div>
+          <div class="kpi kpi--plain">
+            <div class="kpi__label"><span>Total Porsi Terjual</span><span class="delta">+12.1%</span></div>
+            <div class="kpi__val" id="rep-kpi-cups">4.280 Porsi</div>
+            <div class="kpi__foot"><span>Rata-rata 142/hari</span><span>0 Komplain</span></div>
+          </div>
+          <div class="kpi kpi--plain">
+            <div class="kpi__label"><span>Akumulasi Pajak PB1 (10%)</span><span class="delta delta--flat">Siap Setor</span></div>
+            <div class="kpi__val priv" id="rep-kpi-tax">Rp 13.513.636</div>
+            <div class="kpi__foot"><span>Rekap Otomatis</span><span>NPWPD Aktif</span></div>
+          </div>
+        </div>
+
+        <div class="an-grid">
+          <article class="card an-bars">
+            <div class="chead">
+              <div>
+                <h2>Tren Pendapatan 6 Bulan Terakhir</h2>
+                <p>Komposisi penjualan minuman kopi vs makanan &amp; pastry</p>
+              </div>
+              <span class="pill pill--good">Tumbuh +18%</span>
+            </div>
+            <div class="bars" id="reports-bars-chart"></div>
+          </article>
+
+          <article class="card an-list">
+            <div class="chead">
+              <div>
+                <h2>Kontribusi per Kategori Menu</h2>
+                <p>Proporsi omzet berdasarkan lini produk</p>
+              </div>
+            </div>
+            <div id="reports-category-breakdown"></div>
+          </article>
+
+          <article class="card an-heat">
+            <div class="chead">
+              <div>
+                <h2>Peta Jam Sibuk Kafe (Traffic Heatmap)</h2>
+                <p>Intensitas transaksi per sesi waktu dalam seminggu</p>
+              </div>
+            </div>
+            <div class="heat" id="reports-heatmap"></div>
+          </article>
+
+          <article class="card an-shops">
+            <div class="chead">
+              <div>
+                <h2>Top 6 Menu Paling Laris</h2>
+                <p>Berdasarkan volume penjualan &amp; kontribusi pendapatan</p>
+              </div>
+            </div>
+            <div id="reports-top-items"></div>
           </article>
         </div>
       </section>
 
-      <!-- 3. PESANAN & DAPUR VIEW -->
-      <section class="view" data-view="orders" hidden>
+      <!-- ============================================================
+           VIEW 7: MEMBER LOYALITAS
+           ============================================================ -->
+      <section class="view-section" id="view-members" aria-label="Member Loyalitas">
+        <div class="phead">
+          <div>
+            <div class="phead__eyebrow">Program Poin Pelanggan &amp; Riwayat Kunjungan</div>
+            <h1 class="phead__title">Member Loyalitas NomCherry</h1>
+          </div>
+          <div class="phead__right">
+            <button class="btn btn--primary" type="button" id="add-member-btn">+ Registrasi Member</button>
+          </div>
+        </div>
+
         <article class="card">
-          <div class="card__head">
-            <div>
-              <h2 class="card__title">Antrean Dapur & Riwayat Struk</h2>
-              <p style="font-size:var(--fs-sm);color:var(--ink-3)">Pantau progres pembuatan minuman di bar serta riwayat transaksi hari ini. Klik baris untuk cetak ulang struk kasir.</p>
+          <div class="toolbar">
+            <div class="input">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              <input type="search" id="member-search-input" placeholder="Cari nama member atau nomor HP...">
             </div>
-            <button class="btn-primary" type="button" id="go-pos-btn">+ Buat Pesanan Baru</button>
           </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>No. Struk</th>
-                  <th>Waktu</th>
-                  <th>Pelanggan & Meja</th>
-                  <th>Item Pesanan</th>
-                  <th>Pembayaran</th>
-                  <th>Total</th>
-                  <th>Status SLA</th>
-                </tr>
-              </thead>
-              <tbody id="orders-tbody"></tbody>
-            </table>
-          </div>
+          <div id="members-list-container"></div>
         </article>
       </section>
 
-      <!-- 4. KATALOG MENU VIEW -->
-      <section class="view" data-view="catalog" hidden>
-        <article class="card">
-          <div class="card__head">
-            <div>
-              <h2 class="card__title">Manajemen Katalog Menu NomCherry</h2>
-              <p style="font-size:var(--fs-sm);color:var(--ink-3)">Daftar harga aktif, foto asli kuliner, resep kategori, dan ketersediaan porsi harian.</p>
-            </div>
-            <span class="chip chip--up" id="catalog-count-chip">24 Menu Aktif</span>
+      <!-- ============================================================
+           VIEW 8: PENGATURAN SISTEM (COFRA SETTINGS PATTERN)
+           ============================================================ -->
+      <section class="view-section" id="view-settings" aria-label="Pengaturan Sistem">
+        <div class="phead">
+          <div>
+            <div class="phead__eyebrow">Profil Kasir, Konfigurasi Struk Thermal &amp; Pajak</div>
+            <h1 class="phead__title">Pengaturan Sistem &amp; Cabang</h1>
           </div>
-          <div class="pos-catalog" id="catalog-manage-grid"></div>
-        </article>
+        </div>
+
+        <div class="st-grid">
+          <article class="card st-me">
+            <div class="av av--xl" id="st-avatar">DD</div>
+            <h2 id="st-name">Daffa Danendra</h2>
+            <p id="st-role">Kasir Utama · Cabang Surabaya Pusat</p>
+            <span class="pill pill--good">Sesi Terautentikasi</span>
+            <div class="st-me__stats">
+              <div><b class="num">CBG001</b><small>Kode Cabang</small></div>
+              <div><b class="num">80mm</b><small>Printer Thermal</small></div>
+              <div><b class="num">10%</b><small>Pajak PB1</small></div>
+            </div>
+            <button class="btn" type="button" id="settings-logout-btn" style="width:100%;margin-top:10px;color:var(--bad);">Keluar / Ganti Akun Kasir</button>
+          </article>
+
+          <article class="card">
+            <div class="chead">
+              <div>
+                <h2>Konfigurasi Operasional &amp; Struk Kafe</h2>
+                <p>Perubahan langsung diterapkan pada cetakan struk thermal</p>
+              </div>
+            </div>
+            <form class="formgrid" id="settings-form">
+              <div class="field">
+                <label for="set-cafe-name">Nama Kafe di Header Struk</label>
+                <input type="text" id="set-cafe-name" value="NomCherry Café &amp; Roastery">
+              </div>
+              <div class="field">
+                <label for="set-branch-phone">Nomor Telepon Cabang</label>
+                <input type="text" id="set-branch-phone" value="(031) 548-2910">
+              </div>
+              <div class="field field--full">
+                <label for="set-branch-addr">Alamat Lengkap Cabang</label>
+                <input type="text" id="set-branch-addr" value="Jl. Tunjungan No. 88, Genteng, Surabaya Pusat">
+              </div>
+              <div class="field">
+                <label for="set-tax-rate">Pajak Restoran PB1 (%)</label>
+                <input type="number" id="set-tax-rate" value="10" min="0" max="25">
+              </div>
+              <div class="field">
+                <label for="set-printer-size">Ukuran Kertas Printer Thermal</label>
+                <select id="set-printer-size">
+                  <option value="80mm">Thermal 80mm (Standar Kasir)</option>
+                  <option value="58mm">Thermal 58mm (Portable)</option>
+                </select>
+              </div>
+              <div class="field field--full">
+                <label for="set-receipt-footer">Pesan Footer Struk</label>
+                <input type="text" id="set-receipt-footer" value="Terima kasih telah menikmati kopi &amp; hidangan NomCherry!">
+              </div>
+              <div class="field field--full" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:6px;">
+                <button type="submit" class="btn btn--primary">Simpan Konfigurasi</button>
+              </div>
+            </form>
+          </article>
+        </div>
       </section>
 
-      <!-- 5. INVENTORI & STOK BAHAN BAKU -->
-      <section class="view" data-view="inventory" hidden>
-        <article class="card">
-          <div class="card__head">
-            <div>
-              <h2 class="card__title">Inventori Bahan Baku Bar & Roastery</h2>
-              <p style="font-size:var(--fs-sm);color:var(--ink-3)">Indikator stok bahan utama kafe menggunakan visualisasi hatch meter & peringatan kadaluarsa.</p>
-            </div>
-            <button class="btn-secondary" type="button" id="restock-all-btn">+ Restock Semua Bahan</button>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px" id="inventory-grid"></div>
-        </article>
-      </section>
-
-      <!-- 6. MEMBER LOYALITAS -->
-      <section class="view" data-view="members" hidden>
-        <article class="card">
-          <div class="card__head">
-            <div>
-              <h2 class="card__title">Pelanggan & Member Loyalitas NomCherry</h2>
-              <p style="font-size:var(--fs-sm);color:var(--ink-3)">Member aktif dengan akumulasi Cherry Points tertinggi bulan ini.</p>
-            </div>
-          </div>
-          <ol class="people" id="members-full-list"></ol>
-        </article>
-      </section>
-
-      <!-- 7. LAPORAN PENJUALAN -->
-      <section class="view" data-view="reports" hidden>
-        <article class="card">
-          <div class="card__head">
-            <h2 class="card__title">Laporan Ringkas & Ekspor Penjualan</h2>
-            <button class="btn-primary" type="button" id="export-report-btn">Unduh CSV Laporan</button>
-          </div>
-          <p style="color:var(--ink-2);font-size:var(--fs-sm)">Rekapitulasi kas dan penjualan NomCherry Café tersinkronisasi secara real-time dari database.</p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
-            <div style="padding:18px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)">
-              <span style="font-size:var(--fs-xs);color:var(--ink-3);font-weight:600">PENDAPATAN KOTOR BULAN INI</span>
-              <p class="figure" style="margin-top:6px">Rp 142.850.000</p>
-            </div>
-            <div style="padding:18px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)">
-              <span style="font-size:var(--fs-xs);color:var(--ink-3);font-weight:600">RATA-RATA NILAI STRUK (AOV)</span>
-              <p class="figure" style="margin-top:6px">Rp 48.500</p>
-            </div>
-            <div style="padding:18px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)">
-              <span style="font-size:var(--fs-xs);color:var(--ink-3);font-weight:600">KEPUASAN PELANGGAN</span>
-              <p class="figure" style="margin-top:6px">4.92 <small>/ 5.0</small></p>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <!-- 8. PENGATURAN -->
-      <section class="view" data-view="settings" hidden>
-        <article class="card">
-          <h2 class="card__title">Pengaturan Sistem POS NomCherry</h2>
-          <p style="font-size:var(--fs-sm);color:var(--ink-3)">Konfigurasi printer thermal 80mm/58mm, pajak PPN 10%, dan integrasi kasir.</p>
-          <div style="display:grid;gap:12px;max-width:520px">
-            <label style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface-2);border-radius:12px">
-              <span style="font-weight:600">Cetak Struk Otomatis Saat Transaksi Lunas</span>
-              <input type="checkbox" id="setting-auto-print" checked>
-            </label>
-            <label style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface-2);border-radius:12px">
-              <span style="font-weight:600">Suara Notifikasi Pesanan Dapur & POS</span>
-              <input type="checkbox" id="setting-sound" checked>
-            </label>
-            <label style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface-2);border-radius:12px">
-              <span style="font-weight:600">Gunakan Foto Asli pada Katalog POS</span>
-              <input type="checkbox" id="setting-use-photos" checked>
-            </label>
-          </div>
-        </article>
-      </section>
     </main>
   </div>
 
-  <!-- MODAL LOGIN PENGGUNA (PARLEY AUTH) -->
-  <div class="modal-backdrop" id="login-modal" hidden>
-    <div class="login-modal-box" role="dialog" aria-modal="true" aria-labelledby="login-title">
-      <div class="login-header">
-        <img src="assets/logo.png" alt="Logo NomCherry" onerror="this.style.display='none'">
-        <h2 class="card__title" id="login-title" style="justify-content:center;font-size:1.35rem;">Masuk ke Sistem Kasir</h2>
-        <p style="font-size:var(--fs-sm);color:var(--ink-3);margin-top:4px;">NomCherry Café & Roastery · Operasional Web</p>
-      </div>
+  <!-- MOBILE BOTTOM TABBAR (COFRA RESPONSIVE PATTERN) -->
+  <nav class="tabbar" aria-label="Navigasi Mobile">
+    <button type="button" class="is-active" data-view="overview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+      <span>Ringkasan</span>
+    </button>
+    <button type="button" data-view="pos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path></svg>
+      <span>Kasir POS</span>
+    </button>
+    <button type="button" data-view="orders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>
+      <span>Antrean</span>
+    </button>
+    <button type="button" data-view="inventory">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 3h10"></path><path d="M6 7h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z"></path></svg>
+      <span>Stok</span>
+    </button>
+    <button type="button" data-view="reports">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
+      <span>Laporan</span>
+    </button>
+  </nav>
 
-      <div class="login-error" id="login-error"></div>
+</div>
 
-      <form id="login-form" style="display:grid;gap:14px;">
-        <div class="login-field">
-          <label for="login-username">Username Kasir / Admin</label>
-          <input type="text" id="login-username" placeholder="Masukkan username (cth: daps, admin)" autocomplete="username" required>
-        </div>
-
-        <div class="login-field">
-          <label for="login-password">Kata Sandi / PIN</label>
-          <input type="password" id="login-password" placeholder="Masukkan kata sandi" autocomplete="current-password" required>
-        </div>
-
-        <button type="submit" class="btn-primary" id="login-submit-btn" style="width:100%;margin-top:4px;">
-          Masuk ke Sistem →
-        </button>
-      </form>
-
-      <div style="border-top:1px dashed var(--line-strong);padding-top:14px;">
-        <span style="font-size:var(--fs-xs);font-weight:700;color:var(--ink-3);text-transform:uppercase;display:block;margin-bottom:8px;">Pilih Cepat Akun Demo (1-Klik):</span>
-        <div class="quick-accounts">
-          <button type="button" class="quick-account-btn" data-u="daps" data-p="135">☕ Kasir (Daffa)</button>
-          <button type="button" class="quick-account-btn" data-u="admin" data-p="admin123">👑 Admin Utama</button>
-          <button type="button" class="quick-account-btn" data-u="kasir" data-p="123">☕ Kasir (Saman)</button>
-          <button type="button" class="quick-account-btn" data-u="manager1" data-p="123">📊 Manager</button>
-          <button type="button" class="quick-account-btn" data-u="owner1" data-p="123">💎 Owner</button>
-        </div>
-      </div>
+<!-- ============================================================
+     POPOVER: USER SESSION & NOTIFICATIONS
+     ============================================================ -->
+<div class="popover-menu" id="user-popover" role="dialog" aria-label="Menu Sesi Kasir">
+  <div style="display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--line);">
+    <span class="av" id="pop-user-av">DD</span>
+    <div>
+      <strong id="pop-user-name" style="display:block;font-size:var(--fs-sm);">Daffa Danendra</strong>
+      <small id="pop-user-role" style="color:var(--muted);font-size:var(--fs-2xs);">Kasir · Surabaya Pusat</small>
     </div>
   </div>
+  <button type="button" class="btn" style="width:100%;justify-content:flex-start;" data-goto-view="settings">Pengaturan Cabang &amp; Printer</button>
+  <a href="login.html" class="btn" id="logout-btn" style="width:100%;justify-content:flex-start;color:var(--bad);">Ganti Akun / Keluar Sesi</a>
+</div>
 
-  <!-- MODAL PEMBAYARAN KASIR -->
-  <div class="modal-backdrop" id="payment-modal" hidden>
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pay-modal-title">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 class="card__title" id="pay-modal-title">Konfirmasi Pembayaran</h3>
-        <button type="button" id="close-modal-btn" style="font-size:1.2rem;padding:4px 8px">✕</button>
-      </div>
-      <div style="background:var(--surface-2);padding:16px;border-radius:16px;text-align:center;border:1px solid var(--line)">
-        <span style="font-size:var(--fs-xs);color:var(--ink-3);text-transform:uppercase;font-weight:700">Total Tagihan</span>
-        <p class="figure" style="justify-content:center;color:var(--c-cherry);margin-top:4px" id="modal-total-amount">Rp 0</p>
-      </div>
+<div class="popover-menu" id="notif-popover" role="dialog" aria-label="Notifikasi Operasional">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:1px solid var(--line);">
+    <strong style="font-size:var(--fs-sm);">Notifikasi Operasional</strong>
+    <span class="pill pill--warn" id="notif-popover-count">2 Info</span>
+  </div>
+  <div id="notif-popover-list" style="font-size:var(--fs-xs);display:flex;flex-direction:column;gap:8px;">
+    <div style="padding-bottom:6px;border-bottom:1px solid var(--line);">
+      <b style="display:block;color:var(--warn);">Stok Bubuk Uji Matcha (28%)</b>
+      <span style="color:var(--muted);">Tersisa 1,4 kg di tangki barista. Klik untuk restock.</span>
+    </div>
+    <div>
+      <b style="display:block;color:var(--good);">Printer Thermal Epson TM-T82 Siap</b>
+      <span style="color:var(--muted);">Terhubung pada port USB001 (80mm).</span>
+    </div>
+  </div>
+  <button type="button" class="btn btn--sm" data-goto-view="inventory" id="notif-goto-inv">Buka Inventori Bahan</button>
+</div>
+
+<!-- ============================================================
+     MODAL 1: THERMAL RECEIPT PREVIEW & PRINT
+     ============================================================ -->
+<div class="modal-backdrop" id="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-modal-title">
+  <div class="modal-box">
+    <div class="chead no-print">
       <div>
-        <span style="font-size:var(--fs-xs);font-weight:700;color:var(--ink-3);text-transform:uppercase;display:block;margin-bottom:8px">Pilih Metode Pembayaran</span>
-        <div class="seg" style="width:100%;display:grid;grid-template-columns:repeat(3,1fr)" id="pay-method-seg">
-          <button type="button" data-method="QRIS" aria-pressed="true">QRIS</button>
-          <button type="button" data-method="Debit" aria-pressed="false">Kartu Debit</button>
-          <button type="button" data-method="Cash" aria-pressed="false">Tunai</button>
-        </div>
+        <h2 id="receipt-modal-title">Pratinjau Struk Thermal (80mm)</h2>
+        <p>Siap dicetak ke printer kasir</p>
       </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
-        <button type="button" class="btn-secondary" id="cancel-pay-btn">Batal</button>
-        <button type="button" class="btn-primary" id="confirm-pay-btn">Selesaikan & Cetak Struk</button>
-      </div>
+      <button type="button" class="ibtn" id="close-receipt-btn" aria-label="Tutup Struk">✕</button>
+    </div>
+
+    <div class="receipt-paper" id="receipt-paper-content"></div>
+
+    <div class="no-print" style="display:flex;gap:10px;justify-content:flex-end;">
+      <button type="button" class="btn" id="close-receipt-btn-2">Tutup</button>
+      <button type="button" class="btn btn--primary" id="print-receipt-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        <span>Cetak Struk Sekarang</span>
+      </button>
     </div>
   </div>
+</div>
 
-  <!-- MODAL THERMAL RECEIPT PREVIEW (80mm / 58mm) -->
-  <div class="modal-backdrop" id="modal-receipt" hidden>
-    <div class="modal-card" style="max-width:390px;background:#f3ede5" role="dialog" aria-modal="true">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 class="card__title" style="font-size:1.05rem;">Pratinjau Struk Thermal</h3>
-        <button type="button" id="close-receipt-btn" style="font-size:1.2rem;padding:4px 8px">✕</button>
+<!-- ============================================================
+     MODAL 2: MENU CRUD (TAMBAH / EDIT MENU)
+     ============================================================ -->
+<div class="modal-backdrop" id="menu-crud-modal" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
+  <div class="modal-box">
+    <div class="chead">
+      <div>
+        <h2 id="menu-modal-title">Tambah Menu Kafe</h2>
+        <p>Data tersimpan langsung ke katalog POS</p>
       </div>
-      <div id="receipt-print-area">
-        <!-- Rendered by JavaScript -->
-      </div>
-      <div style="display:flex;gap:8px;justify-content:space-between;margin-top:4px">
-        <button type="button" class="btn-secondary" id="dismiss-receipt-btn">Tutup</button>
-        <button type="button" class="btn-primary" id="print-receipt-btn" style="background:var(--c-cherry)">
-          🖨️ Cetak (Print / PDF)
-        </button>
-      </div>
+      <button type="button" class="ibtn" id="close-menu-modal-btn" aria-label="Tutup">✕</button>
     </div>
+
+    <form class="formgrid" id="menu-crud-form">
+      <input type="hidden" id="crud-menu-id">
+      <div class="field field--full">
+        <label for="crud-menu-name">Nama Menu</label>
+        <input type="text" id="crud-menu-name" required placeholder="Contoh: Cherry Blossom Cold Brew">
+      </div>
+      <div class="field">
+        <label for="crud-menu-cat">Kategori</label>
+        <select id="crud-menu-cat" required>
+          <option value="Minuman">Minuman</option>
+          <option value="Makanan">Makanan</option>
+          <option value="Snack">Snack</option>
+          <option value="Dessert">Dessert</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="crud-menu-price">Harga Jual (Rp)</label>
+        <input type="number" id="crud-menu-price" required min="5000" step="1000" placeholder="32000">
+      </div>
+      <div class="field">
+        <label for="crud-menu-stock">Kuota Stok Harian</label>
+        <input type="number" id="crud-menu-stock" required min="0" placeholder="45">
+      </div>
+      <div class="field">
+        <label for="crud-menu-min-stock">Batas Minimum Stok (Alert)</label>
+        <input type="number" id="crud-menu-min-stock" min="0" value="5" placeholder="5">
+      </div>
+      <div class="field">
+        <label for="crud-menu-img">URL Foto Produk</label>
+        <input type="url" id="crud-menu-img" placeholder="https://images.unsplash.com/...">
+      </div>
+      <div class="field">
+        <label for="crud-menu-exp">Tanggal Kedaluwarsa Batch (Opsional)</label>
+        <input type="date" id="crud-menu-exp">
+      </div>
+      <div class="field field--full">
+        <label for="crud-menu-desc">Deskripsi Singkat Komposisi</label>
+        <input type="text" id="crud-menu-desc" placeholder="Single origin Arabica dengan infusi buah ceri segar">
+      </div>
+      <div class="field field--full" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:8px;">
+        <button type="button" class="btn" id="cancel-menu-modal-btn">Batal</button>
+        <button type="submit" class="btn btn--primary">Simpan Menu</button>
+      </div>
+    </form>
   </div>
+</div>
 
-  <!-- TOAST NOTIFICATION -->
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- ============================================================
+     MODAL 3: STOCK MANAGEMENT (RESTOCK, PENYESUAIAN, RUSAK, EXPIRED)
+     ============================================================ -->
+<div class="modal-backdrop" id="stock-adjust-modal" role="dialog" aria-modal="true" aria-labelledby="stock-adjust-modal-title">
+  <div class="modal-box">
+    <div class="chead">
+      <div>
+        <h2 id="stock-adjust-modal-title">Kelola &amp; Penyesuaian Stok</h2>
+        <p id="stock-adjust-modal-sub">Catat penambahan, pengurangan, barang rusak, atau kedaluwarsa</p>
+      </div>
+      <button type="button" class="ibtn" id="close-stock-adjust-btn" aria-label="Tutup">✕</button>
+    </div>
 
-  <script>
-    // =========================================================================
-    // DATA & STATE NOMCHERRY CAFÉ (DENGAN AUTENTIKASI & PARLEY WIDGETS)
-    // =========================================================================
-    const STORE_INFO = {
-      id: "CBG001",
-      name: "NomCherry · Café & Roastery",
-      address: "Jl. Jemur Handayani No. 45, Surabaya",
-      telp: "031-8439901",
-      revenue: "Rp 6.840.000",
-      tx: 184,
-      growth: "14.2%",
-      sla: 96.4,
-      queued: "5 pesanan di dapur",
-      tables: 22,
-      reserv: "4 reservasi malam",
-      hourly: [
-        { h: "09", v: 18 },
-        { h: "11", v: 26 },
-        { h: "13", v: 34 },
-        { h: "15", v: 29 },
-        { h: "17", v: 38 },
-        { h: "19", v: 46, peak: true },
-        { h: "20", v: 39 },
-        { h: "21", v: 31, proj: 44 }
-      ]
-    };
-
-    const SENT_SERIES = {
-      "30d": {
-        total: "4,892",
-        today: "312",
-        chip: "16%",
-        labels: ["6 Okt", "20 Okt", "Hari Ini"],
-        points: [132, 145, 138, 152, 168, 161, 155, 172, 184, 179, 195, 210, 202, 218, 232, 224, 240, 256, 248, 265, 278, 270, 290, 304, 296, 318, 330, 322, 342, 312]
-      },
-      "7d": {
-        total: "1,984",
-        today: "312",
-        chip: "19%",
-        labels: ["30 Okt", "2 Nov", "Hari Ini"],
-        points: [245, 268, 258, 289, 315, 338, 312]
-      }
-    };
-
-    const MONTH_DATA = {
-      "2026": [
-        { m: "Jan", dine: 1210, deliv: 340 },
-        { m: "Feb", dine: 1140, deliv: 370 },
-        { m: "Mar", dine: 1420, deliv: 410 },
-        { m: "Apr", dine: 1360, deliv: 380 },
-        { m: "Mei", dine: 1630, deliv: 450 },
-        { m: "Jun", dine: 1510, deliv: 390 },
-        { m: "Jul", dine: 1780, deliv: 490 },
-        { m: "Agu", dine: 1690, deliv: 520 },
-        { m: "Sep", dine: 1850, deliv: 510 },
-        { m: "Okt", dine: 2040, deliv: 580 },
-        { m: "Nov", dine: 720, deliv: 210 },
-        { m: "Des", dine: 0, deliv: 0 }
-      ],
-      "2025": [
-        { m: "Jan", dine: 980, deliv: 240 },
-        { m: "Feb", dine: 1020, deliv: 260 },
-        { m: "Mar", dine: 1150, deliv: 310 },
-        { m: "Apr", dine: 1190, deliv: 295 },
-        { m: "Mei", dine: 1280, deliv: 340 },
-        { m: "Jun", dine: 1340, deliv: 360 },
-        { m: "Jul", dine: 1410, deliv: 380 },
-        { m: "Agu", dine: 1490, deliv: 410 },
-        { m: "Sep", dine: 1560, deliv: 430 },
-        { m: "Okt", dine: 1680, deliv: 450 },
-        { m: "Nov", dine: 1720, deliv: 470 },
-        { m: "Des", dine: 1940, deliv: 540 }
-      ]
-    };
-
-    const MIX_DATA = {
-      kategori: {
-        total: "4.8K",
-        sub: "item terjual",
-        items: [
-          { name: "Minuman & Kopi", pct: 54, delta: "3.2%", up: true, color: "var(--c-tangerine)" },
-          { name: "Makanan Utama", pct: 29, delta: "5.4%", up: true, color: "var(--c-teal)" },
-          { name: "Dessert & Snack", pct: 17, delta: "1.2%", up: false, color: "var(--c-violet)" }
-        ]
-      },
-      pembayaran: {
-        total: "184",
-        sub: "transaksi hari ini",
-        items: [
-          { name: "QRIS Dinamis", pct: 62, delta: "6.8%", up: true, color: "var(--c-tangerine)" },
-          { name: "Kartu Debit/Kredit", pct: 24, delta: "2.1%", up: true, color: "var(--c-teal)" },
-          { name: "Tunai (Cash)", pct: 14, delta: "4.3%", up: false, color: "var(--c-violet)" }
-        ]
-      }
-    };
-
-    const TOP_MENU_DATA = {
-      week: [
-        { code: "KN", name: "Kopi Hitam Nusantara", sub: "Rp 18.000 · Minuman", qty: 486, share: "31%", ratio: 1 },
-        { code: "CB", name: "NomCherry Signature Cold Brew", sub: "Rp 28.000 · Minuman", qty: 374, share: "24%", ratio: 0.77 },
-        { code: "ML", name: "Artisan Uji Matcha Latte", sub: "Rp 26.000 · Minuman", qty: 298, share: "19%", ratio: 0.61 },
-        { code: "BC", name: "Butter Croissant with Berry Compote", sub: "Rp 26.000 · Dessert", qty: 235, share: "15%", ratio: 0.48 },
-        { code: "TB", name: "NomCherry Beef Truffle Burger", sub: "Rp 42.000 · Makanan", qty: 172, share: "11%", ratio: 0.35 }
-      ],
-      month: [
-        { code: "KN", name: "Kopi Hitam Nusantara", sub: "Rp 18.000 · Minuman", qty: 1840, share: "33%", ratio: 1 },
-        { code: "CB", name: "NomCherry Signature Cold Brew", sub: "Rp 28.000 · Minuman", qty: 1420, share: "25%", ratio: 0.77 },
-        { code: "ML", name: "Artisan Uji Matcha Latte", sub: "Rp 26.000 · Minuman", qty: 1090, share: "19%", ratio: 0.59 },
-        { code: "BC", name: "Butter Croissant with Berry Compote", sub: "Rp 26.000 · Dessert", qty: 780, share: "14%", ratio: 0.42 },
-        { code: "TB", name: "NomCherry Beef Truffle Burger", sub: "Rp 42.000 · Makanan", qty: 510, share: "9%", ratio: 0.28 }
-      ]
-    };
-
-    // 24 Authentic Menu Items pre-seeded matching SQLite Database
-    let CATALOG_PRODUCTS = [
-      { id: "MNU001", name: "Kopi Hitam Nusantara", cat: "Minuman", price: 18000, stock: 25, emoji: "☕", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU002", name: "NomCherry Signature Cold Brew", cat: "Minuman", price: 28000, stock: 20, emoji: "🍒", image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU003", name: "Caramel Macchiato Velvet", cat: "Minuman", price: 26000, stock: 18, emoji: "☕", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU004", name: "Spanish Latte Sweet Cream", cat: "Minuman", price: 25000, stock: 22, emoji: "🥛", image: "https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU005", name: "Cappuccino Creamy Oat Milk", cat: "Minuman", price: 27000, stock: 15, emoji: "☕", image: "https://images.unsplash.com/photo-1577968897966-3d4325b36b61?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU006", name: "Affogato Al Caffe Vanilla", cat: "Minuman", price: 24000, stock: 16, emoji: "🍨", image: "https://images.unsplash.com/photo-1592663527359-cf6642f54cff?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU007", name: "Artisan Uji Matcha Latte", cat: "Minuman", price: 26000, stock: 20, emoji: "🍵", image: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU008", name: "NomCherry Berry Sparkler", cat: "Minuman", price: 22000, stock: 25, emoji: "🍓", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU009", name: "Taro Velvet Frappe", cat: "Minuman", price: 24000, stock: 17, emoji: "💜", image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU010", name: "Earl Grey Milk Tea with Boba", cat: "Minuman", price: 23000, stock: 24, emoji: "🧋", image: "https://images.unsplash.com/photo-1558857563-b37cf5a5b5dc?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU011", name: "Belgian Dark Chocolate Hazelnut", cat: "Minuman", price: 25000, stock: 19, emoji: "🍫", image: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU012", name: "Teh Manis Melati Heritage", cat: "Minuman", price: 8000, stock: 40, emoji: "🍃", image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU013", name: "Es Teh Lemon Mint Fresh", cat: "Minuman", price: 12000, stock: 30, emoji: "🍋", image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU014", name: "Spaghetti Aglio Olio Smoked Beef", cat: "Makanan", price: 34000, stock: 18, emoji: "🍝", image: "https://images.unsplash.com/photo-1621996346565-e3d5d628178d?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU015", name: "Japanese Chicken Katsu Curry", cat: "Makanan", price: 38000, stock: 15, emoji: "🍛", image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU016", name: "NomCherry Beef Truffle Burger", cat: "Makanan", price: 42000, stock: 12, emoji: "🍔", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU017", name: "Chicken Teriyaki Rice Bowl", cat: "Makanan", price: 32000, stock: 20, emoji: "🍚", image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU018", name: "Mie Goreng Spesial Kafe", cat: "Makanan", price: 24000, stock: 25, emoji: "🍜", image: "https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU019", name: "Truffle Parmesan French Fries", cat: "Snack", price: 22000, stock: 25, emoji: "🍟", image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU020", name: "Golden Crispy Chicken Popcorn", cat: "Snack", price: 25000, stock: 20, emoji: "🍗", image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU021", name: "NomCherry Basque Burnt Cheesecake", cat: "Dessert", price: 32000, stock: 14, emoji: "🍰", image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU022", name: "Butter Croissant with Berry Compote", cat: "Dessert", price: 26000, stock: 16, emoji: "🥐", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU023", name: "Japanese Fluffy Souffle Pancake", cat: "Dessert", price: 30000, stock: 12, emoji: "🥞", image: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=600&q=80" },
-      { id: "MNU024", name: "Classic Belgian Waffle with Ice Cream", cat: "Dessert", price: 28000, stock: 15, emoji: "🧇", image: "https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=600&q=80" }
-    ];
-
-    let INVENTORY_ITEMS = [
-      { name: "Biji Kopi Arabika Gayo & Dampit", unit: "18.5 / 25 kg", pct: 74, violet: false },
-      { name: "Oatside Barista Blend Milk", unit: "32 / 40 karton", pct: 80, violet: true },
-      { name: "Sirup Monin Cherry Blossom", unit: "9 / 15 botol", pct: 60, violet: false },
-      { name: "Uji Matcha Ceremonial Powder", unit: "4.2 / 5 kg", pct: 84, violet: true },
-      { name: "French Butter Pastry Dough", unit: "26 / 30 pack", pct: 86, violet: false },
-      { name: "Cup Paper & Lid NomCherry 80mm", unit: "420 / 500 pcs", pct: 84, violet: true }
-    ];
-
-    let cart = [];
-    let ordersHistory = [
-      { id: "NC-20261105-004", time: "21:42", cust: "Kak Raka · Meja 08", items: "2x Kopi Hitam Nusantara, 1x Butter Croissant", method: "QRIS", total: 68200, status: "Diproses Bar (2 mnt)" },
-      { id: "NC-20261105-003", time: "21:35", cust: "Nadia Putri · Meja 03", items: "1x Artisan Uji Matcha Latte, 1x Cheesecake", method: "Debit", total: 63800, status: "Selesai Tepat Waktu" },
-      { id: "NC-20261105-002", time: "21:20", cust: "Bapak Hendra · Takeaway", items: "3x Caramel Macchiato Velvet", method: "QRIS", total: 85800, status: "Selesai Tepat Waktu" },
-      { id: "NC-20261105-001", time: "21:08", cust: "Clarissa · Meja 14", items: "2x Signature Cold Brew", method: "Cash", total: 61600, status: "Selesai Tepat Waktu" }
-    ];
-
-    let cashBalance = 2450000;
-    let cashUsed = 1680000;
-    let currentMonthYear = "2026";
-    let activeMonthIndex = 9; // Oktober
-    let currentCategoryFilter = "all";
-    let currentUser = null;
-
-    // =========================================================================
-    // HELPER FORMATTERS & TOAST
-    // =========================================================================
-    function formatRp(num) {
-      return "Rp " + Math.round(Number(num) || 0).toLocaleString("id-ID");
-    }
-
-    let toastTimer = null;
-    function showToast(msg) {
-      const t = document.getElementById("toast");
-      if (!t) return;
-      t.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9fe3c4" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg><span>${msg}</span>`;
-      t.classList.add("is-visible");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove("is-visible"), 3200);
-    }
-
-    // =========================================================================
-    // 1. AUTENTIKASI PENGGUNA (LOGIN, LOGOUT, SESSION & ROLE GUARDS)
-    // =========================================================================
-    function checkSession() {
-      const stored = localStorage.getItem("nomcherry_session");
-      if (stored) {
-        try {
-          currentUser = JSON.parse(stored);
-          updateUserInterface();
-          return true;
-        } catch (e) {
-          currentUser = null;
-        }
-      }
-      // If no valid session, redirect to dedicated login page
-      window.location.replace("login.html");
-      return false;
-    }
-
-    function showLoginModal() {
-      const modal = document.getElementById("login-modal");
-      const errBox = document.getElementById("login-error");
-      if (errBox) errBox.style.display = "none";
-      if (modal) modal.hidden = false;
-      setTimeout(() => {
-        const uInput = document.getElementById("login-username");
-        if (uInput) uInput.focus();
-      }, 100);
-    }
-
-    function hideLoginModal() {
-      const modal = document.getElementById("login-modal");
-      if (modal) modal.hidden = true;
-    }
-
-    async function handleLogin(username, password) {
-      const errBox = document.getElementById("login-error");
-      const submitBtn = document.getElementById("login-submit-btn");
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Memverifikasi...";
-      if (errBox) errBox.style.display = "none";
-
-      try {
-        const res = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, kata_sandi: password, id_cabang: "CBG001" })
-        });
-
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-          currentUser = data.data;
-          localStorage.setItem("nomcherry_session", JSON.stringify(currentUser));
-          updateUserInterface();
-          hideLoginModal();
-          showToast(`Selamat datang kembali, ${currentUser.nama_pengguna}!`);
-        } else {
-          if (errBox) {
-            errBox.textContent = data.message || "Username atau kata sandi tidak cocok.";
-            errBox.style.display = "block";
-          }
-        }
-      } catch (err) {
-        // Fallback for demo if server offline
-        if (username === "daps" || username === "admin") {
-          currentUser = {
-            id_pengguna: username === "daps" ? "USR002" : "USR001",
-            nama_pengguna: username === "daps" ? "Daffa Danendra (Kasir)" : "Admin Utama",
-            username: username,
-            peran: username === "daps" ? "kasir" : "admin",
-            id_cabang: "CBG001",
-            nama_cabang: "NomCherry Café (Pusat)"
-          };
-          localStorage.setItem("nomcherry_session", JSON.stringify(currentUser));
-          updateUserInterface();
-          hideLoginModal();
-          showToast(`Berhasil masuk sebagai ${currentUser.nama_pengguna}`);
-        } else if (errBox) {
-          errBox.textContent = "Koneksi ke server gagal: " + err.message;
-          errBox.style.display = "block";
-        }
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Masuk ke Sistem →";
-      }
-    }
-
-    function handleLogout() {
-      localStorage.removeItem("nomcherry_session");
-      currentUser = null;
-      document.getElementById("user-popover").hidden = true;
-      showToast("Sesi kasir berhasil diakhiri");
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 350);
-    }
-
-    function updateUserInterface() {
-      if (!currentUser) return;
-
-      // 1. Initial letters for Avatar
-      const initials = currentUser.nama_pengguna
-        .split(" ")
-        .map(w => w[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase() || "DF";
-
-      const avatarBtn = document.getElementById("avatar-btn");
-      const popAvatar = document.getElementById("popover-avatar");
-      if (avatarBtn) avatarBtn.textContent = initials;
-      if (popAvatar) popAvatar.textContent = initials;
-
-      // 2. Popover Info
-      document.getElementById("popover-name").textContent = currentUser.nama_pengguna;
-      document.getElementById("popover-username").textContent = `@${currentUser.username}`;
-      const roleChip = document.getElementById("popover-role");
-      roleChip.textContent = currentUser.peran.toUpperCase();
-      roleChip.className = currentUser.peran === "admin" ? "chip chip--dark" : "chip chip--up";
-      const branchEl = document.getElementById("popover-branch");
-      if (branchEl) {
-        branchEl.textContent = currentUser.nama_cabang ? `NomCherry Café · ${currentUser.nama_cabang}` : "NomCherry Roastery · Jemur Andayani";
-      }
-
-      // 3. Header Greeting
-      const hour = new Date().getHours();
-      let timeGreeting = "Selamat Malam";
-      if (hour >= 4 && hour < 11) timeGreeting = "Selamat Pagi";
-      else if (hour >= 11 && hour < 15) timeGreeting = "Selamat Siang";
-      else if (hour >= 15 && hour < 18) timeGreeting = "Selamat Sore";
-
-      const firstName = currentUser.nama_pengguna.split(" ")[0];
-      const titleEl = document.getElementById("page-title");
-      if (titleEl) {
-        titleEl.innerHTML = `${timeGreeting}, <span class="accent">${firstName}</span>`;
-      }
-
-      // 4. Role Guards for Sidebar Items
-      const userRole = currentUser.peran.toLowerCase();
-      document.querySelectorAll("[data-role-access]").forEach(el => {
-        const allowedRoles = el.getAttribute("data-role-access").split(",");
-        const isPermitted = allowedRoles.includes(userRole) || userRole === "admin" || userRole === "owner";
-        el.style.opacity = isPermitted ? "1" : "0.45";
-        el.title = isPermitted ? "" : "Fitur membutuhkan hak akses Admin / Manager";
-      });
-    }
-
-    // =========================================================================
-    // 2. RENDER HERO BAR CHART & METERS
-    // =========================================================================
-    function renderHeroChart() {
-      const data = STORE_INFO;
-      document.getElementById("hero-rev").textContent = data.revenue;
-      document.getElementById("hero-tx").textContent = data.tx;
-      document.getElementById("hero-growth").textContent = data.growth;
-      document.getElementById("sla-val").textContent = data.sla;
-      document.getElementById("sla-aside").textContent = data.queued;
-      document.getElementById("table-val").textContent = data.tables;
-      document.getElementById("table-aside").textContent = data.reserv;
-
-      const maxVal = 60;
-      const chartEl = document.getElementById("audience-chart");
-      chartEl.innerHTML = data.hourly.map(item => {
-        const pct = Math.min(96, Math.round((item.v / maxVal) * 100));
-        const projHtml = item.proj
-          ? `<div class="hbar__bar hbar__bar--proj" style="--h:${Math.min(98, Math.round((item.proj / maxVal) * 100))}%"></div>`
-          : "";
-        return `
-          <div class="hbar ${item.peak ? "is-peak" : ""}" title="Pukul ${item.h}:00 — ${item.v} pesanan">
-            <div class="hbar__well">
-              ${projHtml}
-              <div class="hbar__bar" style="--h:${pct}%">
-                <span class="hbar__val">${item.v}</span>
-              </div>
-            </div>
-            <span class="hbar__lab">${item.h}:00</span>
+    <form class="formgrid" id="stock-adjust-form">
+      <input type="hidden" id="adj-menu-id">
+      <div class="field field--full">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;background:var(--bg-2);border:1px solid var(--line);">
+          <div>
+            <strong id="adj-item-name" style="display:block;font-size:var(--fs-sm);">-</strong>
+            <small id="adj-branch-label" style="color:var(--muted);">Cabang Aktif</small>
           </div>
-        `;
-      }).join("");
-
-      renderHatchMeter("meter-sla", 40, Math.round((data.sla / 100) * 40));
-      renderHatchMeter("meter-tables", 30, data.tables);
-    }
-
-    function renderHatchMeter(containerId, totalBars, activeBars) {
-      const el = document.getElementById(containerId);
-      if (!el) return;
-      let html = "";
-      for (let i = 0; i < totalBars; i++) {
-        const isOn = i < activeBars ? "is-on" : "";
-        html += `<i><b class="${isOn}" style="transition-delay:${i * 8}ms"></b></i>`;
-      }
-      el.innerHTML = html;
-    }
-
-    // =========================================================================
-    // 3. RENDER DARK LINE CHART (CUP & MENU TERJUAL)
-    // =========================================================================
-    function renderSentChart(periodKey) {
-      const d = SENT_SERIES[periodKey] || SENT_SERIES["30d"];
-      document.getElementById("sent-total").textContent = d.total;
-      document.getElementById("sent-today").textContent = d.today;
-      document.getElementById("sent-chip").textContent = d.chip;
-
-      const svg = document.getElementById("sent-svg");
-      const pts = d.points;
-      const w = 810;
-      const h = 140;
-      const minP = Math.min(...pts) * 0.85;
-      const maxP = Math.max(...pts) * 1.08;
-
-      const coords = pts.map((val, idx) => {
-        const x = 6 + (idx / (pts.length - 1)) * (w - 12);
-        const y = h - ((val - minP) / (maxP - minP)) * (h - 24);
-        return { x, y, val, idx };
-      });
-
-      let pathD = `M${coords[0].x},${coords[0].y}`;
-      for (let i = 0; i < coords.length - 1; i++) {
-        const curr = coords[i];
-        const next = coords[i + 1];
-        const mx = (curr.x + next.x) / 2;
-        pathD += ` C${mx},${curr.y} ${mx},${next.y} ${next.x},${next.y}`;
-      }
-
-      const last = coords[coords.length - 1];
-      const prev = coords[coords.length - 2];
-      const areaD = `${pathD} L${last.x},${h} L${coords[0].x},${h} Z`;
-
-      svg.innerHTML = `
-        <defs>
-          <linearGradient id="sent-wash" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#ff8a5c" stop-opacity=".34"/>
-            <stop offset="1" stop-color="#ff8a5c" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path fill="url(#sent-wash)" d="${areaD}"/>
-        <path fill="none" stroke="#ff8a5c" stroke-width="2.2" stroke-linecap="round" d="${pathD}"/>
-        <line x1="${prev.x}" y1="${prev.y}" x2="${last.x}" y2="${last.y}" stroke="#ff8a5c" stroke-width="2" stroke-dasharray="3 4"/>
-        <circle cx="${last.x}" cy="${last.y}" r="4.5" fill="#ff8a5c" stroke="#221b26" stroke-width="2"/>
-        <circle id="sent-hover-dot" cx="${last.x}" cy="${last.y}" r="5" fill="#fff6ee" stroke="#221b26" stroke-width="2" opacity="0"/>
-        <g>
-          <text class="line__axis" x="6" y="160" text-anchor="start">${d.labels[0]}</text>
-          <text class="line__axis" x="405" y="160" text-anchor="middle">${d.labels[1]}</text>
-          <text class="line__axis" x="804" y="160" text-anchor="end">${d.labels[2]}</text>
-        </g>
-      `;
-
-      const chartBox = document.getElementById("sent-chart");
-      const tip = document.getElementById("sent-tip");
-      const dot = document.getElementById("sent-hover-dot");
-
-      chartBox.onmousemove = (e) => {
-        const rect = chartBox.getBoundingClientRect();
-        const relX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-        const idx = Math.round(relX * (coords.length - 1));
-        const pt = coords[idx];
-        if (!pt) return;
-        dot.setAttribute("cx", pt.x);
-        dot.setAttribute("cy", pt.y);
-        dot.setAttribute("opacity", "1");
-        tip.style.opacity = "1";
-        tip.textContent = `Hari ke-${idx + 1} · ${pt.val} cup`;
-        const leftPx = (pt.x / 820) * rect.width;
-        const topPx = (pt.y / 165) * rect.height;
-        tip.style.transform = `translate(${Math.min(rect.width - 110, Math.max(8, leftPx - 45))}px, ${Math.max(0, topPx - 36)}px)`;
-      };
-      chartBox.onmouseleave = () => {
-        dot.setAttribute("opacity", "0");
-        tip.style.opacity = "0";
-      };
-    }
-
-    // =========================================================================
-    // 4. RENDER STACKED COLUMN CHART (TRANSAKSI PER BULAN)
-    // =========================================================================
-    function renderMonthChart(yearKey, highlightIdx = activeMonthIndex) {
-      const list = MONTH_DATA[yearKey] || MONTH_DATA["2026"];
-      const svg = document.getElementById("month-svg");
-      const baseY = 275;
-      const maxTotal = 2800;
-      const chartH = 230;
-
-      const gridLines = [
-        { y: 275.5, lbl: "0" },
-        { y: 216.5, lbl: "700" },
-        { y: 158.5, lbl: "1.4K" },
-        { y: 99.5, lbl: "2.1K" },
-        { y: 40.5, lbl: "2.8K" }
-      ].map(g => `
-        <line class="cols__grid" x1="38" x2="1248" y1="${g.y}" y2="${g.y}"/>
-        <text class="cols__axis" x="0" y="${g.y + 4}">${g.lbl}</text>
-      `).join("");
-
-      let colsHtml = "";
-      let labelsHtml = "";
-
-      list.forEach((item, idx) => {
-        const cx = 85 + idx * 101.5;
-        const x0 = cx - 16;
-        const x1 = cx + 16;
-        const dineH = (item.dine / maxTotal) * chartH;
-        const delivH = (item.deliv / maxTotal) * chartH;
-
-        const dineTop = baseY - dineH;
-        const delivBottom = dineTop - 2;
-        const delivTop = delivBottom - delivH;
-        const isOn = idx === highlightIdx ? "is-on" : "";
-
-        const solidPath = item.dine > 0
-          ? `M${x0},${baseY} V${dineTop} H${x1} V${baseY} Z`
-          : "";
-        const hatchPath = item.deliv > 0
-          ? `M${x0},${delivBottom} V${delivTop + 6} Q${x0},${delivTop} ${x0 + 6},${delivTop} H${x1 - 6} Q${x1},${delivTop} ${x1},${delivTop + 6} V${delivBottom} Z`
-          : "";
-
-        colsHtml += `
-          <g class="col ${isOn}" data-idx="${idx}">
-            <rect x="${cx - 34}" y="30" width="68" height="250" fill="transparent"/>
-            <path class="cols__seg" fill="url(#hatch-t)" d="${hatchPath}"/>
-            <path class="cols__seg" fill="var(--c-tangerine)" d="${solidPath}"/>
-          </g>
-        `;
-        labelsHtml += `<text class="cols__axis ${isOn}" data-idx="${idx}" text-anchor="middle" x="${cx}" y="296">${item.m}</text>`;
-      });
-
-      svg.innerHTML = `
-        <defs>
-          <pattern id="hatch-t" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <rect width="5" height="5" fill="var(--c-tangerine-soft)"/>
-            <rect width="1.6" height="5" fill="var(--c-tangerine)" opacity=".75"/>
-          </pattern>
-        </defs>
-        <g>${gridLines}</g>
-        <g>${colsHtml}</g>
-        <g>${labelsHtml}</g>
-      `;
-
-      updateMonthTooltip(yearKey, highlightIdx);
-
-      svg.querySelectorAll("[data-idx]").forEach(el => {
-        el.addEventListener("mouseenter", () => {
-          activeMonthIndex = parseInt(el.dataset.idx, 10);
-          renderMonthChart(currentMonthYear, activeMonthIndex);
-        });
-      });
-    }
-
-    function updateMonthTooltip(yearKey, idx) {
-      const item = (MONTH_DATA[yearKey] || MONTH_DATA["2026"])[idx];
-      const tip = document.getElementById("month-tip");
-      const container = document.getElementById("month-chart");
-      if (!item || !tip || !container) return;
-
-      const total = item.dine + item.deliv;
-      tip.innerHTML = `
-        <strong>${item.m} ${yearKey} · ${total.toLocaleString("id-ID")} pesanan</strong>
-        <div class="row"><span><i class="key key--solid"></i>Dine-in & Take</span><b>${item.dine.toLocaleString("id-ID")}</b></div>
-        <div class="row"><span><i class="key key--hatch"></i>Delivery Online</span><b>${item.deliv.toLocaleString("id-ID")}</b></div>
-      `;
-
-      const rect = container.getBoundingClientRect();
-      const cxRatio = (85 + idx * 101.5) / 1260;
-      const targetX = Math.min(Math.max(12, cxRatio * rect.width - 80), Math.max(12, rect.width - 185));
-      tip.style.transform = `translate(${targetX}px, 8px)`;
-    }
-
-    // =========================================================================
-    // 5. RENDER CHANNEL MIX DONUT & TOP MENU
-    // =========================================================================
-    function renderMixDonut(modeKey) {
-      const data = MIX_DATA[modeKey];
-      document.getElementById("donut-total").textContent = data.total;
-      document.getElementById("donut-sub").textContent = data.sub;
-
-      const circumference = 2 * Math.PI * 52;
-      const gap = 18;
-      let offset = -8;
-
-      data.items.forEach((item, i) => {
-        const arc = Math.max(12, (item.pct / 100) * circumference - gap);
-        const circle = document.getElementById(`donut-seg-${i}`);
-        if (circle) {
-          circle.setAttribute("stroke-dasharray", `${arc} ${circumference}`);
-          circle.setAttribute("stroke-dashoffset", offset);
-          offset -= (arc + gap);
-        }
-      });
-
-      const legendEl = document.getElementById("mix-legend");
-      legendEl.innerHTML = data.items.map(item => `
-        <li>
-          <i class="dot" style="background:${item.color}"></i>
-          <span class="name">${item.name}</span>
-          <span class="pct">${item.pct}%</span>
-          <span class="chip ${item.up ? "chip--up" : "chip--down"}">
-            <svg viewBox="0 0 12 12"><path d="M2 8.5 5 5.5l2 2L10 4.5M7.5 4.5H10V7"/></svg>
-            ${item.delta}
-          </span>
-        </li>
-      `).join("");
-    }
-
-    function renderTopMenu(periodKey) {
-      const list = TOP_MENU_DATA[periodKey];
-      const ol = document.getElementById("top-menu-list");
-      ol.innerHTML = list.map(item => `
-        <li class="person" data-add-menu="${item.name}">
-          <span class="person__av" aria-hidden="true">${item.code}</span>
-          <div class="person__who">
-            <span class="person__name">
-              <span>${item.name}</span>
-              <span class="person__mail">${item.sub}</span>
-            </span>
-            <span class="person__bar" aria-hidden="true"><i style="--s:${item.ratio}"></i></span>
-          </div>
-          <span class="person__num">${item.qty} cup<small>${item.share}</small></span>
-        </li>
-      `).join("");
-
-      ol.querySelectorAll(".person").forEach(li => {
-        li.addEventListener("click", () => {
-          const menuName = li.dataset.addMenu;
-          const prod = CATALOG_PRODUCTS.find(p => p.name === menuName);
-          if (prod) {
-            addToCart(prod.id);
-            showToast(`${prod.name} ditambahkan ke Kasir POS`);
-          }
-        });
-      });
-    }
-
-    // =========================================================================
-    // 6. KASIR POS, ORDERS, CATALOG & INVENTORY VIEWS
-    // =========================================================================
-    function renderPosCatalog(filterCat = "all") {
-      const grid = document.getElementById("pos-catalog-grid");
-      const usePhotos = document.getElementById("setting-use-photos") ? document.getElementById("setting-use-photos").checked : true;
-      
-      const items = filterCat === "all"
-        ? CATALOG_PRODUCTS
-        : CATALOG_PRODUCTS.filter(p => p.cat === filterCat);
-
-      grid.innerHTML = items.map(p => {
-        const mediaHtml = (usePhotos && p.image)
-          ? `<img class="prod-card__img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"><span class="prod-card__emoji" style="display:none;">${p.emoji || "☕"}</span>`
-          : `<span class="prod-card__emoji">${p.emoji || "☕"}</span>`;
-
-        return `
-          <div class="prod-card" data-prod-id="${p.id}">
-            <div class="prod-card__top">
-              <span style="font-size:var(--fs-xs);font-weight:700;color:var(--ink-3)">#${p.id}</span>
-              <span class="chip ${p.stock <= 5 ? "chip--down" : "chip--up"}">${p.stock} porsi</span>
-            </div>
-            ${mediaHtml}
-            <div class="prod-card__title">${p.name}</div>
-            <div style="font-size:var(--fs-xs);color:var(--ink-3)">${p.cat}</div>
-            <div class="prod-card__price">${formatRp(p.price)}</div>
-          </div>
-        `;
-      }).join("");
-
-      grid.querySelectorAll(".prod-card").forEach(card => {
-        card.addEventListener("click", () => {
-          addToCart(card.dataset.prodId);
-        });
-      });
-    }
-
-    function addToCart(prodId) {
-      const prod = CATALOG_PRODUCTS.find(p => String(p.id) === String(prodId));
-      if (!prod) return;
-      if (prod.stock <= 0) {
-        showToast(`Stok ${prod.name} sedang habis!`);
-        return;
-      }
-      const existing = cart.find(c => String(c.id) === String(prodId));
-      if (existing) {
-        if (existing.qty >= prod.stock) {
-          showToast(`Maksimal pesanan ${prod.name} sesuai sisa stok (${prod.stock})`);
-          return;
-        }
-        existing.qty += 1;
-      } else {
-        cart.push({ id: prod.id, name: prod.name, price: prod.price, qty: 1 });
-      }
-      renderCart();
-      showToast(`+1 ${prod.name} masuk keranjang`);
-    }
-
-    function renderCart() {
-      const listEl = document.getElementById("pos-cart-list");
-      const totalItems = cart.reduce((acc, c) => acc + c.qty, 0);
-      document.getElementById("cart-count-chip").textContent = `${totalItems} item`;
-      document.getElementById("pos-badge").textContent = totalItems;
-
-      if (cart.length === 0) {
-        listEl.innerHTML = `<p style="font-size:var(--fs-sm);color:var(--ink-3);text-align:center;padding:24px 0">Keranjang kasir masih kosong.</p>`;
-      } else {
-        listEl.innerHTML = cart.map(item => `
-          <div class="cart-item">
-            <div>
-              <div style="font-weight:600;font-size:var(--fs-sm)">${item.name}</div>
-              <div style="font-size:var(--fs-xs);color:var(--ink-3)">${formatRp(item.price)} × ${item.qty}</div>
-            </div>
-            <div class="qty-ctrl">
-              <button type="button" data-qty-id="${item.id}" data-delta="-1">−</button>
-              <span style="font-size:var(--fs-sm);font-weight:700;min-width:18px;text-align:center">${item.qty}</span>
-              <button type="button" data-qty-id="${item.id}" data-delta="1">+</button>
-            </div>
-          </div>
-        `).join("");
-      }
-
-      const sub = cart.reduce((acc, c) => acc + c.price * c.qty, 0);
-      const tax = Math.round(sub * 0.1);
-      const grand = sub + tax;
-
-      document.getElementById("cart-subtotal").textContent = formatRp(sub);
-      document.getElementById("cart-tax").textContent = formatRp(tax);
-      document.getElementById("cart-total").textContent = formatRp(grand);
-      document.getElementById("modal-total-amount").textContent = formatRp(grand);
-
-      listEl.querySelectorAll("[data-qty-id]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.dataset.qtyId;
-          const delta = parseInt(btn.dataset.delta, 10);
-          const item = cart.find(c => String(c.id) === String(id));
-          const prod = CATALOG_PRODUCTS.find(p => String(p.id) === String(id));
-
-          if (item) {
-            if (delta > 0 && prod && item.qty >= prod.stock) {
-              showToast(`Maksimal pesanan ${prod.name} sesuai sisa stok (${prod.stock})`);
-              return;
-            }
-            item.qty += delta;
-            if (item.qty <= 0) cart = cart.filter(c => String(c.id) !== String(id));
-            renderCart();
-          }
-        });
-      });
-    }
-
-    function renderOrdersTable() {
-      const tbody = document.getElementById("orders-tbody");
-      tbody.innerHTML = ordersHistory.map((o, idx) => `
-        <tr data-order-idx="${idx}" title="Klik baris ini untuk mencetak struk thermal">
-          <td><b style="color:var(--c-cherry)">#${o.id}</b></td>
-          <td>${o.time}</td>
-          <td><b>${o.cust}</b></td>
-          <td>${o.items}</td>
-          <td><span class="chip chip--up">${o.method}</span></td>
-          <td><b>${formatRp(o.total)}</b></td>
-          <td><span class="chip ${String(o.status).includes("Diproses") ? "chip--down" : "chip--up"}">${o.status}</span></td>
-        </tr>
-      `).join("");
-
-      tbody.querySelectorAll("tr").forEach(tr => {
-        tr.addEventListener("click", () => {
-          const idx = parseInt(tr.dataset.orderIdx, 10);
-          const order = ordersHistory[idx];
-          if (order) openThermalReceipt(order);
-        });
-      });
-    }
-
-    function renderSecondaryViews() {
-      // 1. Katalog View
-      const catGrid = document.getElementById("catalog-manage-grid");
-      const chipCount = document.getElementById("catalog-count-chip");
-      if (chipCount) chipCount.textContent = `${CATALOG_PRODUCTS.length} Menu Aktif`;
-      
-      catGrid.innerHTML = CATALOG_PRODUCTS.map(p => `
-        <div class="prod-card">
-          <div class="prod-card__top">
-            <span class="prod-card__emoji">${p.emoji || "☕"}</span>
-            <span class="chip chip--up">Stok: ${p.stock}</span>
-          </div>
-          ${p.image ? `<img class="prod-card__img" src="${p.image}" alt="${p.name}" loading="lazy">` : ""}
-          <div class="prod-card__title">${p.name}</div>
-          <div style="font-size:var(--fs-xs);color:var(--ink-3)">Kode: ${p.id} · ${p.cat}</div>
-          <div class="prod-card__price">${formatRp(p.price)}</div>
-        </div>
-      `).join("");
-
-      // 2. Inventory View
-      const invGrid = document.getElementById("inventory-grid");
-      invGrid.innerHTML = INVENTORY_ITEMS.map((inv) => {
-        const bars = 24;
-        const active = Math.round(((inv.pct || 75) / 100) * bars);
-        let meterBars = "";
-        for (let i = 0; i < bars; i++) {
-          meterBars += `<i><b class="${i < active ? "is-on" : ""}"></b></i>`;
-        }
-        return `
-          <div style="padding:18px;border-radius:18px;background:var(--surface-2);border:1px solid var(--line);display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <b style="font-size:var(--fs-sm)">${inv.name}</b>
-              <span class="chip ${inv.pct < 30 ? "chip--down" : "chip--up"}">${inv.pct}%</span>
-            </div>
-            <span style="font-size:var(--fs-xs);color:var(--ink-3)">Tersedia: ${inv.unit}</span>
-            <div class="meter ${inv.violet ? "meter--violet" : ""}" style="height:26px">${meterBars}</div>
-          </div>
-        `;
-      }).join("");
-
-      // 3. Members View
-      const membersList = document.getElementById("members-full-list");
-      const members = [
-        { av: "AR", name: "Amara Lindqvist", mail: "Platinum Member · 1,420 Cherry Pts", visits: "42 kunjungan", ratio: 1 },
-        { av: "RK", name: "Raka Danendra", mail: "Gold Member · 980 Cherry Pts", visits: "31 kunjungan", ratio: 0.74 },
-        { av: "NP", name: "Nadia Putri", mail: "Gold Member · 840 Cherry Pts", visits: "27 kunjungan", ratio: 0.64 },
-        { av: "KW", name: "Kenji Watanabe", mail: "Silver Member · 610 Cherry Pts", visits: "19 kunjungan", ratio: 0.46 },
-        { av: "BS", name: "Budi Santoso", mail: "Silver Member · 450 Cherry Pts", visits: "14 kunjungan", ratio: 0.35 }
-      ];
-      membersList.innerHTML = members.map(m => `
-        <li class="person">
-          <span class="person__av">${m.av}</span>
-          <div class="person__who">
-            <span class="person__name"><b>${m.name}</b> <span class="person__mail">${m.mail}</span></span>
-            <span class="person__bar"><i style="--s:${m.ratio}"></i></span>
-          </div>
-          <span class="person__num">${m.visits}</span>
-        </li>
-      `).join("");
-    }
-
-    // =========================================================================
-    // 7. THERMAL RECEIPT GENERATOR & PRINTING (ITEMIZED DETAIL)
-    // =========================================================================
-    function openThermalReceipt(order) {
-      const modal = document.getElementById("modal-receipt");
-      const area = document.getElementById("receipt-print-area");
-      const branch = STORE_INFO;
-
-      const subtotal = Math.round(order.total / 1.1);
-      const tax = order.total - subtotal;
-      const receiptNo = order.id.startsWith("NC-") ? order.id : `NC-${order.id}`;
-      const cashierName = currentUser ? currentUser.nama_pengguna : "Kasir Shift";
-
-      // Parse item rows
-      let itemsHtml = "";
-      if (order.rawItems && Array.isArray(order.rawItems) && order.rawItems.length > 0) {
-        itemsHtml = order.rawItems.map(it => `
-          <tr>
-            <td colspan="2" class="item-name">${it.nama_menu || it.name}</td>
-          </tr>
-          <tr>
-            <td class="item-calc">${it.jumlah || it.qty} × ${formatRp(it.harga || it.price)}</td>
-            <td class="text-right">${formatRp((it.jumlah || it.qty) * (it.harga || it.price))}</td>
-          </tr>
-        `).join("");
-      } else {
-        const parts = String(order.items).split(",");
-        itemsHtml = parts.map(p => {
-          const trimmed = p.trim();
-          return `
-            <tr>
-              <td colspan="2" class="item-name">${trimmed}</td>
-            </tr>
-          `;
-        }).join("") + `
-          <tr>
-            <td class="item-calc">Paket Menu Pesanan</td>
-            <td class="text-right">${formatRp(subtotal)}</td>
-          </tr>
-        `;
-      }
-
-      area.innerHTML = `
-        <div class="receipt-wrapper">
-          <div class="receipt-header">
-            <img class="receipt-logo" src="assets/logo.png" alt="Logo" onerror="this.style.display='none'">
-            <div class="receipt-brand">NOMCHERRY CAFÉ</div>
-            <div class="receipt-sub">ARTISAN COFFEE & FRESH BAKERY</div>
-            <div class="receipt-sub" style="font-size:0.68rem;margin-top:2px;">${branch.address}</div>
-            <div class="receipt-sub" style="font-size:0.68rem;">Telp: ${branch.telp}</div>
-          </div>
-
-          <div class="receipt-divider"></div>
-
-          <div style="font-size:0.75rem;display:grid;gap:2px;">
-            <div style="display:flex;justify-content:space-between"><span>No. Struk</span><b>${receiptNo}</b></div>
-            <div style="display:flex;justify-content:space-between"><span>Waktu</span><span>${order.time} WIB</span></div>
-            <div style="display:flex;justify-content:space-between"><span>Kasir</span><span>${cashierName}</span></div>
-            <div style="display:flex;justify-content:space-between"><span>Pelanggan</span><span>${order.cust}</span></div>
-          </div>
-
-          <div class="receipt-divider double"></div>
-
-          <table class="receipt-table">
-            <tbody>
-              ${itemsHtml}
-            </tbody>
-          </table>
-
-          <div class="receipt-divider"></div>
-
-          <table class="receipt-table">
-            <tr>
-              <td>Subtotal</td>
-              <td class="text-right">${formatRp(subtotal)}</td>
-            </tr>
-            <tr>
-              <td>PPN Resto (10%)</td>
-              <td class="text-right">${formatRp(tax)}</td>
-            </tr>
-            <tr class="total-row">
-              <td>TOTAL</td>
-              <td class="text-right" style="color:var(--c-cherry)">${formatRp(order.total)}</td>
-            </tr>
-            <tr>
-              <td>Metode Bayar</td>
-              <td class="text-right"><b>${order.method}</b></td>
-            </tr>
-            <tr>
-              <td>Status</td>
-              <td class="text-right">LUNAS</td>
-            </tr>
-          </table>
-
-          <div class="receipt-info-pill">
-            📶 Free Wi-Fi: <b>NomCherry_Guest</b><br>
-            Password: <b>kopiindonesia2026</b>
-          </div>
-
-          <div class="receipt-barcode">
-            <svg viewBox="0 0 100 24" preserveAspectRatio="none">
-              <rect x="0" y="0" width="2" height="24" fill="#000"/>
-              <rect x="4" y="0" width="3" height="24" fill="#000"/>
-              <rect x="9" y="0" width="1" height="24" fill="#000"/>
-              <rect x="12" y="0" width="4" height="24" fill="#000"/>
-              <rect x="18" y="0" width="2" height="24" fill="#000"/>
-              <rect x="22" y="0" width="3" height="24" fill="#000"/>
-              <rect x="27" y="0" width="2" height="24" fill="#000"/>
-              <rect x="31" y="0" width="5" height="24" fill="#000"/>
-              <rect x="38" y="0" width="1" height="24" fill="#000"/>
-              <rect x="41" y="0" width="3" height="24" fill="#000"/>
-              <rect x="46" y="0" width="2" height="24" fill="#000"/>
-              <rect x="50" y="0" width="4" height="24" fill="#000"/>
-              <rect x="56" y="0" width="2" height="24" fill="#000"/>
-              <rect x="60" y="0" width="3" height="24" fill="#000"/>
-              <rect x="65" y="0" width="1" height="24" fill="#000"/>
-              <rect x="68" y="0" width="4" height="24" fill="#000"/>
-              <rect x="74" y="0" width="2" height="24" fill="#000"/>
-              <rect x="78" y="0" width="3" height="24" fill="#000"/>
-              <rect x="83" y="0" width="2" height="24" fill="#000"/>
-              <rect x="87" y="0" width="5" height="24" fill="#000"/>
-              <rect x="94" y="0" width="2" height="24" fill="#000"/>
-              <rect x="98" y="0" width="2" height="24" fill="#000"/>
-            </svg>
-          </div>
-
-          <div class="receipt-footer">
-            TERIMA KASIH ATAS KUNJUNGAN ANDA<br>
-            <i>Simpan struk ini sebagai bukti pembayaran yang sah</i>
+          <div style="text-align:right;">
+            <span style="font-size:var(--fs-2xs);color:var(--muted);display:block;">Stok Sistem Saat Ini</span>
+            <strong class="num" id="adj-current-stock" style="font-size:var(--fs-md);">0 porsi</strong>
           </div>
         </div>
-      `;
+      </div>
 
-      modal.hidden = false;
-    }
+      <div class="field field--full">
+        <label for="adj-movement-type">Jenis Perubahan Stok</label>
+        <select id="adj-movement-type" required>
+          <option value="MASUK">Restock / Tambah Stok Masuk (+)</option>
+          <option value="KELUAR">Pengurangan Stok Manual (−)</option>
+          <option value="PENYESUAIAN">Edit / Set Jumlah Stok Akhir (=)</option>
+          <option value="RUSAK">Barang Rusak / Waste (−)</option>
+          <option value="KADALUARSA">Pemusnahan Barang Kedaluwarsa (−)</option>
+          <option value="OPNAME">Koreksi Fisik / Stock Opname (=)</option>
+        </select>
+      </div>
 
-    // =========================================================================
-    // 8. BACKEND API ASYNC DATA SYNC (SQLITE WAL PERSISTENCE)
-    // =========================================================================
-    async function syncBackendData() {
-      const syncBtn = document.getElementById("sync-btn");
-      syncBtn.classList.add("is-spinning");
-      document.getElementById("sync-when").textContent = "Menyinkronkan...";
+      <div class="field">
+        <label for="adj-qty" id="adj-qty-label">Jumlah Tambahan (Porsi)</label>
+        <input type="number" id="adj-qty" required min="0" max="10000" value="10">
+        <div class="chips" style="margin-top:6px;">
+          <button type="button" class="chip" data-adj-preset="5">+5</button>
+          <button type="button" class="chip" data-adj-preset="10">+10</button>
+          <button type="button" class="chip" data-adj-preset="25">+25</button>
+          <button type="button" class="chip" data-adj-preset="50">+50</button>
+        </div>
+      </div>
 
-      try {
-        // 1. Fetch live menu catalog from database
-        const menuRes = await fetch('/api/menu');
-        if (menuRes.ok) {
-          const resJson = await menuRes.json();
-          const menuList = Array.isArray(resJson) ? resJson : (resJson.data || []);
-          if (menuList.length > 0) {
-            CATALOG_PRODUCTS = menuList.map(m => ({
-              id: m.id_menu,
-              name: m.nama_menu,
-              cat: m.kategori,
-              price: m.harga,
-              stock: m.stok,
-              image: m.gambar,
-              emoji: m.kategori === 'Minuman' ? '☕' : (m.kategori === 'Dessert' ? '🍰' : (m.kategori === 'Snack' ? '🍟' : '🍝'))
-            }));
-            renderPosCatalog(currentCategoryFilter);
-            renderSecondaryViews();
-          }
-        }
+      <div class="field">
+        <label for="adj-min-stock">Batas Minimum Alert (Porsi)</label>
+        <input type="number" id="adj-min-stock" min="0" max="1000" value="5">
+        <small style="color:var(--muted);font-size:var(--fs-2xs);">Notifikasi otomatis saat stok &le; batas ini</small>
+      </div>
 
-        // 2. Fetch live orders from database
-        const ordersRes = await fetch('/api/orders');
-        if (ordersRes.ok) {
-          const resJson = await ordersRes.json();
-          const ordersList = Array.isArray(resJson) ? resJson : (resJson.data || []);
-          if (ordersList.length > 0) {
-            ordersHistory = ordersList.map(o => ({
-              id: o.nomor_struk || o.id_pesanan,
-              time: o.tanggal_pesanan ? new Date(o.tanggal_pesanan).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : "Hari Ini",
-              cust: `${o.nama_pelanggan || 'Pelanggan'} · ${o.nomor_meja || 'Dine-In'}`,
-              items: o.items_summary || (o.items ? o.items.map(i => `${i.jumlah}x ${i.nama_menu}`).join(', ') : 'Menu Pesanan'),
-              method: o.metode_pembayaran || o.metode || "QRIS",
-              total: o.total || o.total_bayar || 0,
-              status: "Selesai Tepat Waktu",
-              rawItems: o.items || []
-            }));
-            renderOrdersTable();
-          }
-        }
+      <div class="field field--full">
+        <label for="adj-exp-date">Tanggal Kedaluwarsa Batch (Opsional)</label>
+        <input type="date" id="adj-exp-date">
+      </div>
 
-        // 3. Fetch live stock from database
-        const stockRes = await fetch('/api/stock');
-        if (stockRes.ok) {
-          const resJson = await stockRes.json();
-          const stockList = Array.isArray(resJson) ? resJson : (resJson.data || []);
-          if (stockList.length > 0) {
-            INVENTORY_ITEMS = stockList.slice(0, 8).map((s, idx) => ({
-              name: s.nama_menu,
-              unit: `${s.stok} porsi aktif`,
-              pct: Math.min(100, Math.round((s.stok / 40) * 100)),
-              violet: idx % 2 === 1
-            }));
-            renderSecondaryViews();
-          }
-        }
+      <div class="field field--full">
+        <label for="adj-reason">Alasan / Keterangan Perubahan</label>
+        <input type="text" id="adj-reason" required placeholder="Contoh: Pengiriman rutin harian / koreksi shift / barang rusak">
+      </div>
 
-        document.getElementById("sync-when").textContent = "Baru saja";
-        showToast("Tersinkronisasi dengan Database Server NomCherry (SQLite WAL)");
-      } catch (err) {
-        console.warn("API sync fallback to client state:", err.message);
-        document.getElementById("sync-when").textContent = "Lokal Aktif";
-      } finally {
-        syncBtn.classList.remove("is-spinning");
-      }
-    }
+      <div class="field field--full">
+        <div id="adj-preview-box" style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:var(--bg-2);font-size:var(--fs-xs);">
+          <span>Estimasi Stok Setelah Disimpan:</span>
+          <strong class="num" id="adj-preview-val">0 porsi</strong>
+        </div>
+      </div>
 
-    // =========================================================================
-    // 9. NAVIGATION, VIEW SWITCHING & EVENT LISTENERS
-    // =========================================================================
-    function switchRoute(routeKey) {
-      // Role checking
-      if (currentUser && currentUser.peran === "kasir") {
-        const restricted = ["catalog", "inventory", "members", "reports"];
-        if (restricted.includes(routeKey)) {
-          showToast(`Tab ${routeKey.toUpperCase()} membutuhkan hak akses Admin / Manager`);
-          return;
-        }
-      }
+      <div class="field field--full" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:4px;">
+        <button type="button" class="btn" id="cancel-stock-adjust-btn">Batal</button>
+        <button type="submit" class="btn btn--primary" id="submit-stock-adjust-btn">Simpan Perubahan Stok</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-      document.querySelectorAll(".view").forEach(v => {
-        v.hidden = v.dataset.view !== routeKey;
-      });
+<!-- ============================================================
+     MODAL 4: STOCK OPNAME (PENCOCOKAN STOK FISIK VS SISTEM)
+     ============================================================ -->
+<div class="modal-backdrop" id="stock-opname-modal" role="dialog" aria-modal="true" aria-labelledby="stock-opname-modal-title">
+  <div class="modal-box" style="max-width:740px;width:95%;">
+    <div class="chead">
+      <div>
+        <h2 id="stock-opname-modal-title">Stock Opname — Pencocokan Stok Fisik</h2>
+        <p id="stock-opname-branch-sub">Masukkan hasil hitung fisik aktual untuk menyesuaikan stok sistem dan mencatat selisih</p>
+      </div>
+      <button type="button" class="ibtn" id="close-opname-modal-btn" aria-label="Tutup">✕</button>
+    </div>
 
-      const items = Array.from(document.querySelectorAll(".rail__ul .rail__item, .rail__settings"));
-      items.forEach(a => {
-        const isCurrent = a.dataset.route === routeKey;
-        a.classList.toggle("is-active", isCurrent);
-      });
+    <form id="stock-opname-form">
+      <div class="field" style="margin-bottom:10px;">
+        <label for="opname-general-note">Catatan / Periode Stock Opname</label>
+        <input type="text" id="opname-general-note" value="Stock Opname Shift Operasional" required placeholder="Contoh: Stock Opname Penutupan Shift Malam">
+      </div>
 
-      const activeLink = document.querySelector(`.rail__ul .rail__item[data-route="${routeKey}"]`);
-      const pill = document.getElementById("rail-pill");
-      if (activeLink && pill) {
-        const li = activeLink.parentElement;
-        pill.style.opacity = "1";
-        pill.style.transform = `translateY(${li.offsetTop}px)`;
-      } else if (pill) {
-        pill.style.opacity = "0";
-      }
+      <div id="opname-items-container" style="max-height:360px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:8px;"></div>
 
-      // Update Header dynamic subtitle per view
-      const subEl = document.getElementById("page-sub");
-      const titleEl = document.getElementById("page-title");
-      const name = currentUser ? currentUser.nama_pengguna.split(" ")[0] : "Kasir";
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px;flex-wrap:wrap;">
+        <span id="opname-summary-label" style="font-size:var(--fs-xs);color:var(--muted);">0 item memiliki selisih fisik vs sistem</span>
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn" id="cancel-opname-modal-btn">Batal</button>
+          <button type="submit" class="btn btn--primary" id="submit-opname-btn">Simpan Hasil Stock Opname</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
-      const VIEW_TITLES = {
-        overview: { title: `Selamat Datang, <span class="accent">${name}</span>`, sub: "Berikut ringkasan operasional & performa transaksi NomCherry Café hari ini." },
-        pos: { title: `Kasir POS <span class="accent">(Point of Sale)</span>`, sub: "Pilih menu favorit pelanggan, kelola keranjang pesanan, dan selesaikan transaksi." },
-        orders: { title: `Antrean Dapur & <span class="accent">Riwayat Struk</span>`, sub: "Pantau progres peracikan minuman di bar serta riwayat transaksi hari ini." },
-        catalog: { title: `Katalog Menu <span class="accent">& Resep Kafe</span>`, sub: "Manajemen 24 menu autentik, kategori, harga jual, dan foto kuliner." },
-        inventory: { title: `Inventori Bahan Baku <span class="accent">& Gudang</span>`, sub: "Indikator persediaan bahan baku bar kopi & roastery dengan meteran hatch." },
-        members: { title: `Pelanggan & <span class="accent">Member Loyalitas</span>`, sub: "Daftar pelanggan terdaftar dan akumulasi Cherry Points tertinggi." },
-        reports: { title: `Laporan Penjualan <span class="accent">& Finansial</span>`, sub: "Rekapitulasi keuangan kafe, rata-rata transaksi, dan ekspor data CSV." },
-        settings: { title: `Pengaturan <span class="accent">Sistem POS</span>`, sub: "Konfigurasi printer thermal 80mm/58mm, suara dapur, dan preferensi kasir." }
-      };
+<!-- ============================================================
+     MODAL 5: RESTOCK MASSAL TERKONTROL
+     ============================================================ -->
+<div class="modal-backdrop" id="bulk-restock-modal" role="dialog" aria-modal="true" aria-labelledby="bulk-restock-modal-title">
+  <div class="modal-box">
+    <div class="chead">
+      <div>
+        <h2 id="bulk-restock-modal-title">Restock Massal Terkontrol</h2>
+        <p>Tambahkan stok dengan jumlah terukur pada cabang aktif</p>
+      </div>
+      <button type="button" class="ibtn" id="close-bulk-restock-btn" aria-label="Tutup">✕</button>
+    </div>
 
-      if (VIEW_TITLES[routeKey]) {
-        if (titleEl) titleEl.innerHTML = VIEW_TITLES[routeKey].title;
-        if (subEl) subEl.textContent = VIEW_TITLES[routeKey].sub;
-      }
-    }
+    <form class="formgrid" id="bulk-restock-form">
+      <div class="field field--full">
+        <label for="bulk-restock-target">Target Item Restock</label>
+        <select id="bulk-restock-target">
+          <option value="all">Semua Menu Aktif di Cabang Ini</option>
+          <option value="low">Hanya Item Stok Menipis &amp; Habis</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="bulk-restock-qty">Jumlah Tambahan per Item (Porsi)</label>
+        <input type="number" id="bulk-restock-qty" required min="1" max="1000" value="15">
+      </div>
+      <div class="field">
+        <label for="bulk-restock-exp">Tanggal Kedaluwarsa Batch (Opsional)</label>
+        <input type="date" id="bulk-restock-exp">
+      </div>
+      <div class="field field--full">
+        <label for="bulk-restock-note">Alasan / Keterangan Restock</label>
+        <input type="text" id="bulk-restock-note" value="Restock terjadwal gudang cabang" required>
+      </div>
+      <div class="field field--full" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:6px;">
+        <button type="button" class="btn" id="cancel-bulk-restock-btn">Batal</button>
+        <button type="submit" class="btn btn--primary" id="submit-bulk-restock-btn">Terapkan Restock</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-    document.addEventListener("DOMContentLoaded", () => {
-      // 1. Initial Render with High-Fidelity Defaults
-      renderHeroChart();
-      renderSentChart("30d");
-      renderMonthChart("2026", 9);
-      renderMixDonut("kategori");
-      renderTopMenu("week");
-      renderPosCatalog("all");
-      renderCart();
-      renderOrdersTable();
-      renderSecondaryViews();
+<div class="toast-stack" id="toast-stack" aria-live="polite"></div>
 
-      // 2. Check Session & Login Guard
-      checkSession();
-
-      // 3. Fetch Live SQLite Database Content Asynchronously
-      syncBackendData();
-
-      // 4. Navigation Links
-      document.querySelectorAll("[data-route]").forEach(link => {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          const route = link.dataset.route;
-          switchRoute(route);
-          window.location.hash = `#/${route}`;
-        });
-      });
-
-      const goPosBtn = document.getElementById("go-pos-btn");
-      if (goPosBtn) goPosBtn.addEventListener("click", () => switchRoute("pos"));
-
-      // 5. Sidebar Expand / Collapse Toggle
-      const appShell = document.getElementById("app-shell");
-      const railToggle = document.getElementById("rail-toggle");
-      railToggle.addEventListener("click", () => {
-        const isOpen = appShell.classList.toggle("is-rail-open");
-        railToggle.setAttribute("aria-expanded", String(isOpen));
-        document.getElementById("rail-toggle-label").textContent = isOpen ? "Tutup Sidebar" : "Sematkan Sidebar";
-      });
-
-      // 6. Keyboard Shortcuts: [ for sidebar, Cmd/Ctrl+K for search, Arrow Left/Right for Month chart, Escape to close
-      window.addEventListener("keydown", (e) => {
-        if (e.key === "[" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
-          railToggle.click();
-        }
-        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-          e.preventDefault();
-          document.getElementById("search-input").focus();
-        }
-        if (e.key === "Escape") {
-          document.getElementById("payment-modal").hidden = true;
-          document.getElementById("modal-receipt").hidden = true;
-          document.getElementById("user-popover").hidden = true;
-          document.getElementById("search-results").hidden = true;
-        }
-      });
-
-      document.getElementById("month-chart").addEventListener("keydown", (e) => {
-        if (e.key === "ArrowRight") {
-          e.preventDefault();
-          activeMonthIndex = (activeMonthIndex + 1) % 12;
-          renderMonthChart(currentMonthYear, activeMonthIndex);
-        } else if (e.key === "ArrowLeft") {
-          e.preventDefault();
-          activeMonthIndex = (activeMonthIndex + 11) % 12;
-          renderMonthChart(currentMonthYear, activeMonthIndex);
-        }
-      });
-
-      // 7. Avatar & User Popover
-      const avatarBtn = document.getElementById("avatar-btn");
-      const userPopover = document.getElementById("user-popover");
-      avatarBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        userPopover.hidden = !userPopover.hidden;
-      });
-
-      document.getElementById("switch-account-btn").addEventListener("click", () => {
-        userPopover.hidden = true;
-        window.location.href = "login.html";
-      });
-
-      document.getElementById("logout-btn").addEventListener("click", () => {
-        handleLogout();
-      });
-
-      // 8. Login Form & Quick Account Buttons
-      const loginForm = document.getElementById("login-form");
-      loginForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const u = document.getElementById("login-username").value.trim();
-        const p = document.getElementById("login-password").value.trim();
-        handleLogin(u, p);
-      });
-
-      document.querySelectorAll(".quick-account-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const u = btn.dataset.u;
-          const p = btn.dataset.p;
-          document.getElementById("login-username").value = u;
-          document.getElementById("login-password").value = p;
-          handleLogin(u, p);
-        });
-      });
-
-      // 9. Segmented Controls
-      document.querySelectorAll("[data-seg]").forEach(group => {
-        group.querySelectorAll("button").forEach(btn => {
-          btn.addEventListener("click", () => {
-            group.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", "false"));
-            btn.setAttribute("aria-pressed", "true");
-            const segType = group.dataset.seg;
-            const val = btn.dataset.value;
-
-            if (segType === "sent") renderSentChart(val);
-            if (segType === "month") {
-              currentMonthYear = val;
-              renderMonthChart(val, activeMonthIndex);
-            }
-            if (segType === "mix") renderMixDonut(val);
-            if (segType === "top") renderTopMenu(val);
-            if (segType === "pos-cat") {
-              currentCategoryFilter = val;
-              renderPosCatalog(val);
-            }
-          });
-        });
-      });
-
-      // 10. Petty Cash / Credits Topup Menu
-      const topupBtn = document.getElementById("topup-btn");
-      const topupMenu = document.getElementById("topup-menu");
-      topupBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const isHidden = topupMenu.hidden;
-        topupMenu.hidden = !isHidden;
-        topupBtn.setAttribute("aria-expanded", String(isHidden));
-      });
-
-      topupMenu.querySelectorAll("button").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const delta = parseInt(btn.dataset.cash, 10);
-          cashBalance = Math.max(250000, cashBalance + delta);
-          cashUsed = Math.min(2500000, Math.max(400000, cashUsed + (delta > 0 ? delta * 0.5 : delta * 0.3)));
-          document.getElementById("cash-balance").textContent = formatRp(cashBalance);
-          document.getElementById("cash-used").textContent = formatRp(cashUsed);
-          document.getElementById("cash-bar").style.width = `${Math.min(100, Math.round((cashUsed / 2500000) * 100))}%`;
-          topupMenu.hidden = true;
-          topupBtn.setAttribute("aria-expanded", "false");
-          showToast(`Mutasi kas berhasil: Saldo laci ${formatRp(cashBalance)}`);
-        });
-      });
-
-      // 11. Search Bar & Suggestions
-      const searchInput = document.getElementById("search-input");
-      const searchResults = document.getElementById("search-results");
-      searchInput.addEventListener("input", () => {
-        const q = searchInput.value.trim().toLowerCase();
-        if (!q) {
-          searchResults.hidden = true;
-          return;
-        }
-        const matched = CATALOG_PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
-        if (matched.length === 0) {
-          searchResults.innerHTML = `<li class="search__item-empty">Tidak ditemukan menu "${q}"</li>`;
-        } else {
-          searchResults.innerHTML = matched.map(p => `
-            <li class="search__item" data-search-prod="${p.id}">
-              <div class="search__item-left">
-                <span class="search__item-emoji">${p.emoji || "☕"}</span>
-                <div class="search__item-info">
-                  <b>${p.name}</b>
-                  <small>${p.cat} · Sisa Stok: ${p.stock}</small>
-                </div>
-              </div>
-              <div class="search__item-right">
-                <span class="search__item-price">${formatRp(p.price)}</span>
-                <span class="search__item-add">+ Kasir</span>
-              </div>
-            </li>
-          `).join("");
-        }
-        searchResults.hidden = false;
-
-        searchResults.querySelectorAll("[data-search-prod]").forEach(li => {
-          li.addEventListener("click", () => {
-            addToCart(li.dataset.searchProd);
-            searchResults.hidden = true;
-            searchInput.value = "";
-            switchRoute("pos");
-          });
-        });
-      });
-
-      document.addEventListener("click", (e) => {
-        if (!e.target.closest(".search")) searchResults.hidden = true;
-        if (!e.target.closest(".topup")) {
-          topupMenu.hidden = true;
-          topupBtn.setAttribute("aria-expanded", "false");
-        }
-        if (!e.target.closest(".avatar-wrap")) {
-          userPopover.hidden = true;
-        }
-      });
-
-      // 12. Sync Button
-      document.getElementById("sync-btn").addEventListener("click", () => {
-        syncBackendData();
-      });
-
-      // 13. POS Cart & Checkout Modal
-      document.getElementById("clear-cart-btn").addEventListener("click", () => {
-        cart = [];
-        renderCart();
-        showToast("Keranjang kasir dikosongkan");
-      });
-
-      const paymentModal = document.getElementById("payment-modal");
-      let selectedPayMethod = "QRIS";
-
-      document.getElementById("pay-method-seg").querySelectorAll("button").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.getElementById("pay-method-seg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", "false"));
-          btn.setAttribute("aria-pressed", "true");
-          selectedPayMethod = btn.dataset.method;
-        });
-      });
-
-      document.getElementById("checkout-btn").addEventListener("click", () => {
-        if (cart.length === 0) {
-          showToast("Tambahkan minimal 1 menu ke keranjang terlebih dahulu");
-          return;
-        }
-        paymentModal.hidden = false;
-      });
-
-      document.getElementById("close-modal-btn").addEventListener("click", () => paymentModal.hidden = true);
-      document.getElementById("cancel-pay-btn").addEventListener("click", () => paymentModal.hidden = true);
-
-      // Confirm Payment -> Send to Backend API
-      document.getElementById("confirm-pay-btn").addEventListener("click", async () => {
-        const sub = cart.reduce((acc, c) => acc + c.price * c.qty, 0);
-        const total = Math.round(sub * 1.1);
-        const cust = document.getElementById("pos-cust-name").value || "Pelanggan Umum";
-        const table = document.getElementById("pos-order-type").value;
-        const summary = cart.map(c => `${c.qty}x ${c.name}`).join(", ");
-        const newId = "NC-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + String(ordersHistory.length + 1).padStart(3, "0");
-        const activeUserId = currentUser ? currentUser.id_pengguna : "USR002";
-
-        const newOrderObj = {
-          id: newId,
-          time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-          cust: `${cust} · ${table}`,
-          items: summary,
-          method: selectedPayMethod,
-          total,
-          status: "Diproses Bar (1 mnt)",
-          rawItems: [...cart]
-        };
-
-        // Attempt Real POST to Backend Server
-        try {
-          const res = await fetch('/api/orders', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id_cabang: "CBG001",
-              id_pengguna: activeUserId,
-              nama_pelanggan: cust,
-              nomor_meja: table,
-              metode_pembayaran: selectedPayMethod,
-              catatan: "Order via Kasir Parley POS",
-              items: cart.map(c => ({
-                id_menu: c.id,
-                jumlah: c.qty,
-                harga_satuan: c.price,
-                catatan: ""
-              }))
-            })
-          });
-
-          if (res.ok) {
-            const resJson = await res.json();
-            const orderRes = resJson.data || resJson.pesanan || {};
-            if (orderRes.nomor_struk || orderRes.id_pesanan) {
-              newOrderObj.id = orderRes.nomor_struk || orderRes.id_pesanan;
-            }
-          }
-        } catch (err) {
-          console.warn("POST order offline fallback:", err.message);
-        }
-
-        // Decrement stock in client memory immediately
-        cart.forEach(c => {
-          const p = CATALOG_PRODUCTS.find(x => String(x.id) === String(c.id));
-          if (p) p.stock = Math.max(0, p.stock - c.qty);
-        });
-
-        ordersHistory.unshift(newOrderObj);
-        cart = [];
-        renderCart();
-        renderPosCatalog(currentCategoryFilter);
-        renderOrdersTable();
-        renderSecondaryViews();
-        paymentModal.hidden = true;
-
-        showToast(`Transaksi #${newOrderObj.id} (${selectedPayMethod}) lunas!`);
-
-        // Check if auto-print enabled
-        const autoPrint = document.getElementById("setting-auto-print") ? document.getElementById("setting-auto-print").checked : true;
-        if (autoPrint) {
-          openThermalReceipt(newOrderObj);
-        }
-      });
-
-      // 14. Thermal Receipt Modal Controls
-      const modalReceipt = document.getElementById("modal-receipt");
-      document.getElementById("close-receipt-btn").addEventListener("click", () => modalReceipt.hidden = true);
-      document.getElementById("dismiss-receipt-btn").addEventListener("click", () => modalReceipt.hidden = true);
-      document.getElementById("print-receipt-btn").addEventListener("click", () => {
-        window.print();
-      });
-
-      // 15. Restock Button
-      document.getElementById("restock-all-btn").addEventListener("click", () => {
-        INVENTORY_ITEMS.forEach(i => i.pct = 100);
-        renderSecondaryViews();
-        showToast("Seluruh stok bahan baku Bar & Roastery berhasil diisi penuh (100%)");
-      });
-
-      // 16. Export CSV Report
-      document.getElementById("export-report-btn").addEventListener("click", () => {
-        window.location.href = "/api/reports/sales?format=csv";
-        showToast("Mengunduh laporan finansial penjualan CSV...");
-      });
-
-      // 17. Setting Toggles Listeners
-      const photoToggle = document.getElementById("setting-use-photos");
-      if (photoToggle) {
-        photoToggle.addEventListener("change", () => {
-          renderPosCatalog(currentCategoryFilter);
-        });
-      }
-
-      // 18. Responsive Resize Redraws
-      window.addEventListener("resize", () => {
-        updateMonthTooltip(currentMonthYear, activeMonthIndex);
-      });
-
-      // Initial route from URL hash if provided
-      if (window.location.hash) {
-        const route = window.location.hash.replace("#/", "");
-        if (["overview", "pos", "orders", "catalog", "inventory", "members", "reports", "settings"].includes(route)) {
-          switchRoute(route);
-        }
-      }
-    });
-  </script>
+<!-- ============================================================
+     APPLICATION CONTROLLER & STATE ENGINE
+     ============================================================ -->
+<script src="js/index-app.js" defer></script>
 </body>
 </html>

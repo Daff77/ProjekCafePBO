@@ -2,7 +2,8 @@
 node_modules/
 package-lock.json.bak
 
-# SQLite Temp WAL Files
+# SQLite runtime database and temp files
+*.db
 *.db-shm
 *.db-wal
 *.db-journal
@@ -34,5 +35,6 @@ desktop.ini
 # Java Build Artifacts (Legacy Project)
 **/build/
 **/dist/
+*.class
 **/nbproject/private/
 

@@ -31,17 +31,10 @@ const App = {
             }
         }
 
-        // If no user, fallback to Admin or show Login
+        // No client-side privilege escalation: a real server session is required.
         if (!this.currentUser) {
-            this.currentUser = {
-                id_pengguna: 'USR001',
-                nama_pengguna: 'Admin Utama',
-                username: 'admin',
-                peran: 'admin',
-                id_cabang: 'CBG001',
-                nama_cabang: 'NomCherry Pusat (Jemur)'
-            };
-            localStorage.setItem('nomcherry_user', JSON.stringify(this.currentUser));
+            window.location.href = 'login.html';
+            return;
         }
 
         this.updateUserUI();

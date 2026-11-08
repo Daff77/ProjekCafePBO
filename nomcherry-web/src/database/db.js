@@ -6,9 +6,9 @@
 
 const { DatabaseSync } = require('node:sqlite');
 const path = require('path');
-const fs = require('fs');
+const { hashPassword } = require('../services/passwordService');
 
-const dbPath = path.join(__dirname, 'nomcherry.db');
+const dbPath = process.env.NOMCHERRY_DB || path.join(__dirname, 'nomcherry.db');
 const db = new DatabaseSync(dbPath);
 
 // Enable WAL mode and foreign keys for high performance and integrity
@@ -47,6 +47,7 @@ function initDatabase() {
             nama_menu TEXT NOT NULL,
             harga REAL NOT NULL,
             stok INTEGER DEFAULT 0,
+            min_stok INTEGER DEFAULT 5,
             kategori TEXT NOT NULL CHECK(kategori IN ('Makanan', 'Minuman', 'Dessert', 'Snack')),
             deskripsi TEXT,
             gambar TEXT,
@@ -63,13 +64,15 @@ function initDatabase() {
             id_pengguna TEXT,
             id_cabang TEXT,
             nama_pelanggan TEXT DEFAULT 'Pelanggan Umum',
-            nomor_meja TEXT DEFAULT 'Take Away',
+            jenis_pesanan TEXT DEFAULT 'Dine-In' CHECK(jenis_pesanan IN ('Dine-In', 'Takeaway', 'Delivery')),
+            nomor_meja TEXT DEFAULT '-',
             tanggal_pesanan TEXT NOT NULL,
             subtotal REAL NOT NULL,
             pajak REAL DEFAULT 0,
             diskon REAL DEFAULT 0,
             total REAL NOT NULL,
             status TEXT DEFAULT 'completed' CHECK(status IN ('completed', 'pending', 'dibatalkan')),
+            status_dapur TEXT DEFAULT 'pending' CHECK(status_dapur IN ('pending', 'served')),
             catatan TEXT,
             FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna),
             FOREIGN KEY (id_cabang) REFERENCES cabang(id_cabang)
@@ -126,7 +129,8 @@ function initDatabase() {
             id_cabang TEXT,
             id_pengguna TEXT,
             tanggal TEXT NOT NULL,
-            jenis TEXT DEFAULT 'PENYESUAIAN' CHECK(jenis IN ('MASUK', 'KELUAR', 'PENYESUAIAN', 'PENJUALAN')),
+            jenis TEXT DEFAULT 'PENYESUAIAN' CHECK(jenis IN ('MASUK', 'KELUAR', 'PENYESUAIAN', 'PENJUALAN', 'OPNAME', 'RUSAK', 'KADALUARSA')),
+            stok_awal INTEGER,
             perubahan INTEGER NOT NULL,
             stok_sisa INTEGER NOT NULL,
             tanggal_kadaluarsa TEXT,
@@ -134,6 +138,22 @@ function initDatabase() {
             FOREIGN KEY (id_menu) REFERENCES menu(id_menu),
             FOREIGN KEY (id_cabang) REFERENCES cabang(id_cabang),
             FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna)
+        );
+    `);
+
+    // 8b. Stok Cabang Table (Multi-Branch Isolated Inventory)
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS stok_cabang (
+            id_cabang TEXT NOT NULL,
+            id_menu TEXT NOT NULL,
+            stok INTEGER NOT NULL DEFAULT 0,
+            min_stok INTEGER NOT NULL DEFAULT 5,
+            tanggal_kadaluarsa TEXT,
+            menu_stok_snapshot INTEGER DEFAULT 0,
+            updated_at TEXT,
+            PRIMARY KEY (id_cabang, id_menu),
+            FOREIGN KEY (id_cabang) REFERENCES cabang(id_cabang) ON DELETE CASCADE,
+            FOREIGN KEY (id_menu) REFERENCES menu(id_menu) ON DELETE CASCADE
         );
     `);
 
@@ -150,7 +170,156 @@ function initDatabase() {
         );
     `);
 
+    // 10. Application metadata (seed/migration versioning)
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS app_meta (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        );
+    `);
+
+    // 11. Server-side sessions (revocable)
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS sessions (
+            session_id TEXT PRIMARY KEY,
+            id_pengguna TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            expires_at TEXT NOT NULL,
+            revoked_at TEXT,
+            user_agent TEXT,
+            ip TEXT,
+            FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna) ON DELETE CASCADE
+        );
+    `);
+
+    // 12. Application settings
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS app_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        );
+    `);
+    const insertSetting = db.prepare('INSERT OR IGNORE INTO app_settings (key, value) VALUES (?, ?)');
+    insertSetting.run('cafe_name', 'NomCherry Café & Roastery');
+    insertSetting.run('cafe_address', 'Jl. Tunjungan No. 88, Genteng, Surabaya Pusat');
+    insertSetting.run('cafe_phone', '(031) 548-2910');
+    insertSetting.run('tax_rate', '10');
+    insertSetting.run('low_stock_threshold', '5');
+    insertSetting.run('receipt_footer', 'Terima kasih telah menikmati kopi & hidangan NomCherry!');
+
+    // 13. Query indexes for common filters and joins
+    db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_menu_cabang ON menu(id_cabang);
+        CREATE INDEX IF NOT EXISTS idx_pesanan_tanggal ON pesanan(tanggal_pesanan);
+        CREATE INDEX IF NOT EXISTS idx_pesanan_cabang ON pesanan(id_cabang);
+        CREATE INDEX IF NOT EXISTS idx_detail_pesanan_pesanan ON detail_pesanan(id_pesanan);
+        CREATE INDEX IF NOT EXISTS idx_detail_pesanan_menu ON detail_pesanan(id_menu);
+        CREATE INDEX IF NOT EXISTS idx_pembayaran_pesanan ON pembayaran(id_pesanan);
+        CREATE INDEX IF NOT EXISTS idx_struk_pesanan ON struk(id_pesanan);
+        CREATE INDEX IF NOT EXISTS idx_stok_menu ON stok(id_menu);
+        CREATE INDEX IF NOT EXISTS idx_stok_cabang_tanggal ON stok(id_cabang, tanggal);
+        CREATE INDEX IF NOT EXISTS idx_stok_cabang_lookup ON stok_cabang(id_cabang, id_menu);
+        CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(id_pengguna);
+        CREATE INDEX IF NOT EXISTS idx_sessions_expiry ON sessions(expires_at);
+    `);
+
+    migrateSchema();
     seedInitialData();
+}
+
+function migrateSchema() {
+    const orderColumns = db.prepare('PRAGMA table_info(pesanan)').all();
+    if (!orderColumns.some(column => column.name === 'status_dapur')) {
+        db.exec("ALTER TABLE pesanan ADD COLUMN status_dapur TEXT DEFAULT 'pending'");
+        db.exec("UPDATE pesanan SET status_dapur = 'served'");
+    }
+    if (!orderColumns.some(column => column.name === 'jenis_pesanan')) {
+        db.exec("ALTER TABLE pesanan ADD COLUMN jenis_pesanan TEXT DEFAULT 'Dine-In'");
+    }
+    db.exec(`
+        UPDATE pesanan
+        SET jenis_pesanan = 'Takeaway', nomor_meja = '-'
+        WHERE LOWER(TRIM(COALESCE(nomor_meja, ''))) IN ('take away', 'takeaway')
+    `);
+    db.exec(`
+        UPDATE pesanan
+        SET jenis_pesanan = 'Delivery', nomor_meja = '-'
+        WHERE LOWER(TRIM(COALESCE(nomor_meja, ''))) = 'delivery'
+    `);
+    db.exec(`
+        UPDATE pesanan
+        SET jenis_pesanan = 'Dine-In'
+        WHERE jenis_pesanan IS NULL OR TRIM(jenis_pesanan) = ''
+    `);
+
+    // Non-destructive migration for menu.min_stok
+    const menuColumns = db.prepare('PRAGMA table_info(menu)').all();
+    if (!menuColumns.some(column => column.name === 'min_stok')) {
+        db.exec('ALTER TABLE menu ADD COLUMN min_stok INTEGER DEFAULT 5');
+        db.exec('UPDATE menu SET min_stok = 5 WHERE min_stok IS NULL');
+    }
+
+    // Non-destructive migration for stok table (expand CHECK constraint for OPNAME, RUSAK, KADALUARSA & add stok_awal)
+    const stokMaster = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'stok'").get();
+    if (stokMaster && stokMaster.sql && !stokMaster.sql.includes("'OPNAME'")) {
+        const stokCols = db.prepare('PRAGMA table_info(stok)').all();
+        const hasStokAwal = stokCols.some(c => c.name === 'stok_awal');
+        db.exec('PRAGMA foreign_keys = OFF;');
+        try {
+            db.exec('BEGIN IMMEDIATE');
+            db.exec(`
+                CREATE TABLE stok_migrated (
+                    id_stok TEXT PRIMARY KEY,
+                    id_menu TEXT NOT NULL,
+                    id_cabang TEXT,
+                    id_pengguna TEXT,
+                    tanggal TEXT NOT NULL,
+                    jenis TEXT DEFAULT 'PENYESUAIAN' CHECK(jenis IN ('MASUK', 'KELUAR', 'PENYESUAIAN', 'PENJUALAN', 'OPNAME', 'RUSAK', 'KADALUARSA')),
+                    stok_awal INTEGER,
+                    perubahan INTEGER NOT NULL,
+                    stok_sisa INTEGER NOT NULL,
+                    tanggal_kadaluarsa TEXT,
+                    keterangan TEXT,
+                    FOREIGN KEY (id_menu) REFERENCES menu(id_menu),
+                    FOREIGN KEY (id_cabang) REFERENCES cabang(id_cabang),
+                    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna)
+                );
+            `);
+            if (hasStokAwal) {
+                db.exec(`
+                    INSERT INTO stok_migrated (id_stok, id_menu, id_cabang, id_pengguna, tanggal, jenis, stok_awal, perubahan, stok_sisa, tanggal_kadaluarsa, keterangan)
+                    SELECT id_stok, id_menu, id_cabang, id_pengguna, tanggal, jenis, COALESCE(stok_awal, stok_sisa - perubahan), perubahan, stok_sisa, tanggal_kadaluarsa, keterangan
+                    FROM stok;
+                `);
+            } else {
+                db.exec(`
+                    INSERT INTO stok_migrated (id_stok, id_menu, id_cabang, id_pengguna, tanggal, jenis, stok_awal, perubahan, stok_sisa, tanggal_kadaluarsa, keterangan)
+                    SELECT id_stok, id_menu, id_cabang, id_pengguna, tanggal, jenis, (stok_sisa - perubahan), perubahan, stok_sisa, tanggal_kadaluarsa, keterangan
+                    FROM stok;
+                `);
+            }
+            db.exec('DROP TABLE stok;');
+            db.exec('ALTER TABLE stok_migrated RENAME TO stok;');
+            db.exec('CREATE INDEX IF NOT EXISTS idx_stok_menu ON stok(id_menu);');
+            db.exec('CREATE INDEX IF NOT EXISTS idx_stok_cabang_tanggal ON stok(id_cabang, tanggal);');
+            db.exec('COMMIT');
+        } catch (err) {
+            try { db.exec('ROLLBACK'); } catch (e) {}
+            throw err;
+        } finally {
+            db.exec('PRAGMA foreign_keys = ON;');
+        }
+    } else {
+        const stokCols = db.prepare('PRAGMA table_info(stok)').all();
+        if (!stokCols.some(c => c.name === 'stok_awal')) {
+            db.exec('ALTER TABLE stok ADD COLUMN stok_awal INTEGER');
+        }
+        db.exec('UPDATE stok SET stok_awal = stok_sisa - perubahan WHERE stok_awal IS NULL');
+    }
+}
+
+function markMenuSeeded() {
+    db.prepare("INSERT OR REPLACE INTO app_meta (key, value) VALUES ('menu_seed_version', '1')").run();
 }
 
 function seedInitialData() {
@@ -168,17 +337,18 @@ function seedInitialData() {
     if (checkPengguna.count === 0) {
         console.log('Seeding initial users from db_kafe.sql...');
         const insertUser = db.prepare('INSERT INTO pengguna (id_pengguna, nama_pengguna, username, kata_sandi, peran, id_cabang) VALUES (?, ?, ?, ?, ?, ?)');
-        insertUser.run('USR001', 'Admin Utama', 'admin', 'admin123', 'admin', 'CBG001');
-        insertUser.run('USR002', 'Daffa Danendra (Kasir Cabang 1)', 'daps', '135', 'kasir', 'CBG001');
-        insertUser.run('USR003', 'Saman (Kasir Cabang 2)', 'kasir', '123', 'kasir', 'CBG002');
-        insertUser.run('USR004', 'Hai Admin 2 (Admin Cabang 2)', 'admin2', '123', 'admin', 'CBG002');
-        insertUser.run('USR005', 'Clarissa (Manager Operasional)', 'manager1', '123', 'manager', 'CBG001');
-        insertUser.run('USR006', 'Dapp Owner (Pemilik)', 'owner1', '123', 'owner', 'CBG001');
+        insertUser.run('USR001', 'Admin Utama', 'admin', hashPassword('admin123'), 'admin', 'CBG001');
+        insertUser.run('USR002', 'Daffa Danendra (Kasir Cabang 1)', 'daps', hashPassword('135'), 'kasir', 'CBG001');
+        insertUser.run('USR003', 'Saman (Kasir Cabang 2)', 'kasir', hashPassword('123'), 'kasir', 'CBG002');
+        insertUser.run('USR004', 'Hai Admin 2 (Admin Cabang 2)', 'admin2', hashPassword('123'), 'admin', 'CBG002');
+        insertUser.run('USR005', 'Clarissa (Manager Operasional)', 'manager1', hashPassword('123'), 'manager', 'CBG001');
+        insertUser.run('USR006', 'Dapp Owner (Pemilik)', 'owner1', hashPassword('123'), 'owner', 'CBG001');
     }
 
     // Check if menu exists (from db_kafe.sql)
     const checkMenu = db.prepare('SELECT COUNT(*) AS count FROM menu').get();
-    if (checkMenu.count === 0) {
+    const menuWasEmpty = checkMenu.count === 0;
+    if (menuWasEmpty) {
         console.log('Seeding initial menu from db_kafe.sql...');
         const insertMenu = db.prepare('INSERT INTO menu (id_menu, nama_menu, harga, stok, kategori, deskripsi, gambar, id_cabang, is_available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
         insertMenu.run('MNU001', 'Kopi Hitam Nusantara', 15000.0, 18, 'Minuman', 'Kopi hitam arabika robusta blend dengan aroma pekat dan rasa khas.', '☕', 'CBG001', 1);
@@ -203,17 +373,17 @@ function seedInitialData() {
         };
 
         const sampleOrders = [
-            { id: 'PSN001', user: 'USR002', cabang: 'CBG001', customer: 'Budi Santoso', meja: 'Meja 01', date: formatDate(2, 10, 15), subtotal: 35000, tax: 3500, discount: 0, total: 38500, method: 'Cash', received: 50000, change: 11500, items: [{ id: 'MNU001', qty: 1, price: 15000 }, { id: 'MNU008', qty: 1, price: 20000 }] },
-            { id: 'PSN002', user: 'USR002', cabang: 'CBG001', customer: 'Siti Rahma', meja: 'Meja 03', date: formatDate(1, 14, 30), subtotal: 40000, tax: 4000, discount: 0, total: 44000, method: 'QRIS', received: 44000, change: 0, items: [{ id: 'MNU004', qty: 1, price: 18000 }, { id: 'MNU003', qty: 1, price: 22000 }] },
-            { id: 'PSN003', user: 'USR003', cabang: 'CBG002', customer: 'Ahmad Faisal', meja: 'Take Away', date: formatDate(1, 16, 45), subtotal: 33000, tax: 3300, discount: 0, total: 36300, method: 'Cash', received: 40000, change: 3700, items: [{ id: 'MNU006', qty: 1, price: 25000 }, { id: 'MNU005', qty: 1, price: 8000 }] },
-            { id: 'PSN004', user: 'USR002', cabang: 'CBG001', customer: 'Dewi Lestari', meja: 'Meja 05', date: formatDate(0, 11, 20), subtotal: 55000, tax: 5500, discount: 5000, total: 55500, method: 'Transfer', received: 55500, change: 0, items: [{ id: 'MNU001', qty: 2, price: 15000 }, { id: 'MNU006', qty: 1, price: 25000 }] },
-            { id: 'PSN005', user: 'USR003', cabang: 'CBG002', customer: 'Reza Pratama', meja: 'Meja 02', date: formatDate(0, 13, 10), subtotal: 23000, tax: 2300, discount: 0, total: 25300, method: 'Cash', received: 30000, change: 4700, items: [{ id: 'MNU004', qty: 1, price: 18000 }, { id: 'MNU002', qty: 1, price: 5000 }] },
-            { id: 'PSN006', user: 'USR002', cabang: 'CBG001', customer: 'Nadia Putri', meja: 'Meja 07', date: formatDate(0, 15, 40), subtotal: 47000, tax: 4700, discount: 0, total: 51700, method: 'QRIS', received: 51700, change: 0, items: [{ id: 'MNU003', qty: 1, price: 22000 }, { id: 'MNU006', qty: 1, price: 25000 }] }
+            { id: 'PSN001', user: 'USR002', cabang: 'CBG001', customer: 'Budi Santoso', jenis: 'Dine-In', meja: 'Meja 01', date: formatDate(2, 10, 15), subtotal: 35000, tax: 3500, discount: 0, total: 38500, method: 'Cash', received: 50000, change: 11500, items: [{ id: 'MNU001', qty: 1, price: 15000 }, { id: 'MNU008', qty: 1, price: 20000 }] },
+            { id: 'PSN002', user: 'USR002', cabang: 'CBG001', customer: 'Siti Rahma', jenis: 'Dine-In', meja: 'Meja 03', date: formatDate(1, 14, 30), subtotal: 40000, tax: 4000, discount: 0, total: 44000, method: 'QRIS', received: 44000, change: 0, items: [{ id: 'MNU004', qty: 1, price: 18000 }, { id: 'MNU003', qty: 1, price: 22000 }] },
+            { id: 'PSN003', user: 'USR003', cabang: 'CBG002', customer: 'Ahmad Faisal', jenis: 'Takeaway', meja: '-', date: formatDate(1, 16, 45), subtotal: 33000, tax: 3300, discount: 0, total: 36300, method: 'Cash', received: 40000, change: 3700, items: [{ id: 'MNU006', qty: 1, price: 25000 }, { id: 'MNU005', qty: 1, price: 8000 }] },
+            { id: 'PSN004', user: 'USR002', cabang: 'CBG001', customer: 'Dewi Lestari', jenis: 'Dine-In', meja: 'Meja 05', date: formatDate(0, 11, 20), subtotal: 55000, tax: 5500, discount: 5000, total: 55500, method: 'Debit', received: 55500, change: 0, items: [{ id: 'MNU001', qty: 2, price: 15000 }, { id: 'MNU006', qty: 1, price: 25000 }] },
+            { id: 'PSN005', user: 'USR003', cabang: 'CBG002', customer: 'Reza Pratama', jenis: 'Dine-In', meja: 'Meja 02', date: formatDate(0, 13, 10), subtotal: 23000, tax: 2300, discount: 0, total: 25300, method: 'Cash', received: 30000, change: 4700, items: [{ id: 'MNU004', qty: 1, price: 18000 }, { id: 'MNU002', qty: 1, price: 5000 }] },
+            { id: 'PSN006', user: 'USR002', cabang: 'CBG001', customer: 'Nadia Putri', jenis: 'Dine-In', meja: 'Meja 07', date: formatDate(0, 15, 40), subtotal: 47000, tax: 4700, discount: 0, total: 51700, method: 'QRIS', received: 51700, change: 0, items: [{ id: 'MNU003', qty: 1, price: 22000 }, { id: 'MNU006', qty: 1, price: 25000 }] }
         ];
 
         const insertPsn = db.prepare(`
-            INSERT INTO pesanan (id_pesanan, id_pengguna, id_cabang, nama_pelanggan, nomor_meja, tanggal_pesanan, subtotal, pajak, diskon, total, status, catatan)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'completed', 'Order selesai')
+            INSERT INTO pesanan (id_pesanan, id_pengguna, id_cabang, nama_pelanggan, jenis_pesanan, nomor_meja, tanggal_pesanan, subtotal, pajak, diskon, total, status, status_dapur, catatan)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'completed', 'served', 'Order selesai')
         `);
         const insertDet = db.prepare(`
             INSERT INTO detail_pesanan (id_detail, id_pesanan, id_menu, nama_menu, harga_satuan, jumlah, subtotal)
@@ -229,7 +399,7 @@ function seedInitialData() {
         `);
 
         sampleOrders.forEach((o, idx) => {
-            insertPsn.run(o.id, o.user, o.cabang, o.customer, o.meja, o.date, o.subtotal, o.tax, o.discount, o.total);
+            insertPsn.run(o.id, o.user, o.cabang, o.customer, o.jenis, o.meja, o.date, o.subtotal, o.tax, o.discount, o.total);
 
             o.items.forEach((it, iIdx) => {
                 const menuItem = db.prepare('SELECT nama_menu FROM menu WHERE id_menu = ?').get(it.id);
@@ -264,11 +434,136 @@ function seedInitialData() {
         insertStk.run('STK003', 'MNU004', 'CBG001', 'USR001', nowIso, 'MASUK', 25, 20, expiryFuture, 'Stok mie telur kering');
     }
 
-    // Upgrade & Synchronize Rich Varied Menu Catalog with Authentic Photography
-    upgradeMenuCatalog();
+    // Synchronize the rich catalog only on a fresh database. Existing menu
+    // edits are never overwritten on application startup.
+    upgradeMenuCatalog({ updateExisting: menuWasEmpty });
+    ensureBranchInventorySeeded();
+    markMenuSeeded();
+    migratePlaintextPasswords();
 }
 
-function upgradeMenuCatalog() {
+function ensureBranchInventorySeeded() {
+    const branches = db.prepare('SELECT id_cabang FROM cabang').all();
+    const menus = db.prepare('SELECT id_menu, stok, COALESCE(min_stok, 5) AS min_stok FROM menu').all();
+    const insertBranchStock = db.prepare(`
+        INSERT OR IGNORE INTO stok_cabang (id_cabang, id_menu, stok, min_stok, tanggal_kadaluarsa, menu_stok_snapshot, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+    const latestExpiryStmt = db.prepare(`
+        SELECT tanggal_kadaluarsa FROM stok
+        WHERE id_menu = ? AND (id_cabang = ? OR id_cabang IS NULL) AND tanggal_kadaluarsa IS NOT NULL
+        ORDER BY tanggal DESC LIMIT 1
+    `);
+    const anyExpiryStmt = db.prepare(`
+        SELECT tanggal_kadaluarsa FROM stok
+        WHERE id_menu = ? AND tanggal_kadaluarsa IS NOT NULL
+        ORDER BY tanggal DESC LIMIT 1
+    `);
+    const nowIso = new Date().toISOString();
+
+    for (const branch of branches) {
+        for (const menu of menus) {
+            const branchExp = latestExpiryStmt.get(menu.id_menu, branch.id_cabang);
+            const fallbackExp = branchExp || anyExpiryStmt.get(menu.id_menu);
+            const expDate = fallbackExp ? fallbackExp.tanggal_kadaluarsa : null;
+            insertBranchStock.run(
+                branch.id_cabang,
+                menu.id_menu,
+                menu.stok,
+                menu.min_stok || 5,
+                expDate,
+                menu.stok,
+                nowIso
+            );
+        }
+    }
+}
+
+function syncBranchStockRow(id_cabang, id_menu) {
+    const branchId = id_cabang || 'CBG001';
+    const menu = db.prepare('SELECT id_menu, stok, COALESCE(min_stok, 5) AS min_stok, id_cabang FROM menu WHERE id_menu = ?').get(id_menu);
+    if (!menu) return null;
+
+    let row = db.prepare('SELECT * FROM stok_cabang WHERE id_cabang = ? AND id_menu = ?').get(branchId, id_menu);
+    const nowIso = new Date().toISOString();
+
+    if (!row) {
+        const expRow = db.prepare(`
+            SELECT tanggal_kadaluarsa FROM stok
+            WHERE id_menu = ? AND tanggal_kadaluarsa IS NOT NULL
+            ORDER BY tanggal DESC LIMIT 1
+        `).get(id_menu);
+        db.prepare(`
+            INSERT OR IGNORE INTO stok_cabang (id_cabang, id_menu, stok, min_stok, tanggal_kadaluarsa, menu_stok_snapshot, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).run(branchId, id_menu, menu.stok, menu.min_stok || 5, expRow ? expRow.tanggal_kadaluarsa : null, menu.stok, nowIso);
+        row = db.prepare('SELECT * FROM stok_cabang WHERE id_cabang = ? AND id_menu = ?').get(branchId, id_menu);
+    }
+
+    if (row && menu.stok !== row.menu_stok_snapshot) {
+        const delta = menu.stok - row.menu_stok_snapshot;
+        db.prepare(`
+            UPDATE stok_cabang
+            SET stok = MAX(0, stok + ?), menu_stok_snapshot = ?, updated_at = ?
+            WHERE id_menu = ?
+        `).run(delta, menu.stok, nowIso, id_menu);
+        row = db.prepare('SELECT * FROM stok_cabang WHERE id_cabang = ? AND id_menu = ?').get(branchId, id_menu);
+    }
+
+    return row;
+}
+
+function applyBranchStockChange({ id_cabang, id_menu, stokBaru, minStok, tanggalKadaluarsa }) {
+    const branchId = id_cabang || 'CBG001';
+    const currentRow = syncBranchStockRow(branchId, id_menu);
+    if (!currentRow) return null;
+
+    const menu = db.prepare('SELECT stok, COALESCE(min_stok, 5) AS min_stok FROM menu WHERE id_menu = ?').get(id_menu);
+    const stokSebelum = currentRow.stok;
+    const selisih = stokBaru - stokSebelum;
+    const nextMenuStok = Math.max(0, menu.stok + selisih);
+    const nextMinStok = (minStok !== undefined && minStok !== null && Number.isInteger(Number(minStok)) && Number(minStok) >= 0)
+        ? Number(minStok)
+        : currentRow.min_stok;
+    const nextExp = tanggalKadaluarsa !== undefined ? tanggalKadaluarsa : currentRow.tanggal_kadaluarsa;
+    const nowIso = new Date().toISOString();
+
+    db.prepare('UPDATE menu SET stok = ?, min_stok = ? WHERE id_menu = ?').run(nextMenuStok, nextMinStok, id_menu);
+    db.prepare(`
+        UPDATE stok_cabang
+        SET stok = ?, min_stok = ?, tanggal_kadaluarsa = ?, menu_stok_snapshot = ?, updated_at = ?
+        WHERE id_cabang = ? AND id_menu = ?
+    `).run(stokBaru, nextMinStok, nextExp, nextMenuStok, nowIso, branchId, id_menu);
+
+    db.prepare(`
+        UPDATE stok_cabang
+        SET menu_stok_snapshot = ?
+        WHERE id_menu = ? AND id_cabang != ?
+    `).run(nextMenuStok, id_menu, branchId);
+
+    return {
+        id_cabang: branchId,
+        id_menu,
+        stok_sebelum: stokSebelum,
+        stok_baru: stokBaru,
+        selisih,
+        min_stok: nextMinStok,
+        tanggal_kadaluarsa: nextExp
+    };
+}
+
+function migratePlaintextPasswords() {
+    const users = db.prepare('SELECT id_pengguna, kata_sandi FROM pengguna').all();
+    const update = db.prepare('UPDATE pengguna SET kata_sandi = ? WHERE id_pengguna = ?');
+
+    for (const user of users) {
+        if (typeof user.kata_sandi === 'string' && !user.kata_sandi.startsWith('scrypt$')) {
+            update.run(hashPassword(user.kata_sandi), user.id_pengguna);
+        }
+    }
+}
+
+function upgradeMenuCatalog({ updateExisting = false } = {}) {
     const VARIED_MENUS = [
         // 1. Minuman - Kopi (Coffee)
         {
@@ -511,10 +806,28 @@ function upgradeMenuCatalog() {
     for (const item of VARIED_MENUS) {
         const existing = checkStmt.get(item.id);
         if (existing) {
-            updateStmt.run(item.nama, item.harga, item.kategori, item.desc, item.gambar, item.id);
-        } else {
-            insertStmt.run(item.id, item.nama, item.harga, item.stok, item.kategori, item.desc, item.gambar);
+            if (updateExisting) {
+                updateStmt.run(item.nama, item.harga, item.kategori, item.desc, item.gambar, item.id);
+            }
+            continue;
         }
+        insertStmt.run(item.id, item.nama, item.harga, item.stok, item.kategori, item.desc, item.gambar);
+    }
+}
+
+function transaction(fn) {
+    db.exec('BEGIN IMMEDIATE');
+    try {
+        const result = fn();
+        db.exec('COMMIT');
+        return result;
+    } catch (err) {
+        try {
+            db.exec('ROLLBACK');
+        } catch (rollbackError) {
+            console.error('[db] rollback failed:', rollbackError.message);
+        }
+        throw err;
     }
 }
 
@@ -523,6 +836,10 @@ initDatabase();
 
 module.exports = {
     db,
+    transaction,
+    ensureBranchInventorySeeded,
+    syncBranchStockRow,
+    applyBranchStockChange,
     query(sql, params = []) {
         return db.prepare(sql).all(...params);
     },

@@ -1,4 +1,12 @@
 const assert = require('node:assert');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+
+const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nomcherry-test-'));
+process.env.NOMCHERRY_DB = path.join(tempDir, 'test.db');
+process.env.SESSION_SECRET = 'test-session-secret';
+
 const db = require('../src/database/db');
 const authController = require('../src/controllers/authController');
 const menuController = require('../src/controllers/menuController');
@@ -80,7 +88,7 @@ const checkoutBody = {
     id_pengguna: 'USR001',
     nomor_meja: 'Meja 05',
     metode_pembayaran: 'Cash',
-    nominal_diterima: 50000,
+    nominal_diterima: 100000,
     items: [
         { id_menu: firstMenu.id_menu, qty: 2, harga: firstMenu.harga, nama_menu: firstMenu.nama_menu }
     ]
@@ -128,3 +136,6 @@ assert(typeof res.data === 'string' && res.data.includes('ID Pesanan,Nomor Struk
 console.log('   ✓ CSV data exported successfully with headers');
 
 console.log('\n🎉 ALL 12 VERIFICATION & TEST SUITE CHECKS PASSED WITH 100% SUCCESS!\n');
+
+db.db.close();
+fs.rmSync(tempDir, { recursive: true, force: true });
