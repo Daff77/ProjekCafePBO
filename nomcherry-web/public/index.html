@@ -15,11 +15,12 @@
 
   <!-- MOBILE DRAWER BACKDROP -->
   <div class="mobile-backdrop" id="mobile-backdrop"></div>
+  <div class="mobile-cart-backdrop" id="mobile-cart-backdrop"></div>
 
   <!-- ============================================================
-       SIDEBAR (COFRA ARCHITECTURE)
+       SIDEBAR
        ============================================================ -->
-  <aside class="side" aria-label="Navigasi Utama">
+  <aside class="side" id="main-sidebar" aria-label="Navigasi Utama">
     <div class="side__top">
       <a href="#overview" class="brand" id="brand-home-link">
         <span class="brand__mark" aria-hidden="true">
@@ -27,72 +28,75 @@
         </span>
         <span>NomCherry</span>
       </a>
-      <span class="pill pill--good">POS v2.5</span>
+      <button type="button" class="ibtn side__close" id="close-mobile-nav-btn" aria-label="Tutup Menu Navigasi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
     </div>
 
-    <button class="side__search" type="button" id="side-search-btn" title="Cari menu atau nomor struk (Ctrl+K)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-      <span>Cari menu, struk...</span>
-      <kbd>⌘K</kbd>
+    <button class="side__search" type="button" id="side-search-btn" title="Cari menu di Kasir POS (Ctrl+K)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <span>Cari menu POS...</span>
+      <kbd>Ctrl+K</kbd>
     </button>
 
     <nav class="snav" aria-label="Menu Kafe">
       <div class="snav__group">
         <div class="snav__label">Operasional Kasir</div>
         <a class="snav__item is-active" href="#overview" data-view="overview" aria-current="page">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="2"></rect><rect x="14" y="3" width="7" height="5" rx="2"></rect><rect x="14" y="12" width="7" height="9" rx="2"></rect><rect x="3" y="16" width="7" height="5" rx="2"></rect></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="2"></rect><rect x="14" y="3" width="7" height="5" rx="2"></rect><rect x="14" y="12" width="7" height="9" rx="2"></rect><rect x="3" y="16" width="7" height="5" rx="2"></rect></svg>
           <span>Ringkasan Kafe</span>
         </a>
         <a class="snav__item" href="#pos" data-view="pos">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
           <span>Kasir POS</span>
-          <span class="snav__badge" id="nav-cart-badge">24 Menu</span>
+          <span class="snav__badge" id="nav-cart-badge">0 Menu</span>
         </a>
         <a class="snav__item" href="#orders" data-view="orders">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>
           <span>Pesanan &amp; Dapur</span>
-          <span class="snav__badge" id="nav-orders-badge">3</span>
+          <span class="snav__badge" id="nav-orders-badge">0</span>
         </a>
       </div>
 
       <div class="snav__group">
         <div class="snav__label">Manajemen Kafe</div>
         <a class="snav__item" href="#catalog" data-view="catalog">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
           <span>Katalog Menu</span>
         </a>
         <a class="snav__item" href="#inventory" data-view="inventory">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10"></path><path d="M6 7h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z"></path><path d="M6 12h12"></path></svg>
-          <span>Inventori Bahan</span>
-          <span class="snav__badge" id="nav-inv-badge">2 Low</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10"></path><path d="M6 7h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z"></path><path d="M6 12h12"></path></svg>
+          <span>Inventori Stok</span>
+          <span class="snav__badge" id="nav-inv-badge">Aman</span>
         </a>
         <a class="snav__item" href="#members" data-view="members">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           <span>Member Loyalitas</span>
+          <span class="snav__badge" id="nav-member-badge">Nonaktif</span>
         </a>
       </div>
 
       <div class="snav__group">
         <div class="snav__label">Analitik &amp; Sistem</div>
         <a class="snav__item" href="#reports" data-view="reports">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M22 20H2"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M22 20H2"></path></svg>
           <span>Laporan &amp; Analitik</span>
         </a>
         <a class="snav__item" href="#settings" data-view="settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
           <span>Pengaturan</span>
         </a>
       </div>
     </nav>
 
     <div class="side__foot">
-      <button type="button" class="side__user" id="sidebar-user-btn" title="Profil Sesi Kasir &amp; Ganti Akun">
-        <span class="av" id="user-avatar">DD</span>
+      <button type="button" class="side__user" id="sidebar-user-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="user-popover" title="Profil Sesi &amp; Keluar">
+        <span class="av" id="user-avatar">NC</span>
         <div class="side__user-meta">
-          <div class="side__user-name" id="user-name-label">Daffa Danendra</div>
-          <div class="side__user-plan" id="user-role-label">Kasir · Cabang Pusat</div>
+          <div class="side__user-name" id="user-name-label">Memuat pengguna...</div>
+          <div class="side__user-plan" id="user-role-label">-</div>
         </div>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"></path></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
       </button>
     </div>
   </aside>
@@ -100,73 +104,80 @@
   <!-- ============================================================
        MAIN WORKSPACE
        ============================================================ -->
-  <div class="main">
+  <div class="main" id="main-workspace">
     <header class="top">
-      <button class="ibtn mobile-toggle" id="mobile-menu-btn" type="button" aria-label="Buka Menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-      </button>
+      <div class="top__bar-primary">
+        <button class="ibtn mobile-toggle" id="mobile-menu-btn" type="button" aria-label="Buka Menu Navigasi" aria-expanded="false" aria-controls="main-sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
 
-      <div class="top__crumbs">
-        <span>NomCherry POS</span>
-        <span class="top__sep">/</span>
-        <strong id="top-crumb-current">Ringkasan Kafe</strong>
+        <div class="top__crumbs">
+          <span class="top__crumbs-root">NomCherry POS</span>
+          <span class="top__sep" aria-hidden="true">/</span>
+          <strong id="top-crumb-current">Ringkasan Kafe</strong>
+        </div>
+
+        <div class="top__actions">
+          <button class="ibtn" id="priv-toggle-btn" type="button" aria-label="Sembunyikan atau Tampilkan Nominal" aria-pressed="false" title="Mode Privasi Angka">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+
+          <button class="ibtn" id="theme-toggle" type="button" aria-label="Ganti Tema Terang atau Gelap" title="Ganti Tema">
+            <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+          </button>
+
+          <button class="ibtn" type="button" id="notif-btn" aria-label="Notifikasi Operasional" aria-haspopup="dialog" aria-expanded="false" aria-controls="notif-popover" title="Notifikasi Operasional">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+            <span class="ibtn__dot" id="notif-dot" style="display:none;"></span>
+          </button>
+
+          <button class="btn btn--primary" type="button" id="top-quick-pos-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            <span class="top__pos-lbl">Kasir POS</span>
+          </button>
+        </div>
       </div>
 
-      <div class="top__spacer"></div>
+      <div class="top__bar-context">
+        <div class="top__branch-wrap">
+          <label for="branch-selector" class="sr-only">Cabang Aktif</label>
+          <select class="select" id="branch-selector" aria-label="Pilih Cabang Aktif">
+            <option value="CBG001">Cabang Surabaya Pusat (CBG001)</option>
+            <option value="CBG002">Cabang Surabaya Timur (CBG002)</option>
+          </select>
+        </div>
 
-      <div class="top__right">
-        <select class="select" id="branch-selector" aria-label="Pilih Cabang Kafe">
-          <option value="CBG001">🍒 Cabang Surabaya Pusat</option>
-          <option value="CBG002">🍒 Cabang Surabaya Timur</option>
-        </select>
-
-        <span class="top__status" title="Status Server &amp; Printer Thermal">
-          <span class="dot"></span>
-          <span id="live-clock-chip">Shift Pagi · Aktif</span>
+        <span class="top__status" id="sync-status-pill" role="status" aria-live="polite" title="Status Koneksi &amp; Sinkronisasi Server">
+          <span class="dot" id="sync-status-dot"></span>
+          <span id="live-clock-chip">Menghubungkan...</span>
         </span>
-
-        <button class="ibtn" id="priv-toggle-btn" type="button" aria-label="Sembunyikan/Tampilkan Nominal" title="Mode Privasi Angka">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-        </button>
-
-        <button class="ibtn" id="theme-toggle" type="button" aria-label="Ganti Tema Terang/Gelap" title="Ganti Tema">
-          <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
-        </button>
-
-        <button class="ibtn" type="button" id="notif-btn" aria-label="Notifikasi Dapur &amp; Stok" title="Notifikasi Operasional">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
-          <span class="ibtn__dot" id="notif-dot"></span>
-        </button>
-
-        <button class="btn btn--primary" type="button" id="top-quick-pos-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
-          <span>Kasir POS</span>
-        </button>
       </div>
     </header>
 
     <main class="page">
 
       <!-- ============================================================
-           VIEW 1: OVERVIEW (COFRA OVERVIEW ARCHITECTURE)
+           VIEW 1: OVERVIEW
            ============================================================ -->
       <section class="view-section is-active" id="view-overview" aria-label="Ringkasan Kafe">
         <div class="phead">
           <div>
-            <div class="phead__eyebrow" id="ov-date-eyebrow">Sabtu, 8 November · Shift Operasional Aktif</div>
-            <h1 class="phead__title" id="ov-greeting-title">Selamat Pagi, Daffa</h1>
+            <h1 class="phead__title" id="ov-greeting-title">Selamat Datang</h1>
+            <p class="phead__sub" id="ov-date-eyebrow">Memuat tanggal operasional &amp; cabang aktif...</p>
           </div>
           <div class="phead__right">
             <button class="btn" type="button" id="export-csv-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
               <span>Ekspor CSV</span>
             </button>
             <button class="btn btn--primary" type="button" data-goto-view="pos">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
               <span>Transaksi Baru</span>
             </button>
           </div>
         </div>
+
+        <div class="inline-alert inline-alert--error" id="ov-error-banner" role="alert" style="display:none;"></div>
 
         <div class="ov-grid">
           <!-- Total Omzet + Area Chart + Split + Accounts (8 cols) -->
@@ -174,17 +185,17 @@
             <div class="ov-bal__top">
               <div>
                 <div class="ov-bal__label">
-                  <span>Total Omzet Penjualan Bersih</span>
-                  <span class="delta" id="ov-hero-delta">↑ 14.8%</span>
+                  <span id="ov-hero-title">Total Penjualan Kotor (Gross)</span>
+                  <span class="delta delta--flat" id="ov-hero-delta">Memuat</span>
                 </div>
-                <div class="ov-bal__fig priv" id="ov-hero-rev">Rp 6.840.000</div>
+                <div class="ov-bal__fig priv" id="ov-hero-rev">Rp 0</div>
                 <div class="ov-bal__sub">
-                  <span id="ov-hero-subtext">+Rp 880.000 dibanding rata-rata shift kemarin</span>
+                  <span id="ov-hero-subtext">Memuat ringkasan periode...</span>
                   <span>·</span>
-                  <span>Pajak PB1 10% tercatat otomatis</span>
+                  <span id="ov-period-tax-note">Pajak dihitung dari nilai struk tersimpan</span>
                 </div>
               </div>
-              <div class="seg" role="group" aria-label="Rentang Waktu Grafik" id="ov-range-seg">
+              <div class="seg" role="group" aria-label="Rentang Waktu Ringkasan" id="ov-range-seg">
                 <button type="button" data-range="today" aria-pressed="true" class="is-active">Hari Ini</button>
                 <button type="button" data-range="7d" aria-pressed="false">7 Hari</button>
                 <button type="button" data-range="30d" aria-pressed="false">30 Hari</button>
@@ -193,62 +204,47 @@
 
             <div class="area" aria-label="Grafik Tren Penjualan Kafe">
               <div class="area__grid" id="ov-area-grid">
-                <span>Rp 7 Jt</span>
-                <span>Rp 4,5 Jt</span>
-                <span>Rp 2 Jt</span>
+                <span>Maksimum</span>
+                <span>Tengah</span>
+                <span>Dasar</span>
               </div>
-              <svg class="area__svg" viewBox="0 0 640 170" preserveAspectRatio="none">
+              <svg class="area__svg" viewBox="0 0 640 170" preserveAspectRatio="none" aria-hidden="true">
                 <defs>
                   <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.28"></stop>
+                    <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.26"></stop>
                     <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"></stop>
                   </linearGradient>
                 </defs>
-                <path id="ov-area-fill" d="M0,142 C70,136 115,118 165,112 C220,105 260,120 315,92 C370,64 415,58 470,46 C525,34 580,28 640,18 L640,170 L0,170 Z" fill="url(#areaGrad)"></path>
-                <path id="ov-area-line" d="M0,142 C70,136 115,118 165,112 C220,105 260,120 315,92 C370,64 415,58 470,46 C525,34 580,28 640,18" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"></path>
-                <circle id="ov-area-dot" cx="640" cy="18" r="4.5" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5"></circle>
+                <path id="ov-area-fill" d="M0,166 L640,166 L640,170 L0,170 Z" fill="url(#areaGrad)"></path>
+                <path id="ov-area-line" d="M0,166 L640,166" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"></path>
+                <circle id="ov-area-dot" cx="640" cy="166" r="4.5" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5"></circle>
               </svg>
-              <div class="area__x" id="ov-area-x">
-                <span>08:00</span>
-                <span>10:00</span>
-                <span>12:00</span>
-                <span>14:00</span>
-                <span>16:00</span>
-                <span>18:00</span>
-                <span>Sekarang</span>
-              </div>
+              <div class="area__empty" id="ov-chart-empty">Memuat data grafik penjualan...</div>
+              <div class="area__x" id="ov-area-x"></div>
             </div>
 
             <div class="split">
-              <div class="split__bar" aria-hidden="true">
-                <i style="width:52%;background:var(--accent)"></i>
-                <i style="width:24%;background:var(--tangerine)"></i>
-                <i style="width:15%;background:var(--good)"></i>
-                <i style="width:9%;background:var(--c-work)"></i>
-              </div>
-              <div class="split__leg">
-                <span><i class="sw" style="background:var(--accent)"></i>Minuman Kopi &amp; Matcha <b>52%</b></span>
-                <span><i class="sw" style="background:var(--tangerine)"></i>Makanan Utama <b>24%</b></span>
-                <span><i class="sw" style="background:var(--good)"></i>Snack &amp; Pastry <b>15%</b></span>
-                <span><i class="sw" style="background:var(--c-work)"></i>Dessert <b>9%</b></span>
+              <div class="split__bar" id="ov-split-bar" aria-hidden="true"></div>
+              <div class="split__leg" id="ov-split-leg">
+                <span>Belum ada komposisi kategori pada periode ini.</span>
               </div>
             </div>
 
             <div class="ov-bal__accs">
               <div class="ov-acc">
-                <div class="ov-acc__top"><span>Total Pesanan</span><span class="delta">Lunas</span></div>
-                <div class="ov-acc__val num" id="ov-kpi-orders">142 Struk</div>
-                <div class="ov-acc__meta" id="ov-kpi-orders-meta">Dine-In 68% · Takeaway 32%</div>
+                <div class="ov-acc__top"><span>Total Pesanan</span><span class="delta delta--flat" id="ov-kpi-orders-badge">Periode</span></div>
+                <div class="ov-acc__val num" id="ov-kpi-orders">0 Struk</div>
+                <div class="ov-acc__meta" id="ov-kpi-orders-meta">Belum ada pesanan pada periode ini</div>
               </div>
               <div class="ov-acc">
-                <div class="ov-acc__top"><span>Rata-rata Struk (AOV)</span><span class="delta">Optimal</span></div>
-                <div class="ov-acc__val num priv" id="ov-kpi-aov">Rp 48.169</div>
-                <div class="ov-acc__meta">2,4 item per transaksi</div>
+                <div class="ov-acc__top"><span>Rata-rata Struk (AOV)</span><span class="delta delta--flat">Aktual</span></div>
+                <div class="ov-acc__val num priv" id="ov-kpi-aov">—</div>
+                <div class="ov-acc__meta" id="ov-kpi-aov-meta">0 item per transaksi</div>
               </div>
               <div class="ov-acc">
-                <div class="ov-acc__top"><span>Total Cup &amp; Porsi</span><span class="delta">Aktif</span></div>
-                <div class="ov-acc__val num" id="ov-kpi-items">318 Item</div>
-                <div class="ov-acc__meta" id="ov-kpi-best-menu">Best: NomCherry Cold Brew</div>
+                <div class="ov-acc__top"><span>Total Cup &amp; Porsi</span><span class="delta delta--flat">Terjual</span></div>
+                <div class="ov-acc__val num" id="ov-kpi-items">0 Item</div>
+                <div class="ov-acc__meta" id="ov-kpi-best-menu">Belum ada menu terjual</div>
               </div>
             </div>
           </article>
@@ -258,80 +254,80 @@
             <div class="chead">
               <div>
                 <h2>Metode Pembayaran Kasir</h2>
-                <p id="cstack-sub">3 kanal pembayaran aktif · Klik kartu untuk detail</p>
+                <p id="cstack-sub">Rekap sesuai cabang &amp; periode terpilih</p>
               </div>
-              <a class="chead__link" href="#reports" data-goto-view="reports">Rekap →</a>
+              <a class="chead__link" href="#reports" data-goto-view="reports">Laporan →</a>
             </div>
 
             <div class="cstack">
               <div class="cstack__pile" id="cstack-pile">
                 <!-- Card 0: QRIS -->
-                <div class="paydeck paydeck--1" data-card-idx="0" data-pos="0" role="button" tabindex="0" aria-label="Kanal Pembayaran QRIS Dinamis">
+                <div class="paydeck paydeck--1" data-card-idx="0" data-pos="0" role="button" tabindex="0" aria-label="Kanal Pembayaran QRIS">
                   <div class="paydeck__inner">
                     <div class="paydeck__row">
-                      <span class="paydeck__tag">QRIS Dinamis · Instan</span>
-                      <span class="paydeck__brand">NOMCHERRY PAY</span>
+                      <span class="paydeck__tag">QRIS · Konfirmasi Kasir</span>
+                      <span class="paydeck__brand">NOMCHERRY POS</span>
                     </div>
                     <div class="paydeck__mid">
-                      <span class="paydeck__chip"></span>
-                      <span class="paydeck__num">NMID ···· 8821</span>
+                      <span class="paydeck__chip" aria-hidden="true"></span>
+                      <span class="paydeck__num">KANAL QRIS</span>
                     </div>
                     <div class="paydeck__row">
                       <div class="paydeck__bal">
-                        <small>Penerimaan QRIS Hari Ini</small>
-                        <strong class="priv" id="ov-qris-val">Rp 4.380.000</strong>
+                        <small id="ov-qris-label">Penerimaan QRIS (Hari Ini)</small>
+                        <strong class="priv" id="ov-qris-val">Memuat...</strong>
                       </div>
                       <div class="paydeck__exp">
                         <small>Porsi QRIS</small>
-                        <b id="ov-qris-pct">64%</b>
+                        <b id="ov-qris-pct">0%</b>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <!-- Card 1: Cash Drawer -->
-                <div class="paydeck paydeck--2" data-card-idx="1" data-pos="1" role="button" tabindex="0" aria-label="Kanal Kas Tunai Laci">
+                <div class="paydeck paydeck--2" data-card-idx="1" data-pos="1" role="button" tabindex="0" aria-label="Kanal Pembayaran Tunai">
                   <div class="paydeck__inner">
                     <div class="paydeck__row">
-                      <span class="paydeck__tag">Laci Kasir #01</span>
+                      <span class="paydeck__tag">Kasir Tunai</span>
                       <span class="paydeck__brand">TUNAI / CASH</span>
                     </div>
                     <div class="paydeck__mid">
-                      <span class="paydeck__chip"></span>
-                      <span class="paydeck__num">DRAWER ···· 01</span>
+                      <span class="paydeck__chip" aria-hidden="true"></span>
+                      <span class="paydeck__num">KANAL TUNAI</span>
                     </div>
                     <div class="paydeck__row">
                       <div class="paydeck__bal">
-                        <small>Uang Tunai di Laci</small>
-                        <strong class="priv" id="ov-cash-val">Rp 1.640.000</strong>
+                        <small id="ov-cash-label">Penerimaan Tunai (Hari Ini)</small>
+                        <strong class="priv" id="ov-cash-val">—</strong>
                       </div>
                       <div class="paydeck__exp">
                         <small>Porsi Tunai</small>
-                        <b id="ov-cash-pct">24%</b>
+                        <b id="ov-cash-pct">0%</b>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <!-- Card 2: EDC Card -->
-                <div class="paydeck paydeck--3" data-card-idx="2" data-pos="2" role="button" tabindex="0" aria-label="Kanal EDC Debit dan Kredit">
+                <div class="paydeck paydeck--3" data-card-idx="2" data-pos="2" role="button" tabindex="0" aria-label="Kanal Pembayaran Kartu EDC">
                   <div class="paydeck__inner">
                     <div class="paydeck__row">
-                      <span class="paydeck__tag">EDC BCA &amp; Mandiri</span>
-                      <span class="paydeck__brand">DEBIT / KREDIT</span>
+                      <span class="paydeck__tag">Terminal EDC</span>
+                      <span class="paydeck__brand">KARTU DEBIT</span>
                     </div>
                     <div class="paydeck__mid">
-                      <span class="paydeck__chip"></span>
-                      <span class="paydeck__num">TERM ···· 4092</span>
+                      <span class="paydeck__chip" aria-hidden="true"></span>
+                      <span class="paydeck__num">KANAL EDC</span>
                     </div>
                     <div class="paydeck__row">
                       <div class="paydeck__bal">
-                        <small>Settlement Kartu</small>
-                        <strong class="priv" id="ov-card-val">Rp 820.000</strong>
+                        <small id="ov-card-label">Penerimaan Kartu (Hari Ini)</small>
+                        <strong class="priv" id="ov-card-val">Rp 0</strong>
                       </div>
                       <div class="paydeck__exp">
                         <small>Porsi Kartu</small>
-                        <b id="ov-card-pct">12%</b>
+                        <b id="ov-card-pct">0%</b>
                       </div>
                     </div>
                   </div>
@@ -339,53 +335,53 @@
               </div>
 
               <div class="cstack__bar">
-                <button class="ibtn" type="button" id="cstack-prev" aria-label="Kartu Sebelumnya">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"></path></svg>
+                <button class="ibtn" type="button" id="cstack-prev" aria-label="Kartu Pembayaran Sebelumnya">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
                 </button>
                 <div class="cstack__dots" id="cstack-dots">
-                  <button type="button" data-dot="0" aria-current="true" aria-label="QRIS"></button>
-                  <button type="button" data-dot="1" aria-label="Tunai"></button>
-                  <button type="button" data-dot="2" aria-label="Kartu EDC"></button>
+                  <button type="button" data-dot="0" aria-current="true" aria-label="Tampilkan Kartu QRIS"></button>
+                  <button type="button" data-dot="1" aria-label="Tampilkan Kartu Tunai"></button>
+                  <button type="button" data-dot="2" aria-label="Tampilkan Kartu EDC"></button>
                 </div>
-                <button class="ibtn" type="button" id="cstack-next" aria-label="Kartu Berikutnya">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"></path></svg>
+                <button class="ibtn" type="button" id="cstack-next" aria-label="Kartu Pembayaran Berikutnya">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
                 </button>
               </div>
 
               <div class="cstack__meta">
-                <div><small>Status Kanal</small><b id="cstack-meta-status">Online · Otomatis</b></div>
-                <div><small>Biaya MDR</small><b id="cstack-meta-mdr">0.7% QRIS</b></div>
-                <div><small>Settlement</small><b id="cstack-meta-settle">H+0 Instan</b></div>
+                <div><small>Mode Pencatatan</small><b id="cstack-meta-status">Konfirmasi Kasir</b></div>
+                <div><small>Jumlah Transaksi</small><b id="cstack-meta-mdr">0 Struk</b></div>
+                <div><small>Cakupan Data</small><b id="cstack-meta-settle">Hari Ini</b></div>
               </div>
 
               <div class="cstack__limit">
                 <div class="cstack__limit-top">
                   <span>Rasio Pembayaran Non-Tunai</span>
-                  <b class="num" id="ov-cashless-ratio">76% Cashless</b>
+                  <b class="num" id="ov-cashless-ratio">0% Cashless</b>
                 </div>
-                <div class="meter"><i id="ov-cashless-bar" style="width:76%"></i></div>
+                <div class="meter"><i id="ov-cashless-bar" style="width:0%"></i></div>
               </div>
             </div>
           </article>
 
-          <!-- Cofra Jars: Tangki Bahan Baku Barista (7 cols) -->
+          <!-- Cofra Jars: Persediaan Stok Prioritas Cabang (7 cols) -->
           <article class="card ov-jars">
             <div class="chead">
               <div>
-                <h2>Tangki Stok Bahan Baku Utama</h2>
-                <p>Kapasitas bahan barista real-time · Klik tangki untuk restock</p>
+                <h2>Pemantauan Stok Prioritas Cabang</h2>
+                <p>5 item dengan sisa porsi terendah di cabang aktif</p>
               </div>
-              <a class="chead__link" href="#inventory" data-goto-view="inventory">Kelola Stok →</a>
+              <a class="chead__link" href="#inventory" data-goto-view="inventory" id="ov-goto-inv-link">Kelola Stok →</a>
             </div>
             <div class="jars" id="ov-jars-container"></div>
           </article>
 
-          <!-- Cofra Safe to Spend: Target Shift & Pajak PB1 (5 cols) -->
+          <!-- Rekap Pajak Historis & Penjualan Bersih (5 cols) -->
           <article class="card ov-safe">
             <div class="chead">
               <div>
-                <h2>Target Penjualan Shift &amp; Pajak</h2>
-                <p>Pencapaian target harian Rp 8.000.000</p>
+                <h2>Rekap Pajak &amp; Penjualan Bersih</h2>
+                <p id="ov-safe-sub">Dihitung dari nilai historis tersimpan per struk</p>
               </div>
               <span class="ov-safe__ico" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -393,20 +389,14 @@
             </div>
 
             <div>
-              <div class="ov-safe__fig priv" id="ov-tax-val">Rp 621.818 <small>/ pajak PB1 10%</small></div>
-            </div>
-
-            <div class="ov-safe__days" aria-label="Progres Jam Operasional Shift">
-              <i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i>
-              <i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i><i class="is-past"></i>
-              <i class="is-over"></i><i class="is-over"></i><i class="is-past"></i><i class="is-past"></i><i class="is-today"></i><i></i>
-              <i></i><i></i><i></i><i></i><i></i><i></i>
+              <div class="ov-safe__fig priv" id="ov-tax-val">Rp 0 <small>/ pajak terkumpul</small></div>
             </div>
 
             <dl class="dl">
-              <div><dt>Penjualan Kotor (Gross)</dt><dd class="num priv" id="ov-gross-val">Rp 6.840.000</dd></div>
-              <div><dt>Penjualan Bersih (Nett)</dt><dd class="num priv" id="ov-nett-val">Rp 6.218.182</dd></div>
-              <div><dt>Modal Kas Awal Laci</dt><dd class="num">Rp 500.000</dd></div>
+              <div><dt>Penjualan Kotor (Gross)</dt><dd class="num priv" id="ov-gross-val">Rp 0</dd></div>
+              <div><dt>Penjualan Bersih Sebelum Pajak (Nett)</dt><dd class="num priv" id="ov-nett-val">Rp 0</dd></div>
+              <div><dt>Potongan Promo Tercatat</dt><dd class="num priv" id="ov-disc-val">Rp 0</dd></div>
+              <div><dt>Target Shift &amp; Kas Awal Laci</dt><dd class="num" style="color:var(--muted);font-weight:500;" id="ov-config-note">Belum dikonfigurasi</dd></div>
             </dl>
           </article>
 
@@ -427,21 +417,21 @@
             <div class="chead">
               <div>
                 <h2>Antrean Barista</h2>
-                <p id="ov-queue-subtitle">Pesanan aktif di bar</p>
+                <p id="ov-queue-subtitle">Pesanan berstatus menunggu disajikan</p>
               </div>
-              <span class="pill pill--warn" id="ov-queue-pill">3 Aktif</span>
+              <span class="pill pill--warn" id="ov-queue-pill">0 Aktif</span>
             </div>
             <div class="uplist" id="ov-kitchen-queue"></div>
           </article>
 
-          <!-- Active Loyalty Members (3 cols) -->
+          <!-- Loyalty Module Status (3 cols) -->
           <article class="card ov-people">
             <div class="chead">
               <div>
                 <h2>Member Loyalitas</h2>
-                <p>Kunjungan pelanggan tetap</p>
+                <p>Status modul keanggotaan</p>
               </div>
-              <a class="chead__link" href="#members" data-goto-view="members">Semua →</a>
+              <span class="pill pill--warn">Belum Aktif</span>
             </div>
             <div class="people" id="ov-members-preview"></div>
           </article>
@@ -454,13 +444,13 @@
       <section class="view-section" id="view-pos" aria-label="Kasir Point of Sale">
         <div class="phead">
           <div>
-            <div class="phead__eyebrow">Terminal Kasir Cepat · Sinkronisasi Stok Otomatis</div>
             <h1 class="phead__title">Kasir Point of Sale (POS)</h1>
+            <p class="phead__sub" id="pos-branch-sub">Katalog dan ketersediaan porsi mengikuti cabang aktif</p>
           </div>
           <div class="phead__right">
             <div class="input">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-              <input type="search" id="pos-search-input" placeholder="Cari kopi, matcha, croissant...">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              <input type="search" id="pos-search-input" aria-label="Cari menu di POS" placeholder="Cari kopi, matcha, croissant...">
             </div>
             <button class="btn" type="button" id="toggle-photo-btn">Sembunyikan Foto</button>
           </div>
@@ -469,24 +459,29 @@
         <div class="pos-layout">
           <div class="pos-main">
             <div class="tabs" role="tablist" aria-label="Kategori Menu POS" id="pos-category-tabs">
-              <button type="button" role="tab" aria-selected="true" class="is-active" data-cat="all">Semua Menu (24)</button>
-              <button type="button" role="tab" aria-selected="false" data-cat="Minuman">☕ Minuman</button>
-              <button type="button" role="tab" aria-selected="false" data-cat="Makanan">🍝 Makanan</button>
-              <button type="button" role="tab" aria-selected="false" data-cat="Snack">🥐 Snack &amp; Pastry</button>
-              <button type="button" role="tab" aria-selected="false" data-cat="Dessert">🍰 Dessert</button>
+              <button type="button" role="tab" aria-selected="true" class="is-active" data-cat="all">Semua Menu</button>
+              <button type="button" role="tab" aria-selected="false" data-cat="Minuman">Minuman</button>
+              <button type="button" role="tab" aria-selected="false" data-cat="Makanan">Makanan</button>
+              <button type="button" role="tab" aria-selected="false" data-cat="Snack">Snack &amp; Pastry</button>
+              <button type="button" role="tab" aria-selected="false" data-cat="Dessert">Dessert</button>
             </div>
 
             <div class="pos-grid" id="pos-products-grid"></div>
           </div>
 
-          <!-- Sticky POS Order Cart -->
-          <aside class="card pos-cart-card" aria-label="Keranjang Pesanan Kasir">
+          <!-- Sticky POS Order Cart (Desktop) / Slide-Up Bottom Sheet (Tablet & Mobile) -->
+          <aside class="card pos-cart-card" id="pos-cart-aside" aria-label="Keranjang Pesanan Kasir">
             <div class="chead">
               <div>
-                <h2>Pesanan Baru</h2>
-                <p id="cart-order-code">Struk Otomatis · Shift Aktif</p>
+                <h2 id="pos-cart-heading">Pesanan Baru</h2>
+                <p id="cart-order-code">Cabang Surabaya Pusat</p>
               </div>
-              <button class="btn btn--ghost btn--sm" type="button" id="clear-cart-btn">Reset</button>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <button class="btn btn--ghost btn--sm" type="button" id="clear-cart-btn">Reset</button>
+                <button class="ibtn pos-cart-close" type="button" id="close-mobile-cart-btn" aria-label="Tutup Keranjang">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+                </button>
+              </div>
             </div>
 
             <div class="seg" role="group" aria-label="Tipe Pesanan" id="pos-order-type-seg">
@@ -498,39 +493,40 @@
             <div class="formgrid">
               <div class="field" id="field-customer-name">
                 <label for="cart-customer-name">Nama Pelanggan</label>
-                <input type="text" id="cart-customer-name" placeholder="Pelanggan Umum" value="Pelanggan Umum">
+                <input type="text" id="cart-customer-name" placeholder="Pelanggan Umum" value="Pelanggan Umum" maxlength="100">
               </div>
               <div class="field" id="field-table-num">
                 <label for="cart-table-num">Nomor Meja (Wajib Dine-In)</label>
-                <input type="text" id="cart-table-num" placeholder="Contoh: Meja 04" value="Meja 04">
+                <input type="text" id="cart-table-num" placeholder="Contoh: Meja 04" value="Meja 04" maxlength="40">
               </div>
               <div class="field field--full" id="field-delivery-note" style="display:none;">
                 <label for="cart-delivery-note">Alamat / Catatan Pengiriman (Delivery)</label>
-                <input type="text" id="cart-delivery-note" placeholder="Masukkan alamat atau catatan kurir...">
+                <input type="text" id="cart-delivery-note" placeholder="Masukkan alamat atau catatan kurir..." maxlength="250">
               </div>
             </div>
 
             <div class="cart-items" id="pos-cart-items"></div>
 
             <div class="field">
-              <label>Promo / Diskon Member</label>
+              <label>Potongan Promo Manual</label>
               <div class="chips" id="pos-discount-chips">
-                <button type="button" class="chip is-active" data-disc="0" aria-pressed="true">Tanpa Diskon</button>
-                <button type="button" class="chip" data-disc="5000" aria-pressed="false">Member -Rp 5rb</button>
-                <button type="button" class="chip" data-disc="10000" aria-pressed="false">VIP -Rp 10rb</button>
+                <button type="button" class="chip is-active" data-disc="0" aria-pressed="true">Tanpa Potongan</button>
+                <button type="button" class="chip" data-disc="5000" aria-pressed="false">Promo -Rp 5rb</button>
+                <button type="button" class="chip" data-disc="10000" aria-pressed="false">Promo -Rp 10rb</button>
               </div>
+              <small style="color:var(--muted);font-size:var(--fs-2xs);">Diterapkan manual oleh kasir sesuai promo berjalan (maksimal sebesar subtotal).</small>
             </div>
 
             <div class="cart-summary">
               <div class="summary-row"><span>Subtotal (<span id="cart-qty-count">0</span> item)</span><span id="cart-subtotal-val">Rp 0</span></div>
-              <div class="summary-row"><span>Diskon Promo</span><span id="cart-discount-val">-Rp 0</span></div>
-              <div class="summary-row"><span>Pajak Restoran PB1 (10%)</span><span id="cart-tax-val">Rp 0</span></div>
+              <div class="summary-row"><span>Potongan Promo</span><span id="cart-discount-val">—</span></div>
+              <div class="summary-row"><span id="cart-tax-label">Pajak Restoran PB1 (10%)</span><span id="cart-tax-val">—</span></div>
               <div class="summary-row is-total"><span>Total Tagihan</span><span id="cart-total-val">Rp 0</span></div>
             </div>
 
             <div class="field">
               <label>Metode Pembayaran</label>
-              <div class="seg seg--accent" role="group" id="pos-pay-method-seg">
+              <div class="seg seg--accent" role="group" aria-label="Metode Pembayaran" id="pos-pay-method-seg">
                 <button type="button" data-pay="QRIS" aria-pressed="true" class="is-active">QRIS</button>
                 <button type="button" data-pay="Cash" aria-pressed="false">Tunai (Cash)</button>
                 <button type="button" data-pay="Debit" aria-pressed="false">Kartu EDC</button>
@@ -538,21 +534,21 @@
             </div>
 
             <div class="field" id="qris-input-group">
-              <div style="border:1px dashed var(--line-2);border-radius:var(--r-sm);padding:10px 12px;background:var(--surface-2);">
+              <div class="pay-method-box">
                 <div class="summary-row" style="margin-bottom:4px;">
-                  <span style="font-size:var(--fs-2xs);color:var(--muted);">QRIS Dinamis · NMID ID1026008821</span>
-                  <strong id="qris-bill-val" style="color:var(--accent);">Rp 0</strong>
+                  <span style="font-size:var(--fs-2xs);color:var(--muted);">Nominal Tagihan QRIS</span>
+                  <strong id="qris-bill-val" style="color:var(--accent);">Belum ada item</strong>
                 </div>
-                <label for="qris-confirm-check" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:var(--fs-xs);margin-top:6px;">
-                  <input type="checkbox" id="qris-confirm-check" style="width:16px;height:16px;accent-color:var(--accent);">
-                  <span>Pembayaran QRIS telah terverifikasi masuk</span>
+                <label for="qris-confirm-check" style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:var(--fs-xs);margin-top:6px;">
+                  <input type="checkbox" id="qris-confirm-check" style="width:18px;height:18px;margin-top:1px;accent-color:var(--accent);flex:none;">
+                  <span>Konfirmasi manual kasir: bukti pembayaran QRIS telah diperiksa</span>
                 </label>
               </div>
             </div>
 
             <div class="field" id="cash-input-group" style="display:none;">
               <label for="cart-cash-received">Nominal Uang Diterima (Rp)</label>
-              <input type="number" id="cart-cash-received" placeholder="Masukkan nominal tunai" step="1000" value="">
+              <input type="number" id="cart-cash-received" placeholder="Masukkan nominal tunai" step="1000" min="0" value="">
               <div class="chips" style="margin-top:4px;">
                 <button type="button" class="chip" data-quick-cash="exact">Uang Pas</button>
                 <button type="button" class="chip" data-quick-cash="50000">Rp 50.000</button>
@@ -560,35 +556,48 @@
               </div>
               <div class="summary-row" style="margin-top:4px;">
                 <span>Kembalian Tunai:</span>
-                <strong id="cart-change-val" style="color:var(--good)">Rp 0</strong>
+                <strong id="cart-change-val" style="color:var(--good)">—</strong>
               </div>
             </div>
 
             <div class="field" id="edc-input-group" style="display:none;">
               <label for="cart-edc-ref">Pembayaran Kartu EDC (Debit)</label>
-              <input type="text" id="cart-edc-ref" placeholder="Nomor Approval / Ref EDC (Opsional)">
+              <input type="text" id="cart-edc-ref" placeholder="Nomor Approval / Ref EDC (Opsional)" maxlength="80">
               <div class="summary-row" style="margin-top:4px;">
-                <span>Tagihan Kartu EDC (Tanpa Kembalian):</span>
-                <strong id="edc-bill-val" style="color:var(--good)">Rp 0</strong>
+                <span>Tagihan Kartu EDC (Pas):</span>
+                <strong id="edc-bill-val" style="color:var(--good)">Belum ada item</strong>
               </div>
             </div>
 
-            <button class="btn btn--primary" type="button" id="checkout-btn" style="height:42px;width:100%;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-              <span>Bayar &amp; Cetak Struk Thermal</span>
+            <div class="inline-alert inline-alert--error" id="pos-checkout-alert" role="alert" style="display:none;"></div>
+
+            <button class="btn btn--primary" type="button" id="checkout-btn" style="min-height:44px;width:100%;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              <span id="checkout-btn-label">Bayar &amp; Cetak Struk Thermal</span>
             </button>
           </aside>
+        </div>
+
+        <!-- Mobile Persistent Cart Summary Bar -->
+        <div class="mobile-cart-bar" id="mobile-cart-bar" role="region" aria-label="Ringkasan Keranjang Belanja">
+          <div class="mobile-cart-bar__info">
+            <span class="mobile-cart-bar__qty" id="mobile-cart-count">0 item</span>
+            <strong class="num" id="mobile-cart-total">Rp 0</strong>
+          </div>
+          <button type="button" class="btn btn--primary" id="open-mobile-cart-btn" aria-expanded="false" aria-controls="pos-cart-aside">
+            <span>Buka Keranjang</span>
+          </button>
         </div>
       </section>
 
       <!-- ============================================================
-           VIEW 3: PESANAN & ANTREAN DAPUR (COFRA ACTIVITY PATTERN)
+           VIEW 3: PESANAN & ANTREAN DAPUR
            ============================================================ -->
       <section class="view-section" id="view-orders" aria-label="Pesanan dan Antrean Dapur">
         <div class="phead">
           <div>
-            <div class="phead__eyebrow">Riwayat Struk &amp; Monitor Barista Real-Time</div>
             <h1 class="phead__title">Pesanan &amp; Antrean Dapur</h1>
+            <p class="phead__sub">Riwayat struk berpaginasi &amp; antrean penyajian barista cabang aktif</p>
           </div>
           <div class="phead__right">
             <button class="btn" type="button" id="orders-refresh-btn">Segarkan Data</button>
@@ -598,24 +607,24 @@
 
         <div class="ac-sum">
           <div class="card ac-sum__card">
-            <small>Total Struk Hari Ini</small>
-            <strong class="num" id="ord-sum-total">18 Transaksi</strong>
-            <span class="delta">100% tercatat</span>
+            <small>Total Struk Sesuai Filter</small>
+            <strong class="num" id="ord-sum-total">0 Transaksi</strong>
+            <span class="delta delta--flat">Agregat penuh server</span>
           </div>
           <div class="card ac-sum__card">
-            <small>Sedang Disiapkan Barista</small>
-            <strong class="num" id="ord-sum-prep">3 Pesanan</strong>
-            <span class="delta delta--warn">SLA &lt; 5 menit</span>
+            <small>Menunggu Disajikan Barista</small>
+            <strong class="num" id="ord-sum-prep">0 Pesanan</strong>
+            <span class="delta delta--warn">Antrean dapur aktif</span>
           </div>
           <div class="card ac-sum__card">
             <small>Selesai Disajikan</small>
-            <strong class="num" id="ord-sum-done">15 Pesanan</strong>
-            <span class="delta">Tepat waktu</span>
+            <strong class="num" id="ord-sum-done">0 Pesanan</strong>
+            <span class="delta">Telah diserahkan</span>
           </div>
           <div class="card ac-sum__card">
-            <small>Nilai Transaksi Masuk</small>
-            <strong class="num priv" id="ord-sum-rev">Rp 6.840.000</strong>
-            <span>Termasuk PB1 10%</span>
+            <small>Nilai Transaksi Kotor</small>
+            <strong class="num priv" id="ord-sum-rev">Rp 0</strong>
+            <span id="ord-sum-tax-sub">Termasuk pajak tersimpan</span>
           </div>
         </div>
 
@@ -623,8 +632,8 @@
           <div class="toolbar">
             <div class="toolbar__left">
               <div class="input">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-                <input type="search" id="orders-search-input" placeholder="Cari nomor struk atau nama pelanggan...">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                <input type="search" id="orders-search-input" aria-label="Cari nomor struk atau pelanggan" placeholder="Cari nomor struk atau nama pelanggan...">
               </div>
               <div class="chips" id="orders-status-chips">
                 <button type="button" class="chip is-active" data-ord-status="all" aria-pressed="true">Semua Status</button>
@@ -633,9 +642,10 @@
               </div>
             </div>
             <div class="toolbar__right">
+              <input type="date" class="select" id="orders-date-input" aria-label="Filter Tanggal Pesanan">
               <select class="select" id="orders-pay-select" aria-label="Filter Metode Pembayaran">
                 <option value="all">Semua Metode Bayar</option>
-                <option value="QRIS">QRIS Dinamis</option>
+                <option value="QRIS">QRIS</option>
                 <option value="Cash">Tunai (Cash)</option>
                 <option value="Debit">Kartu EDC</option>
               </select>
@@ -643,6 +653,14 @@
           </div>
 
           <div id="orders-activity-list"></div>
+
+          <div class="pagination-bar" id="orders-pagination">
+            <span class="pagination-bar__info" id="orders-page-info">Halaman 1 dari 1</span>
+            <div class="pagination-bar__btns">
+              <button type="button" class="btn btn--sm" id="orders-prev-page" disabled>← Sebelumnya</button>
+              <button type="button" class="btn btn--sm" id="orders-next-page" disabled>Berikutnya →</button>
+            </div>
+          </div>
         </article>
       </section>
 
@@ -652,16 +670,16 @@
       <section class="view-section" id="view-catalog" aria-label="Manajemen Katalog Menu">
         <div class="phead">
           <div>
-            <div class="phead__eyebrow">Database Produk, Harga Jual &amp; Kuota Porsi Harian</div>
             <h1 class="phead__title">Manajemen Katalog Menu</h1>
+            <p class="phead__sub">Katalog produk global dengan stok terisolasi pada masing-masing cabang</p>
           </div>
           <div class="phead__right">
             <div class="input">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-              <input type="search" id="catalog-search-input" placeholder="Cari nama menu atau kode...">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              <input type="search" id="catalog-search-input" aria-label="Cari menu di katalog" placeholder="Cari nama menu atau kode...">
             </div>
             <button class="btn btn--primary" type="button" id="add-menu-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
               <span>Tambah Menu Baru</span>
             </button>
           </div>
@@ -684,16 +702,16 @@
       <section class="view-section" id="view-inventory" aria-label="Inventori dan Manajemen Stok">
         <div class="phead">
           <div>
-            <div class="phead__eyebrow">Manajemen Stok Multi-Cabang, Stock Opname, Kedaluwarsa &amp; Riwayat Mutasi</div>
             <h1 class="phead__title">Inventori &amp; Manajemen Stok</h1>
+            <p class="phead__sub">Satu tanggal kedaluwarsa aktif per item cabang · Item kedaluwarsa otomatis diblokir di POS</p>
           </div>
           <div class="phead__right">
             <button class="btn" type="button" id="stock-opname-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
               <span>Stock Opname Fisik</span>
             </button>
             <button class="btn btn--primary" type="button" id="restock-all-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
               <span>Restock Terkontrol</span>
             </button>
           </div>
@@ -718,22 +736,22 @@
           <div class="card ac-sum__card">
             <small>Kedaluwarsa &amp; Near-Expiry</small>
             <strong class="num" id="inv-sum-exp">0 Item</strong>
-            <span class="delta" id="inv-sum-exp-sub">Quality Control Lulus</span>
+            <span class="delta" id="inv-sum-exp-sub">Tidak ada item kedaluwarsa</span>
           </div>
         </div>
 
         <article class="card">
           <div class="chead">
             <div>
-              <h2>Daftar Persediaan Stok per Cabang</h2>
+              <h2>Daftar Persediaan Stok Cabang</h2>
               <p>Kelola tambah/kurang stok, batas minimum (Low Stock Alert), tanggal kedaluwarsa, atau penyesuaian manual</p>
             </div>
           </div>
           <div class="toolbar">
             <div class="toolbar__left">
               <div class="input">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-                <input type="search" id="inv-search-input" placeholder="Cari nama item atau kode menu...">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                <input type="search" id="inv-search-input" aria-label="Cari item stok" placeholder="Cari nama item atau kode menu...">
               </div>
               <div class="chips" id="inv-status-chips">
                 <button type="button" class="chip is-active" data-inv-status="all" aria-pressed="true">Semua</button>
@@ -756,7 +774,7 @@
           <div id="inventory-rows-container"></div>
         </article>
 
-        <article class="card" style="margin-top:16px;">
+        <article class="card">
           <div class="chead">
             <div>
               <h2>Riwayat Mutasi &amp; Aktivitas Stok</h2>
@@ -766,8 +784,8 @@
           <div class="toolbar">
             <div class="toolbar__left">
               <div class="input">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-                <input type="search" id="inv-log-search-input" placeholder="Cari menu, pengguna, atau alasan mutasi...">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                <input type="search" id="inv-log-search-input" aria-label="Cari riwayat mutasi stok" placeholder="Cari menu, pengguna, atau alasan mutasi...">
               </div>
               <div class="chips" id="inv-log-type-chips">
                 <button type="button" class="chip is-active" data-log-type="all" aria-pressed="true">Semua</button>
@@ -784,42 +802,48 @@
       </section>
 
       <!-- ============================================================
-           VIEW 6: LAPORAN & ANALITIK (COFRA ANALYTICS PATTERN)
+           VIEW 6: LAPORAN & ANALITIK
            ============================================================ -->
       <section class="view-section" id="view-reports" aria-label="Laporan Keuangan dan Analitik">
         <div class="phead">
           <div>
-            <div class="phead__eyebrow">Analisis Pendapatan, Kategori &amp; Jam Sibuk Kafe</div>
             <h1 class="phead__title">Laporan Keuangan &amp; Analitik</h1>
+            <p class="phead__sub" id="reports-sub-label">Agregasi penuh transaksi selesai pada cabang aktif</p>
           </div>
           <div class="phead__right">
-            <button class="btn" type="button" id="reports-export-csv-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              <span>Unduh Laporan CSV</span>
+            <input type="date" class="select" id="rep-date-start" aria-label="Tanggal Awal Laporan">
+            <input type="date" class="select" id="rep-date-end" aria-label="Tanggal Akhir Laporan">
+            <button class="btn" type="button" id="rep-apply-filter-btn">Terapkan</button>
+            <button class="btn btn--ghost" type="button" id="rep-reset-filter-btn">Semua Waktu</button>
+            <button class="btn btn--primary" type="button" id="reports-export-csv-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Unduh CSV</span>
             </button>
           </div>
         </div>
 
+        <div class="inline-alert inline-alert--error" id="rep-error-banner" role="alert" style="display:none;"></div>
+
         <div class="kpis">
           <div class="kpi kpi--1">
-            <div class="kpi__label"><span>Omzet Bulan Berjalan</span><span>↑ 18.4%</span></div>
-            <div class="kpi__val priv" id="rep-kpi-month">Rp 148.650.000</div>
-            <div class="kpi__foot"><span>Target Rp 160 Jt</span><span>92.9% Tercapai</span></div>
+            <div class="kpi__label"><span>Total Pendapatan Kotor (Gross)</span><span id="rep-kpi-tx-badge">0 Struk</span></div>
+            <div class="kpi__val priv" id="rep-kpi-month">Rp 0</div>
+            <div class="kpi__foot"><span id="rep-kpi-tx-foot">Termasuk pajak tersimpan</span><span id="rep-kpi-branch-foot">Cabang Aktif</span></div>
           </div>
           <div class="kpi kpi--plain">
-            <div class="kpi__label"><span>Gross Profit Margin</span><span class="delta">Sehat</span></div>
-            <div class="kpi__val">64.2%</div>
-            <div class="kpi__foot"><span>HPP Bahan 35.8%</span><span>Standar Specialty Café</span></div>
+            <div class="kpi__label"><span>Penjualan Bersih (Nett)</span><span class="delta delta--flat">Sebelum Pajak</span></div>
+            <div class="kpi__val priv" id="rep-kpi-nett">Rp 0</div>
+            <div class="kpi__foot"><span id="rep-kpi-aov-foot">Rata-rata Struk: Rp 0</span><span id="rep-kpi-disc-foot">Diskon: Rp 0</span></div>
           </div>
           <div class="kpi kpi--plain">
-            <div class="kpi__label"><span>Total Porsi Terjual</span><span class="delta">+12.1%</span></div>
-            <div class="kpi__val" id="rep-kpi-cups">4.280 Porsi</div>
-            <div class="kpi__foot"><span>Rata-rata 142/hari</span><span>0 Komplain</span></div>
+            <div class="kpi__label"><span>Total Porsi Terjual</span><span class="delta delta--flat">Volume</span></div>
+            <div class="kpi__val" id="rep-kpi-cups">0 Porsi</div>
+            <div class="kpi__foot"><span id="rep-kpi-items-foot">Akumulasi detail pesanan</span><span>Tercatat</span></div>
           </div>
           <div class="kpi kpi--plain">
-            <div class="kpi__label"><span>Akumulasi Pajak PB1 (10%)</span><span class="delta delta--flat">Siap Setor</span></div>
-            <div class="kpi__val priv" id="rep-kpi-tax">Rp 13.513.636</div>
-            <div class="kpi__foot"><span>Rekap Otomatis</span><span>NPWPD Aktif</span></div>
+            <div class="kpi__label"><span>Akumulasi Pajak PB1 Tersimpan</span><span class="delta delta--flat">Historis</span></div>
+            <div class="kpi__val priv" id="rep-kpi-tax">Rp 0</div>
+            <div class="kpi__foot"><span>Snapshot per transaksi</span><span>Tidak berubah saat tarif diganti</span></div>
           </div>
         </div>
 
@@ -827,19 +851,20 @@
           <article class="card an-bars">
             <div class="chead">
               <div>
-                <h2>Tren Pendapatan 6 Bulan Terakhir</h2>
-                <p>Komposisi penjualan minuman kopi vs makanan &amp; pastry</p>
+                <h2>Tren Pendapatan Bulanan (6 Bulan Terakhir)</h2>
+                <p>Berdasarkan transaksi selesai pada cabang terpilih</p>
               </div>
-              <span class="pill pill--good">Tumbuh +18%</span>
             </div>
-            <div class="bars" id="reports-bars-chart"></div>
+            <div class="bars-scroll">
+              <div class="bars" id="reports-bars-chart"></div>
+            </div>
           </article>
 
           <article class="card an-list">
             <div class="chead">
               <div>
                 <h2>Kontribusi per Kategori Menu</h2>
-                <p>Proporsi omzet berdasarkan lini produk</p>
+                <p>Proporsi subtotal menu sebelum pajak</p>
               </div>
             </div>
             <div id="reports-category-breakdown"></div>
@@ -848,18 +873,20 @@
           <article class="card an-heat">
             <div class="chead">
               <div>
-                <h2>Peta Jam Sibuk Kafe (Traffic Heatmap)</h2>
-                <p>Intensitas transaksi per sesi waktu dalam seminggu</p>
+                <h2>Peta Jam Transaksi (Traffic Heatmap)</h2>
+                <p>Proporsi nilai transaksi per sesi hari (WIB)</p>
               </div>
             </div>
-            <div class="heat" id="reports-heatmap"></div>
+            <div class="heat-scroll">
+              <div class="heat" id="reports-heatmap"></div>
+            </div>
           </article>
 
           <article class="card an-shops">
             <div class="chead">
               <div>
-                <h2>Top 6 Menu Paling Laris</h2>
-                <p>Berdasarkan volume penjualan &amp; kontribusi pendapatan</p>
+                <h2>Menu Paling Laris</h2>
+                <p>Berdasarkan kuantitas porsi terjual &amp; subtotal</p>
               </div>
             </div>
             <div id="reports-top-items"></div>
@@ -868,92 +895,152 @@
       </section>
 
       <!-- ============================================================
-           VIEW 7: MEMBER LOYALITAS
+           VIEW 7: MEMBER LOYALITAS (NONAKTIF SECARA EKSPLISIT)
            ============================================================ -->
       <section class="view-section" id="view-members" aria-label="Member Loyalitas">
         <div class="phead">
           <div>
-            <div class="phead__eyebrow">Program Poin Pelanggan &amp; Riwayat Kunjungan</div>
             <h1 class="phead__title">Member Loyalitas NomCherry</h1>
+            <p class="phead__sub">Modul keanggotaan pelanggan belum diaktifkan pada rilis operasional saat ini</p>
           </div>
           <div class="phead__right">
-            <button class="btn btn--primary" type="button" id="add-member-btn">+ Registrasi Member</button>
+            <span class="pill pill--warn">Fitur Belum Diaktifkan</span>
+            <button class="btn" type="button" id="add-member-btn" disabled aria-disabled="true" title="Modul loyalitas belum diaktifkan">Registrasi Member (Belum Aktif)</button>
           </div>
         </div>
 
         <article class="card">
-          <div class="toolbar">
-            <div class="input">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-              <input type="search" id="member-search-input" placeholder="Cari nama member atau nomor HP...">
-            </div>
-          </div>
           <div id="members-list-container"></div>
         </article>
       </section>
 
       <!-- ============================================================
-           VIEW 8: PENGATURAN SISTEM (COFRA SETTINGS PATTERN)
+           VIEW 8: PENGATURAN SISTEM & AKUN
            ============================================================ -->
       <section class="view-section" id="view-settings" aria-label="Pengaturan Sistem">
         <div class="phead">
           <div>
-            <div class="phead__eyebrow">Profil Kasir, Konfigurasi Struk Thermal &amp; Pajak</div>
-            <h1 class="phead__title">Pengaturan Sistem &amp; Cabang</h1>
+            <h1 class="phead__title">Pengaturan Akun, Perangkat &amp; Cabang</h1>
+            <p class="phead__sub">Preferensi tampilan tersimpan per perangkat; konfigurasi bisnis mengikuti hak akses peran</p>
           </div>
         </div>
 
         <div class="st-grid">
-          <article class="card st-me">
-            <div class="av av--xl" id="st-avatar">DD</div>
-            <h2 id="st-name">Daffa Danendra</h2>
-            <p id="st-role">Kasir Utama · Cabang Surabaya Pusat</p>
-            <span class="pill pill--good">Sesi Terautentikasi</span>
-            <div class="st-me__stats">
-              <div><b class="num">CBG001</b><small>Kode Cabang</small></div>
-              <div><b class="num">80mm</b><small>Printer Thermal</small></div>
-              <div><b class="num">10%</b><small>Pajak PB1</small></div>
-            </div>
-            <button class="btn" type="button" id="settings-logout-btn" style="width:100%;margin-top:10px;color:var(--bad);">Keluar / Ganti Akun Kasir</button>
-          </article>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <article class="card st-me">
+              <div class="av av--xl" id="st-avatar">NC</div>
+              <h2 id="st-name">-</h2>
+              <p id="st-role">-</p>
+              <span class="pill pill--good">Sesi Terautentikasi</span>
+              <div class="st-me__stats">
+                <div><b class="num" id="st-stat-branch">CBG001</b><small>Cabang Aktif</small></div>
+                <div><b class="num" id="st-stat-printer">80mm</b><small>Kertas Lokal</small></div>
+                <div><b class="num" id="st-stat-tax">10%</b><small>Tarif Pajak Baru</small></div>
+              </div>
+              <button class="btn" type="button" id="settings-logout-btn" style="width:100%;margin-top:10px;color:var(--bad);">Keluar dari Sesi Akun</button>
+            </article>
 
+            <!-- Personal Display & Local Printer Preferences (All Roles) -->
+            <article class="card">
+              <div class="chead">
+                <div>
+                  <h2>Preferensi Tampilan &amp; Printer Lokal</h2>
+                  <p>Tersedia untuk semua peran pada browser ini</p>
+                </div>
+              </div>
+              <div class="formgrid">
+                <div class="field">
+                  <label for="pref-theme-select">Tema Tampilan</label>
+                  <select id="pref-theme-select">
+                    <option value="light">Terang (Light)</option>
+                    <option value="dark">Gelap (Dark)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="set-printer-size">Ukuran Kertas Thermal</label>
+                  <select id="set-printer-size">
+                    <option value="80mm">Thermal 80mm (Standar)</option>
+                    <option value="58mm">Thermal 58mm (Portable)</option>
+                  </select>
+                </div>
+              </div>
+            </article>
+
+            <!-- Change Own Password (All Roles) -->
+            <article class="card">
+              <div class="chead">
+                <div>
+                  <h2>Keamanan Akun — Ubah Kata Sandi</h2>
+                  <p>Mengganti kata sandi akan mencabut sesi aktif di perangkat lain</p>
+                </div>
+              </div>
+              <form class="formgrid" id="password-change-form">
+                <div class="field field--full">
+                  <label for="pwd-current">Kata Sandi Saat Ini</label>
+                  <input type="password" id="pwd-current" autocomplete="current-password" required placeholder="Masukkan kata sandi saat ini">
+                </div>
+                <div class="field">
+                  <label for="pwd-new">Kata Sandi Baru (Min. 8 Karakter)</label>
+                  <input type="password" id="pwd-new" autocomplete="new-password" minlength="8" required placeholder="Minimal 8 karakter">
+                </div>
+                <div class="field">
+                  <label for="pwd-confirm">Konfirmasi Kata Sandi Baru</label>
+                  <input type="password" id="pwd-confirm" autocomplete="new-password" minlength="8" required placeholder="Ulangi kata sandi baru">
+                </div>
+                <div class="field field--full" id="pwd-form-alert" role="alert" style="display:none;"></div>
+                <div class="field field--full" style="display:flex;justify-content:flex-end;">
+                  <button type="submit" class="btn btn--primary" id="submit-pwd-btn">Perbarui Kata Sandi</button>
+                </div>
+              </form>
+            </article>
+          </div>
+
+          <!-- Business & Branch Operational Settings (Role-Gated) -->
           <article class="card">
             <div class="chead">
               <div>
-                <h2>Konfigurasi Operasional &amp; Struk Kafe</h2>
-                <p>Perubahan langsung diterapkan pada cetakan struk thermal</p>
+                <h2>Konfigurasi Bisnis &amp; Identitas Cabang</h2>
+                <p>Perubahan hanya berlaku untuk transaksi baru; struk historis tetap menggunakan snapshot saat transaksi terjadi</p>
               </div>
+              <span class="pill" id="settings-access-pill">Memeriksa Akses</span>
             </div>
+
+            <div class="inline-alert inline-alert--info" id="settings-perm-banner" role="status"></div>
+
             <form class="formgrid" id="settings-form">
+              <div class="field field--full">
+                <label for="set-cafe-name">Nama Brand Kafe (Header Struk Global)</label>
+                <input type="text" id="set-cafe-name" value="NomCherry Café &amp; Roastery" maxlength="250">
+              </div>
               <div class="field">
-                <label for="set-cafe-name">Nama Kafe di Header Struk</label>
-                <input type="text" id="set-cafe-name" value="NomCherry Café &amp; Roastery">
+                <label for="set-tax-rate">Tarif Pajak Restoran PB1 Baru (%)</label>
+                <input type="number" id="set-tax-rate" value="10" min="0" max="25" step="0.5">
+              </div>
+              <div class="field">
+                <label for="set-receipt-footer">Pesan Footer Struk Global</label>
+                <input type="text" id="set-receipt-footer" value="Terima kasih telah menikmati kopi &amp; hidangan NomCherry!" maxlength="250">
+              </div>
+
+              <div class="field field--full" style="padding-top:10px;border-top:1px solid var(--line);">
+                <strong style="font-size:var(--fs-sm);" id="settings-branch-section-title">Identitas Cabang Aktif (CBG001)</strong>
+                <small style="color:var(--muted);font-size:var(--fs-2xs);">Nama, alamat, dan telepon cabang dicetak spesifik sesuai cabang tempat pesanan dibuat (Hanya Admin yang dapat mengedit).</small>
+              </div>
+
+              <div class="field">
+                <label for="set-branch-name">Nama Cabang</label>
+                <input type="text" id="set-branch-name" value="" maxlength="150">
               </div>
               <div class="field">
                 <label for="set-branch-phone">Nomor Telepon Cabang</label>
-                <input type="text" id="set-branch-phone" value="(031) 548-2910">
+                <input type="text" id="set-branch-phone" value="" maxlength="60">
               </div>
               <div class="field field--full">
                 <label for="set-branch-addr">Alamat Lengkap Cabang</label>
-                <input type="text" id="set-branch-addr" value="Jl. Tunjungan No. 88, Genteng, Surabaya Pusat">
+                <input type="text" id="set-branch-addr" value="" maxlength="250">
               </div>
-              <div class="field">
-                <label for="set-tax-rate">Pajak Restoran PB1 (%)</label>
-                <input type="number" id="set-tax-rate" value="10" min="0" max="25">
-              </div>
-              <div class="field">
-                <label for="set-printer-size">Ukuran Kertas Printer Thermal</label>
-                <select id="set-printer-size">
-                  <option value="80mm">Thermal 80mm (Standar Kasir)</option>
-                  <option value="58mm">Thermal 58mm (Portable)</option>
-                </select>
-              </div>
-              <div class="field field--full">
-                <label for="set-receipt-footer">Pesan Footer Struk</label>
-                <input type="text" id="set-receipt-footer" value="Terima kasih telah menikmati kopi &amp; hidangan NomCherry!">
-              </div>
-              <div class="field field--full" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:6px;">
-                <button type="submit" class="btn btn--primary">Simpan Konfigurasi</button>
+
+              <div class="field field--full" id="settings-submit-row" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:6px;">
+                <button type="submit" class="btn btn--primary" id="save-settings-btn">Simpan Konfigurasi</button>
               </div>
             </form>
           </article>
@@ -963,26 +1050,26 @@
     </main>
   </div>
 
-  <!-- MOBILE BOTTOM TABBAR (COFRA RESPONSIVE PATTERN) -->
-  <nav class="tabbar" aria-label="Navigasi Mobile">
+  <!-- MOBILE BOTTOM TABBAR -->
+  <nav class="tabbar" id="mobile-tabbar" aria-label="Navigasi Mobile">
     <button type="button" class="is-active" data-view="overview">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
       <span>Ringkasan</span>
     </button>
     <button type="button" data-view="pos">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path></svg>
       <span>Kasir POS</span>
     </button>
     <button type="button" data-view="orders">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg>
       <span>Antrean</span>
     </button>
     <button type="button" data-view="inventory">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 3h10"></path><path d="M6 7h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z"></path></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 3h10"></path><path d="M6 7h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z"></path></svg>
       <span>Stok</span>
     </button>
     <button type="button" data-view="reports">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
       <span>Laporan</span>
     </button>
   </nav>
@@ -992,34 +1079,25 @@
 <!-- ============================================================
      POPOVER: USER SESSION & NOTIFICATIONS
      ============================================================ -->
-<div class="popover-menu" id="user-popover" role="dialog" aria-label="Menu Sesi Kasir">
+<div class="popover-menu" id="user-popover" role="dialog" aria-label="Menu Sesi Pengguna">
   <div style="display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--line);">
-    <span class="av" id="pop-user-av">DD</span>
-    <div>
-      <strong id="pop-user-name" style="display:block;font-size:var(--fs-sm);">Daffa Danendra</strong>
-      <small id="pop-user-role" style="color:var(--muted);font-size:var(--fs-2xs);">Kasir · Surabaya Pusat</small>
+    <span class="av" id="pop-user-av">NC</span>
+    <div style="min-width:0;">
+      <strong id="pop-user-name" style="display:block;font-size:var(--fs-sm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">-</strong>
+      <small id="pop-user-role" style="color:var(--muted);font-size:var(--fs-2xs);">-</small>
     </div>
   </div>
-  <button type="button" class="btn" style="width:100%;justify-content:flex-start;" data-goto-view="settings">Pengaturan Cabang &amp; Printer</button>
+  <button type="button" class="btn" style="width:100%;justify-content:flex-start;" data-goto-view="settings">Pengaturan Akun &amp; Cabang</button>
   <a href="login.html" class="btn" id="logout-btn" style="width:100%;justify-content:flex-start;color:var(--bad);">Ganti Akun / Keluar Sesi</a>
 </div>
 
 <div class="popover-menu" id="notif-popover" role="dialog" aria-label="Notifikasi Operasional">
   <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:1px solid var(--line);">
-    <strong style="font-size:var(--fs-sm);">Notifikasi Operasional</strong>
-    <span class="pill pill--warn" id="notif-popover-count">2 Info</span>
+    <strong style="font-size:var(--fs-sm);">Peringatan Operasional</strong>
+    <span class="pill pill--good" id="notif-popover-count">0 Alert</span>
   </div>
-  <div id="notif-popover-list" style="font-size:var(--fs-xs);display:flex;flex-direction:column;gap:8px;">
-    <div style="padding-bottom:6px;border-bottom:1px solid var(--line);">
-      <b style="display:block;color:var(--warn);">Stok Bubuk Uji Matcha (28%)</b>
-      <span style="color:var(--muted);">Tersisa 1,4 kg di tangki barista. Klik untuk restock.</span>
-    </div>
-    <div>
-      <b style="display:block;color:var(--good);">Printer Thermal Epson TM-T82 Siap</b>
-      <span style="color:var(--muted);">Terhubung pada port USB001 (80mm).</span>
-    </div>
-  </div>
-  <button type="button" class="btn btn--sm" data-goto-view="inventory" id="notif-goto-inv">Buka Inventori Bahan</button>
+  <div id="notif-popover-list" style="font-size:var(--fs-xs);display:flex;flex-direction:column;gap:8px;"></div>
+  <button type="button" class="btn btn--sm" data-goto-view="inventory" id="notif-goto-inv">Buka Inventori Stok</button>
 </div>
 
 <!-- ============================================================
@@ -1029,18 +1107,20 @@
   <div class="modal-box">
     <div class="chead no-print">
       <div>
-        <h2 id="receipt-modal-title">Pratinjau Struk Thermal (80mm)</h2>
-        <p>Siap dicetak ke printer kasir</p>
+        <h2 id="receipt-modal-title">Pratinjau Struk Thermal</h2>
+        <p id="receipt-modal-sub">Data struk diambil langsung dari snapshot transaksi server</p>
       </div>
-      <button type="button" class="ibtn" id="close-receipt-btn" aria-label="Tutup Struk">✕</button>
+      <button type="button" class="ibtn" id="close-receipt-btn" aria-label="Tutup Struk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
     </div>
 
     <div class="receipt-paper" id="receipt-paper-content"></div>
 
-    <div class="no-print" style="display:flex;gap:10px;justify-content:flex-end;">
+    <div class="no-print" style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">
       <button type="button" class="btn" id="close-receipt-btn-2">Tutup</button>
       <button type="button" class="btn btn--primary" id="print-receipt-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
         <span>Cetak Struk Sekarang</span>
       </button>
     </div>
@@ -1055,16 +1135,18 @@
     <div class="chead">
       <div>
         <h2 id="menu-modal-title">Tambah Menu Kafe</h2>
-        <p>Data tersimpan langsung ke katalog POS</p>
+        <p id="menu-modal-sub">Stok awal dialokasikan khusus ke cabang aktif</p>
       </div>
-      <button type="button" class="ibtn" id="close-menu-modal-btn" aria-label="Tutup">✕</button>
+      <button type="button" class="ibtn" id="close-menu-modal-btn" aria-label="Tutup Dialog Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
     </div>
 
     <form class="formgrid" id="menu-crud-form">
       <input type="hidden" id="crud-menu-id">
       <div class="field field--full">
         <label for="crud-menu-name">Nama Menu</label>
-        <input type="text" id="crud-menu-name" required placeholder="Contoh: Cherry Blossom Cold Brew">
+        <input type="text" id="crud-menu-name" required placeholder="Contoh: Cherry Blossom Cold Brew" maxlength="120">
       </div>
       <div class="field">
         <label for="crud-menu-cat">Kategori</label>
@@ -1077,28 +1159,29 @@
       </div>
       <div class="field">
         <label for="crud-menu-price">Harga Jual (Rp)</label>
-        <input type="number" id="crud-menu-price" required min="5000" step="1000" placeholder="32000">
+        <input type="number" id="crud-menu-price" required min="0" step="500" placeholder="28000">
       </div>
       <div class="field">
-        <label for="crud-menu-stock">Kuota Stok Harian</label>
-        <input type="number" id="crud-menu-stock" required min="0" placeholder="45">
+        <label for="crud-menu-stock">Stok Cabang Aktif (Porsi)</label>
+        <input type="number" id="crud-menu-stock" required min="0" placeholder="20">
       </div>
       <div class="field">
         <label for="crud-menu-min-stock">Batas Minimum Stok (Alert)</label>
         <input type="number" id="crud-menu-min-stock" min="0" value="5" placeholder="5">
       </div>
       <div class="field">
-        <label for="crud-menu-img">URL Foto Produk</label>
+        <label for="crud-menu-img">URL Foto Produk (Opsional)</label>
         <input type="url" id="crud-menu-img" placeholder="https://images.unsplash.com/...">
       </div>
       <div class="field">
-        <label for="crud-menu-exp">Tanggal Kedaluwarsa Batch (Opsional)</label>
+        <label for="crud-menu-exp">Tanggal Kedaluwarsa (Opsional)</label>
         <input type="date" id="crud-menu-exp">
       </div>
       <div class="field field--full">
-        <label for="crud-menu-desc">Deskripsi Singkat Komposisi</label>
-        <input type="text" id="crud-menu-desc" placeholder="Single origin Arabica dengan infusi buah ceri segar">
+        <label for="crud-menu-desc">Deskripsi Singkat</label>
+        <input type="text" id="crud-menu-desc" placeholder="Single origin Arabica dengan infusi buah ceri segar" maxlength="250">
       </div>
+      <div class="field field--full inline-alert inline-alert--error" id="menu-modal-error" role="alert" style="display:none;"></div>
       <div class="field field--full" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:8px;">
         <button type="button" class="btn" id="cancel-menu-modal-btn">Batal</button>
         <button type="submit" class="btn btn--primary">Simpan Menu</button>
@@ -1117,18 +1200,20 @@
         <h2 id="stock-adjust-modal-title">Kelola &amp; Penyesuaian Stok</h2>
         <p id="stock-adjust-modal-sub">Catat penambahan, pengurangan, barang rusak, atau kedaluwarsa</p>
       </div>
-      <button type="button" class="ibtn" id="close-stock-adjust-btn" aria-label="Tutup">✕</button>
+      <button type="button" class="ibtn" id="close-stock-adjust-btn" aria-label="Tutup Dialog Stok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
     </div>
 
     <form class="formgrid" id="stock-adjust-form">
       <input type="hidden" id="adj-menu-id">
       <div class="field field--full">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;background:var(--bg-2);border:1px solid var(--line);">
-          <div>
+        <div class="info-strip">
+          <div style="min-width:0;">
             <strong id="adj-item-name" style="display:block;font-size:var(--fs-sm);">-</strong>
             <small id="adj-branch-label" style="color:var(--muted);">Cabang Aktif</small>
           </div>
-          <div style="text-align:right;">
+          <div style="text-align:right;flex:none;">
             <span style="font-size:var(--fs-2xs);color:var(--muted);display:block;">Stok Sistem Saat Ini</span>
             <strong class="num" id="adj-current-stock" style="font-size:var(--fs-md);">0 porsi</strong>
           </div>
@@ -1161,25 +1246,27 @@
       <div class="field">
         <label for="adj-min-stock">Batas Minimum Alert (Porsi)</label>
         <input type="number" id="adj-min-stock" min="0" max="1000" value="5">
-        <small style="color:var(--muted);font-size:var(--fs-2xs);">Notifikasi otomatis saat stok &le; batas ini</small>
+        <small style="color:var(--muted);font-size:var(--fs-2xs);">Notifikasi muncul saat stok &le; batas ini</small>
       </div>
 
       <div class="field field--full">
-        <label for="adj-exp-date">Tanggal Kedaluwarsa Batch (Opsional)</label>
+        <label for="adj-exp-date">Tanggal Kedaluwarsa Aktif (Opsional)</label>
         <input type="date" id="adj-exp-date">
       </div>
 
       <div class="field field--full">
         <label for="adj-reason">Alasan / Keterangan Perubahan</label>
-        <input type="text" id="adj-reason" required placeholder="Contoh: Pengiriman rutin harian / koreksi shift / barang rusak">
+        <input type="text" id="adj-reason" required placeholder="Contoh: Pengiriman rutin harian / koreksi shift / barang rusak" maxlength="200">
       </div>
 
       <div class="field field--full">
-        <div id="adj-preview-box" style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:var(--bg-2);font-size:var(--fs-xs);">
+        <div id="adj-preview-box" class="info-strip">
           <span>Estimasi Stok Setelah Disimpan:</span>
           <strong class="num" id="adj-preview-val">0 porsi</strong>
         </div>
       </div>
+
+      <div class="field field--full inline-alert inline-alert--error" id="adj-modal-error" role="alert" style="display:none;"></div>
 
       <div class="field field--full" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:4px;">
         <button type="button" class="btn" id="cancel-stock-adjust-btn">Batal</button>
@@ -1193,13 +1280,15 @@
      MODAL 4: STOCK OPNAME (PENCOCOKAN STOK FISIK VS SISTEM)
      ============================================================ -->
 <div class="modal-backdrop" id="stock-opname-modal" role="dialog" aria-modal="true" aria-labelledby="stock-opname-modal-title">
-  <div class="modal-box" style="max-width:740px;width:95%;">
+  <div class="modal-box" style="max-width:740px;">
     <div class="chead">
       <div>
         <h2 id="stock-opname-modal-title">Stock Opname — Pencocokan Stok Fisik</h2>
         <p id="stock-opname-branch-sub">Masukkan hasil hitung fisik aktual untuk menyesuaikan stok sistem dan mencatat selisih</p>
       </div>
-      <button type="button" class="ibtn" id="close-opname-modal-btn" aria-label="Tutup">✕</button>
+      <button type="button" class="ibtn" id="close-opname-modal-btn" aria-label="Tutup Dialog Stock Opname">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
     </div>
 
     <form id="stock-opname-form">
@@ -1231,7 +1320,9 @@
         <h2 id="bulk-restock-modal-title">Restock Massal Terkontrol</h2>
         <p>Tambahkan stok dengan jumlah terukur pada cabang aktif</p>
       </div>
-      <button type="button" class="ibtn" id="close-bulk-restock-btn" aria-label="Tutup">✕</button>
+      <button type="button" class="ibtn" id="close-bulk-restock-btn" aria-label="Tutup Dialog Restock Massal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
     </div>
 
     <form class="formgrid" id="bulk-restock-form">
@@ -1252,7 +1343,7 @@
       </div>
       <div class="field field--full">
         <label for="bulk-restock-note">Alasan / Keterangan Restock</label>
-        <input type="text" id="bulk-restock-note" value="Restock terjadwal gudang cabang" required>
+        <input type="text" id="bulk-restock-note" value="Restock terjadwal gudang cabang" required maxlength="200">
       </div>
       <div class="field field--full" style="display:flex;flex-direction:row;justify-content:flex-end;gap:8px;margin-top:6px;">
         <button type="button" class="btn" id="cancel-bulk-restock-btn">Batal</button>
@@ -1262,11 +1353,29 @@
   </div>
 </div>
 
-<div class="toast-stack" id="toast-stack" aria-live="polite"></div>
-
 <!-- ============================================================
-     APPLICATION CONTROLLER & STATE ENGINE
+     MODAL 6: ACCESSIBLE CONFIRMATION DIALOG
      ============================================================ -->
+<div class="modal-backdrop" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="chead">
+      <div>
+        <h2 id="confirm-modal-title">Konfirmasi Tindakan</h2>
+      </div>
+      <button type="button" class="ibtn" id="close-confirm-modal-btn" aria-label="Batal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <p id="confirm-modal-message" style="font-size:var(--fs-sm);color:var(--ink-2);line-height:1.5;"></p>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button type="button" class="btn" id="confirm-cancel-btn">Batal</button>
+      <button type="button" class="btn btn--primary" id="confirm-accept-btn">Lanjutkan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+
 <script src="js/index-app.js" defer></script>
 </body>
 </html>

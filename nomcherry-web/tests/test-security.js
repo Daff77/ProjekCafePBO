@@ -7,6 +7,7 @@ const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nomcherry-security-'));
 process.env.NOMCHERRY_DB = path.join(tempDir, 'security.db');
 process.env.SESSION_SECRET = 'test-session-secret';
 process.env.LOG_REQUESTS = 'false';
+process.env.SEED_DEMO_DATA = 'true';
 
 const app = require('../src/server');
 const db = require('../src/database/db');

@@ -1,0 +1,12 @@
+[
+  {
+    "antipattern": "repeated-container-text",
+    "name": "Same text repeated inside one container",
+    "description": "The same literal text rendered three or more times in structurally different spots inside a single card or panel is redundant messaging — usually a status or label wired into every slot of a template. Say it once, in the slot where it matters most.",
+    "severity": "warning",
+    "category": "quality",
+    "file": "C:\\DaffaP\\Project df\\ProjectCafe\\nomcherry-web\\public\\index.html",
+    "line": 0,
+    "snippet": "\"Rp 0\" rendered 5× in distinct spots inside aside.card.pos-cart-card"
+  }
+]

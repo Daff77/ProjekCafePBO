@@ -64,17 +64,28 @@
   box-sizing: border-box;
 }
 
+::selection {
+  background: var(--cherry-soft);
+  color: var(--ink);
+}
+
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 16px;
+  padding: 24px 16px;
   -webkit-font-smoothing: antialiased;
+  caret-color: var(--cherry);
+}
+
+:focus-visible {
+  outline: 2px solid var(--cherry);
+  outline-offset: 2px;
 }
 
 .wrap {
@@ -84,24 +95,24 @@ body {
 
 .card {
   background: var(--card);
-  border-radius: 20px;
-  box-shadow: inset 0 0 0 1px var(--line), var(--shadow);
-  padding: 32px 28px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  padding: 28px 24px;
   position: relative;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .head {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .brand-mark {
   width: 44px;
   height: 44px;
-  border-radius: 13px;
+  border-radius: 12px;
   background: var(--cherry);
   color: var(--cherry-ink);
   display: grid;
@@ -127,10 +138,8 @@ body {
 
 .brand-text small {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--muted);
   margin-top: 2px;
 }
@@ -139,6 +148,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
   padding: 8px 0 14px;
   border-bottom: 1px solid var(--line);
   font-size: 12px;
@@ -154,7 +165,7 @@ body {
 }
 
 h1 {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1.15;
@@ -168,17 +179,25 @@ h1 {
   margin: 0 0 20px;
 }
 
-.session-banner {
+.session-banner,
+.bootstrap-banner {
   display: none;
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 20px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--card-2);
+  border: 1px solid var(--line-2);
+  margin-bottom: 18px;
   font-size: 13px;
 }
 
-.session-banner.show {
+.session-banner.show,
+.bootstrap-banner.show {
   display: block;
+}
+
+.bootstrap-banner {
+  background: var(--warn-soft);
+  color: var(--warn);
 }
 
 .session-banner-info {
@@ -193,24 +212,25 @@ h1 {
   height: 8px;
   border-radius: 50%;
   background: var(--good);
+  flex: none;
 }
 
 .session-banner-btns {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .btn-continue {
   flex: 1;
+  min-height: 38px;
   background: var(--cherry);
   color: var(--cherry-ink);
   border: none;
-  border-radius: 8px;
+  border-radius: 9px;
   padding: 8px 12px;
-  font-size: 12px;
-  font-weight: 700;
+  font: 700 13px var(--font);
   cursor: pointer;
-  transition: background-color 0.15s ease;
 }
 
 .btn-continue:hover {
@@ -218,58 +238,46 @@ h1 {
 }
 
 .btn-switch {
+  min-height: 38px;
   background: transparent;
-  color: var(--muted);
+  color: var(--ink-2);
   border: 1px solid var(--line-2);
-  border-radius: 8px;
+  border-radius: 9px;
   padding: 8px 12px;
-  font-size: 12px;
-  font-weight: 600;
+  font: 600 13px var(--font);
   cursor: pointer;
 }
 
 .btn-switch:hover {
   color: var(--ink);
-  background: var(--card-2);
+  background: var(--card);
+}
+
+.error,
+.success {
+  display: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
 }
 
 .error {
-  display: none;
   background: var(--bad-soft);
   color: var(--bad);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  border-left: 3px solid var(--bad);
-  animation: shake 0.25s ease-in-out;
-}
-
-.error.show {
-  display: block;
+  border: 1px solid color-mix(in oklab, var(--bad) 30%, transparent);
 }
 
 .success {
-  display: none;
   background: var(--good-soft);
   color: var(--good);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  border-left: 3px solid var(--good);
+  border: 1px solid color-mix(in oklab, var(--good) 30%, transparent);
 }
 
+.error.show,
 .success.show {
   display: block;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
 }
 
 .field {
@@ -280,11 +288,9 @@ h1 {
 }
 
 label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted);
+  color: var(--ink-2);
 }
 
 .inwrap {
@@ -302,26 +308,28 @@ label {
   pointer-events: none;
 }
 
-input {
+input[type="text"],
+input[type="password"] {
   width: 100%;
-  height: 42px;
+  height: 44px;
   border-radius: 11px;
-  border: none;
-  box-shadow: inset 0 0 0 1px var(--line-2);
+  border: 1px solid var(--line-2);
   background: var(--card);
   color: var(--ink);
-  font: 500 14px var(--font);
+  font: 500 16px var(--font);
   padding: 0 12px 0 38px;
-  transition: box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-input:focus {
+input[type="text"]:focus,
+input[type="password"]:focus {
   outline: none;
-  box-shadow: inset 0 0 0 1.5px var(--cherry);
+  border-color: var(--cherry);
+  box-shadow: 0 0 0 3px var(--cherry-soft);
 }
 
 .input-with-toggle input {
-  padding-right: 68px;
+  padding-right: 92px;
 }
 
 .toggle {
@@ -329,14 +337,14 @@ input:focus {
   right: 6px;
   top: 50%;
   transform: translateY(-50%);
+  min-height: 34px;
   border: none;
   background: transparent;
   color: var(--muted);
   font: 600 12px var(--font);
-  padding: 6px 8px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 7px;
   cursor: pointer;
-  transition: color 0.15s ease;
 }
 
 .toggle:hover {
@@ -347,6 +355,8 @@ input:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
   margin: 6px 0 18px;
   font-size: 13px;
   color: var(--muted);
@@ -355,55 +365,52 @@ input:focus {
 .opts label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  text-transform: none;
-  letter-spacing: 0;
+  gap: 8px;
   cursor: pointer;
   font-weight: 500;
 }
 
 .opts input {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   margin: 0;
   accent-color: var(--cherry);
   cursor: pointer;
 }
 
-.opts a {
+.link-btn {
+  background: none;
+  border: 0;
+  padding: 6px 4px;
   color: var(--cherry);
-  font-weight: 600;
+  font: 600 13px var(--font);
   cursor: pointer;
 }
 
-.opts a:hover {
+.link-btn:hover {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 .btn {
   width: 100%;
-  height: 42px;
+  min-height: 44px;
   background: var(--cherry);
   color: var(--cherry-ink);
   border: none;
   border-radius: 11px;
-  font: 700 14px var(--font);
+  font: 700 15px var(--font);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
-  transition: background-color 0.15s ease, transform 0.1s ease;
+  transition: background-color 0.15s ease;
 }
 
 .btn:hover {
   background: var(--cherry-hi);
-}
-
-.btn:active {
-  transform: scale(0.99);
 }
 
 .btn:disabled {
@@ -412,19 +419,22 @@ input:focus {
 }
 
 .demo-section {
-  margin-top: 24px;
+  display: none;
+  margin-top: 22px;
   padding-top: 18px;
   border-top: 1px dashed var(--line-2);
+}
+
+.demo-section.show {
+  display: block;
 }
 
 .demo-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--muted);
   margin-bottom: 10px;
 }
@@ -436,18 +446,17 @@ input:focus {
 }
 
 .demo-btn {
-  background: transparent;
-  border: none;
-  border-left: 2px solid var(--line-2);
-  padding: 6px 10px;
+  background: var(--card-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
   text-align: left;
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .demo-btn:hover {
-  border-left-color: var(--cherry);
-  background: var(--card-2);
+  border-color: var(--cherry);
 }
 
 .pill-role {
@@ -474,6 +483,7 @@ input:focus {
   display: block;
   font-size: 11px;
   color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .foot {
@@ -483,23 +493,11 @@ input:focus {
   color: var(--muted);
 }
 
-.foot a {
-  color: var(--cherry);
-  font-weight: 600;
-}
-
-.foot a:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 .help-modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.48);
   z-index: 100;
   align-items: center;
   justify-content: center;
@@ -512,9 +510,10 @@ input:focus {
 
 .help-box {
   background: var(--card);
-  border-radius: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
   padding: 24px;
-  max-width: 380px;
+  max-width: 400px;
   width: 100%;
   box-shadow: var(--shadow);
 }
@@ -528,24 +527,28 @@ input:focus {
 .help-box p {
   font-size: 13px;
   color: var(--muted);
-  line-height: 1.45;
+  line-height: 1.5;
   margin: 0 0 16px;
 }
 
 .help-creds {
+  display: none;
   padding: 10px 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   font-size: 12px;
   margin-bottom: 18px;
-  display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
+.help-creds.show {
+  display: flex;
+}
+
 @media (max-width: 480px) {
   .card {
-    padding: 24px 20px;
+    padding: 22px 18px;
   }
   .demo-grid {
     grid-template-columns: 1fr;
@@ -554,15 +557,15 @@ input:focus {
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="login-wrap">
   <main class="card">
     <div class="head">
       <div class="brand-mark">
-        <img src="assets/logo.png" alt="NomCherry Logo">
+        <img src="assets/logo.png" alt="Logo NomCherry Café">
       </div>
       <div class="brand-text">
         <b>NomCherry Café</b>
-        <small>Point of Sale &amp; Kasir</small>
+        <small>Point of Sale &amp; Operasional Kafe</small>
       </div>
     </div>
 
@@ -571,99 +574,101 @@ input:focus {
       <span id="c">--:--</span>
     </div>
 
+    <div class="bootstrap-banner" id="bootstrap-banner" role="status">
+      <strong>Inisialisasi Administrator Diperlukan</strong>
+      <div style="margin-top:4px;">Belum ada akun pengguna terdaftar pada database ini. Jalankan perintah <code>npm run bootstrap:admin</code> pada server untuk membuat akun administrator awal.</div>
+    </div>
+
     <div class="session-banner" id="session-banner">
       <div class="session-banner-info">
         <span class="session-dot"></span>
-        <span>Sesi Kasir Aktif: <strong id="active-user-name">-</strong> (<span id="active-user-role">-</span>)</span>
+        <span>Sesi Aktif: <strong id="active-user-name">-</strong> (<span id="active-user-role">-</span>)</span>
       </div>
       <div class="session-banner-btns">
-        <button type="button" class="btn-continue" id="btn-resume">Lanjut ke Kasir POS →</button>
+        <button type="button" class="btn-continue" id="btn-resume">Lanjut ke Aplikasi →</button>
         <button type="button" class="btn-switch" id="btn-logout-here">Ganti Akun</button>
       </div>
     </div>
 
     <h1 id="g">Selamat Datang</h1>
-    <p class="lead">Masuk untuk membuka katalog POS, kelola pesanan, dan laporan penjualan.</p>
+    <p class="lead">Masuk menggunakan akun terdaftar untuk membuka kasir POS, inventori, dan laporan.</p>
 
     <form id="f" novalidate>
       <div class="error" id="err" role="alert"></div>
       <div class="success" id="succ" role="status"></div>
 
       <div class="field">
-        <label for="u">Username Kasir / Admin</label>
+        <label for="u">Username</label>
         <div class="inwrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <input id="u" name="username" type="text" autocomplete="username" placeholder="Masukkan username (cth: daps, admin)" autofocus required>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input id="u" name="username" type="text" autocomplete="username" placeholder="Masukkan username akun" autofocus required>
         </div>
       </div>
 
       <div class="field">
-        <label for="p">Kata Sandi / PIN</label>
+        <label for="p">Kata Sandi</label>
         <div class="inwrap input-with-toggle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           <input id="p" name="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
           <button type="button" class="toggle" id="t" aria-label="Tampilkan kata sandi">Lihat</button>
         </div>
       </div>
 
       <div class="opts">
-        <label><input type="checkbox" id="r" checked> Ingat saya</label>
-        <a id="lupa-btn">Bantuan Akun?</a>
+        <label><input type="checkbox" id="r" checked> Tetap masuk di perangkat ini</label>
+        <button type="button" class="link-btn" id="lupa-btn" aria-haspopup="dialog" aria-controls="help-modal">Bantuan Akun?</button>
       </div>
 
       <button class="btn" id="b" type="submit">
         <span>Masuk ke Sistem</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </button>
     </form>
 
-    <div class="demo-section">
+    <div class="demo-section" id="demo-section">
       <div class="demo-title">
-        <span>Akses Cepat (Akun Demo)</span>
-        <span style="color:var(--cherry);font-weight:700;">1-Klik Isi</span>
+        <span>Akses Cepat (Mode Demo Eksplisit)</span>
+        <span style="color:var(--cherry);">1-Klik Isi</span>
       </div>
       <div class="demo-grid">
-        <button type="button" class="demo-btn" data-u="daps" data-p="135" title="Login sebagai Kasir Cabang 1 (Daffa)">
+        <button type="button" class="demo-btn" data-u="daps" data-p="135">
           <span class="pill-role">Kasir · Cabang 1</span>
           <span class="pill-name">Daffa Danendra</span>
-          <span class="pill-user">daps / 135</span>
+          <span class="pill-user">daps</span>
         </button>
 
-        <button type="button" class="demo-btn" data-u="admin" data-p="admin123" title="Login sebagai Admin Utama (Full Akses)">
+        <button type="button" class="demo-btn" data-u="admin" data-p="admin123">
           <span class="pill-role" style="color:var(--tangerine)">Admin Utama</span>
           <span class="pill-name">Administrator</span>
-          <span class="pill-user">admin / admin123</span>
+          <span class="pill-user">admin</span>
         </button>
 
-        <button type="button" class="demo-btn" data-u="kasir" data-p="123" title="Login sebagai Kasir Cabang 2 (Saman)">
+        <button type="button" class="demo-btn" data-u="kasir" data-p="123">
           <span class="pill-role">Kasir · Cabang 2</span>
           <span class="pill-name">Saman</span>
-          <span class="pill-user">kasir / 123</span>
+          <span class="pill-user">kasir</span>
         </button>
 
-        <button type="button" class="demo-btn" data-u="manager1" data-p="123" title="Login sebagai Manager Operasional">
+        <button type="button" class="demo-btn" data-u="manager1" data-p="123">
           <span class="pill-role" style="color:var(--good)">Manager</span>
           <span class="pill-name">Clarissa</span>
-          <span class="pill-user">manager1 / 123</span>
+          <span class="pill-user">manager1</span>
         </button>
       </div>
     </div>
 
-    <p class="foot">NomCherry Café &amp; Roastery · <a href="index.html">Buka POS Langsung →</a></p>
+    <p class="foot">NomCherry Café &amp; Roastery · Sistem Kasir Multi-Cabang</p>
   </main>
 </div>
 
-<div class="help-modal" id="help-modal">
+<div class="help-modal" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
   <div class="help-box">
-    <h2>Bantuan Akses Akun</h2>
-    <p>Untuk mereset kata sandi kasir atau staff, silakan hubungi <b>Admin IT Kafe</b> atau gunakan salah satu akun demo berikut:</p>
-    <div class="help-creds">
-      <div>• <b>Kasir 1 (Surabaya Pusat):</b> <code>daps</code> / <code>135</code></div>
-      <div>• <b>Admin Utama:</b> <code>admin</code> / <code>admin123</code></div>
-      <div>• <b>Manager:</b> <code>manager1</code> / <code>123</code></div>
-      <div>• <b>Kasir 2 (Surabaya Timur):</b> <code>kasir</code> / <code>123</code></div>
+    <h2 id="help-modal-title">Bantuan Akses Akun</h2>
+    <p>Untuk mereset kata sandi kasir atau staf operasional, hubungi <b>Administrator Kafe</b> agar kata sandi baru diatur melalui manajemen akun.</p>
+    <div class="help-creds" id="help-demo-creds">
+      <div><b>Mode Demo Aktif:</b> Gunakan tombol akses cepat pada halaman login untuk pengujian lokal.</div>
     </div>
-    <button type="button" class="btn" id="close-help-btn">Mengerti</button>
+    <button type="button" class="btn" id="close-help-btn">Tutup Bantuan</button>
   </div>
 </div>
 

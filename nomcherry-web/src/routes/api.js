@@ -1,6 +1,6 @@
 /**
  * Main API Routes for NomCherry Café
- * Authentication is required for every endpoint except login/logout.
+ * Authentication is required for every endpoint except public auth config, login, and logout.
  */
 
 const express = require('express');
@@ -18,7 +18,7 @@ const { requireAuth, requireRoles } = require('../services/authService');
 // Basic in-memory login rate limiting (per process)
 const loginAttempts = new Map();
 const LOGIN_WINDOW_MS = 10 * 60 * 1000;
-const LOGIN_MAX_ATTEMPTS = 20;
+const LOGIN_MAX_ATTEMPTS = 30;
 const limiterCleanup = setInterval(() => {
     const now = Date.now();
     for (const [key, record] of loginAttempts.entries()) {
@@ -52,7 +52,8 @@ function loginRateLimiter(req, res, next) {
     return next();
 }
 
-// Authentication (public)
+// Public Authentication Routes
+router.get('/auth/config', authController.getPublicConfig);
 router.post('/auth/login', loginRateLimiter, authController.login);
 router.post('/auth/logout', authController.logout);
 
@@ -60,10 +61,12 @@ router.post('/auth/logout', authController.logout);
 router.use(requireAuth);
 
 router.get('/auth/session', authController.session);
+router.post('/auth/change-password', authController.changePassword);
 
 // 1. Users (admin only)
 router.get('/users', requireRoles('admin'), authController.getUsers);
 router.post('/users', requireRoles('admin'), authController.createUser);
+router.post('/users/:id/reset-password', requireRoles('admin'), authController.resetUserPassword);
 router.delete('/users/:id', requireRoles('admin'), authController.deleteUser);
 
 // 2. Menu Management (all authenticated users can read)
@@ -81,6 +84,7 @@ router.patch('/orders/:id/status', requireRoles('admin', 'kasir', 'manager'), or
 
 // 4. Stock & Inventory
 router.get('/stock', requireRoles('admin', 'manager', 'owner'), stockController.getStockList);
+router.get('/stock/reconciliation', requireRoles('admin', 'manager', 'owner'), stockController.getReconciliation);
 router.post('/stock/adjust', requireRoles('admin', 'manager'), stockController.adjustStock);
 router.post('/stock/opname', requireRoles('admin', 'manager'), stockController.performStockOpname);
 router.post('/stock/restock-all', requireRoles('admin', 'manager'), stockController.restockAll);

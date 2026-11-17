@@ -1,6 +1,5 @@
 /**
  * Auth Controller for NomCherry Café
- * Implements test cases 1.1, 1.2, 1.3, 1.4, 8.1, 8.2, 8.3
  * Passwords are hashed with scrypt and sessions use signed HttpOnly cookies.
  */
 
@@ -9,24 +8,40 @@ const passwordService = require('../services/passwordService');
 const authService = require('../services/authService');
 
 const VALID_ROLES = ['admin', 'kasir', 'manager', 'owner'];
+const MIN_PASSWORD_LENGTH = 8;
 
 function serverError(res, err, context) {
     console.error(`[authController] ${context}:`, err.message);
     return res.status(500).json({ success: false, message: 'Terjadi kesalahan pada server' });
 }
 
+exports.getPublicConfig = (req, res) => {
+    try {
+        const userCount = db.get('SELECT COUNT(*) AS count FROM pengguna').count;
+        return res.json({
+            success: true,
+            data: {
+                demo_mode: db.isDemoMode(),
+                bootstrap_required: userCount === 0
+            }
+        });
+    } catch (err) {
+        return serverError(res, err, 'getPublicConfig');
+    }
+};
+
 exports.login = (req, res) => {
     try {
         const { username, kata_sandi, id_cabang } = req.body || {};
 
-        if (!username || !kata_sandi || username.trim() === '' || kata_sandi.trim() === '') {
+        if (!username || !kata_sandi || String(username).trim() === '' || String(kata_sandi).trim() === '') {
             return res.status(400).json({
                 success: false,
                 message: 'Field tidak boleh kosong'
             });
         }
 
-        const user = db.get('SELECT * FROM pengguna WHERE username = ?', [username.trim()]);
+        const user = db.get('SELECT * FROM pengguna WHERE username = ?', [String(username).trim()]);
         if (!user) {
             return res.status(401).json({
                 success: false,
@@ -41,7 +56,6 @@ exports.login = (req, res) => {
             });
         }
 
-        // Opportunistic migration from legacy plaintext passwords.
         if (passwordService.needsRehash(user.kata_sandi)) {
             db.run('UPDATE pengguna SET kata_sandi = ? WHERE id_pengguna = ?', [
                 passwordService.hashPassword(kata_sandi),
@@ -58,7 +72,8 @@ exports.login = (req, res) => {
             }
         }
 
-        const targetCabangId = id_cabang || user.id_cabang || 'CBG001';
+        const assignedCabangId = user.id_cabang || 'CBG001';
+        const targetCabangId = id_cabang || assignedCabangId;
         const cabang = db.get('SELECT * FROM cabang WHERE id_cabang = ?', [targetCabangId]);
         if (!cabang) {
             return res.status(400).json({ success: false, message: 'Cabang tidak ditemukan' });
@@ -74,7 +89,9 @@ exports.login = (req, res) => {
                 nama_pengguna: user.nama_pengguna,
                 username: user.username,
                 peran: user.peran,
-                id_cabang: targetCabangId,
+                id_cabang: assignedCabangId,
+                active_cabang: targetCabangId,
+                must_change_password: Boolean(user.must_change_password),
                 nama_cabang: cabang.nama_cabang,
                 alamat_cabang: cabang.alamat,
                 no_telp_cabang: cabang.no_telp
@@ -100,6 +117,7 @@ exports.session = (req, res) => {
             username: req.user.username,
             peran: req.user.peran,
             id_cabang: req.user.id_cabang,
+            must_change_password: Boolean(req.user.must_change_password),
             nama_cabang: req.user.nama_cabang,
             alamat_cabang: req.user.alamat_cabang,
             no_telp_cabang: req.user.no_telp_cabang
@@ -107,10 +125,101 @@ exports.session = (req, res) => {
     });
 };
 
+exports.changePassword = (req, res) => {
+    try {
+        const { kata_sandi_lama, kata_sandi_baru } = req.body || {};
+
+        if (!kata_sandi_lama || !kata_sandi_baru) {
+            return res.status(400).json({
+                success: false,
+                message: 'Kata sandi saat ini dan kata sandi baru wajib diisi'
+            });
+        }
+
+        const newPass = String(kata_sandi_baru);
+        if (newPass.length < MIN_PASSWORD_LENGTH) {
+            return res.status(400).json({
+                success: false,
+                message: `Kata sandi baru minimal ${MIN_PASSWORD_LENGTH} karakter`
+            });
+        }
+
+        const userRow = db.get('SELECT id_pengguna, kata_sandi FROM pengguna WHERE id_pengguna = ?', [req.user.id_pengguna]);
+        if (!userRow) {
+            return res.status(404).json({ success: false, message: 'Akun pengguna tidak ditemukan' });
+        }
+
+        if (!passwordService.verifyPassword(kata_sandi_lama, userRow.kata_sandi)) {
+            return res.status(401).json({
+                success: false,
+                message: 'Kata sandi saat ini tidak sesuai'
+            });
+        }
+
+        if (String(kata_sandi_lama) === newPass) {
+            return res.status(400).json({
+                success: false,
+                message: 'Kata sandi baru harus berbeda dari kata sandi sebelumnya'
+            });
+        }
+
+        db.transaction(() => {
+            db.run(
+                'UPDATE pengguna SET kata_sandi = ?, must_change_password = 0 WHERE id_pengguna = ?',
+                [passwordService.hashPassword(newPass), req.user.id_pengguna]
+            );
+            authService.revokeUserSessions(req.user.id_pengguna, req.user.current_session_id || null);
+        });
+
+        return res.json({
+            success: true,
+            message: 'Kata sandi berhasil diperbarui. Sesi di perangkat lain telah dicabut.'
+        });
+    } catch (err) {
+        return serverError(res, err, 'changePassword');
+    }
+};
+
+exports.resetUserPassword = (req, res) => {
+    try {
+        const { id } = req.params;
+        const { kata_sandi_baru } = req.body || {};
+
+        if (!kata_sandi_baru || String(kata_sandi_baru).length < MIN_PASSWORD_LENGTH) {
+            return res.status(400).json({
+                success: false,
+                message: `Kata sandi baru minimal ${MIN_PASSWORD_LENGTH} karakter`
+            });
+        }
+
+        const existing = db.get('SELECT id_pengguna, username FROM pengguna WHERE id_pengguna = ?', [id]);
+        if (!existing) {
+            return res.status(404).json({ success: false, message: 'User tidak ditemukan' });
+        }
+
+        db.transaction(() => {
+            db.run(
+                'UPDATE pengguna SET kata_sandi = ?, must_change_password = 1 WHERE id_pengguna = ?',
+                [passwordService.hashPassword(String(kata_sandi_baru)), id]
+            );
+            authService.revokeUserSessions(id);
+        });
+
+        return res.json({
+            success: true,
+            message: `Kata sandi akun ${existing.username} berhasil direset dan seluruh sesi aktifnya telah dicabut.`
+        });
+    } catch (err) {
+        return serverError(res, err, 'resetUserPassword');
+    }
+};
+
 exports.getUsers = (req, res) => {
     try {
         const users = db.query(`
-            SELECT p.id_pengguna, p.nama_pengguna, p.username, p.peran, p.id_cabang, c.nama_cabang
+            SELECT p.id_pengguna, p.nama_pengguna, p.username, p.peran, p.id_cabang,
+                   COALESCE(p.must_change_password, 0) AS must_change_password,
+                   c.nama_cabang
             FROM pengguna p
             LEFT JOIN cabang c ON p.id_cabang = c.id_cabang
             ORDER BY p.id_pengguna ASC
@@ -129,6 +238,13 @@ exports.createUser = (req, res) => {
             return res.status(400).json({ success: false, message: 'Data user tidak lengkap' });
         }
 
+        if (String(kata_sandi).length < MIN_PASSWORD_LENGTH) {
+            return res.status(400).json({
+                success: false,
+                message: `Kata sandi minimal ${MIN_PASSWORD_LENGTH} karakter`
+            });
+        }
+
         if (!VALID_ROLES.includes(peran)) {
             return res.status(400).json({ success: false, message: 'Peran pengguna tidak valid' });
         }
@@ -139,7 +255,7 @@ exports.createUser = (req, res) => {
             return res.status(400).json({ success: false, message: 'Cabang tidak ditemukan' });
         }
 
-        const existing = db.get('SELECT id_pengguna FROM pengguna WHERE username = ?', [username.trim()]);
+        const existing = db.get('SELECT id_pengguna FROM pengguna WHERE username = ?', [String(username).trim()]);
         if (existing) {
             return res.status(400).json({ success: false, message: 'Username sudah digunakan' });
         }
@@ -153,11 +269,11 @@ exports.createUser = (req, res) => {
         const newId = 'USR' + String(maxId + 1).padStart(3, '0');
 
         db.run(
-            'INSERT INTO pengguna (id_pengguna, nama_pengguna, username, kata_sandi, peran, id_cabang) VALUES (?, ?, ?, ?, ?, ?)',
+            'INSERT INTO pengguna (id_pengguna, nama_pengguna, username, kata_sandi, peran, id_cabang, must_change_password) VALUES (?, ?, ?, ?, ?, ?, 0)',
             [
                 newId,
-                nama_pengguna.trim(),
-                username.trim(),
+                String(nama_pengguna).trim(),
+                String(username).trim(),
                 passwordService.hashPassword(kata_sandi),
                 peran,
                 branchId
@@ -167,7 +283,7 @@ exports.createUser = (req, res) => {
         return res.json({
             success: true,
             message: 'User berhasil disimpan',
-            data: { id_pengguna: newId, nama_pengguna, username, peran, id_cabang: branchId }
+            data: { id_pengguna: newId, nama_pengguna: String(nama_pengguna).trim(), username: String(username).trim(), peran, id_cabang: branchId }
         });
     } catch (err) {
         return serverError(res, err, 'createUser');

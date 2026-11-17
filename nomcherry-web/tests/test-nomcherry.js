@@ -6,6 +6,7 @@ const path = require('node:path');
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nomcherry-test-'));
 process.env.NOMCHERRY_DB = path.join(tempDir, 'test.db');
 process.env.SESSION_SECRET = 'test-session-secret';
+process.env.SEED_DEMO_DATA = 'true';
 
 const db = require('../src/database/db');
 const authController = require('../src/controllers/authController');

@@ -2,11 +2,13 @@
 node_modules/
 package-lock.json.bak
 
-# SQLite runtime database and temp files
+# SQLite runtime database, backups, and temp files
 *.db
 *.db-shm
 *.db-wal
 *.db-journal
+backups/
+*.bak
 
 # Logs & Debug
 *.log

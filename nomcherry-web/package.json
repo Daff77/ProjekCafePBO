@@ -1,12 +1,16 @@
 {
   "name": "nomcherry-web",
-  "version": "1.0.0",
-  "description": "Sistem Informasi Pemesanan dan Kasir NomCherry Café Berbasis Web dengan Desain Parley",
+  "version": "1.1.0",
+  "description": "Sistem Informasi Point of Sale, Inventori Multi-Cabang, dan Analitik NomCherry Café",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
+    "start:demo": "node -e \"process.env.SEED_DEMO_DATA='true'; require('./src/server');\"",
     "dev": "node src/server.js",
-    "test": "node tests/test-nomcherry.js && node tests/audit-all-features.js && node tests/test-security.js",
+    "bootstrap:admin": "node src/scripts/bootstrap-admin.js",
+    "db:backup": "node src/scripts/db-backup.js backup",
+    "db:rollback": "node src/scripts/db-backup.js rollback",
+    "test": "node tests/test-nomcherry.js && node tests/audit-all-features.js && node tests/test-security.js && node tests/test-audit-remediation.js",
     "test:e2e": "node tests/e2e/e2e.test.js",
     "test:all": "npm test && npm run test:e2e"
   },
@@ -18,7 +22,6 @@
     "pos",
     "kasir",
     "nomcherry",
-    "parley",
     "rpl"
   ],
   "author": "Daffa Danendra Fairuzza & Team",

@@ -1,10 +1,11 @@
 /**
  * Stock & Inventory Controller for NomCherry Café
- * Implements multi-branch stock management, movement history, configurable low-stock alerts,
- * stock opname (physical vs system reconciliation), expiration management, and controlled restock.
+ * Uses dateService for consistent business-day expiry evaluation and strict date validation.
  */
 
 const db = require('../database/db');
+const dateService = require('../services/dateService');
+const { resolveAuthorizedBranch } = require('../services/authService');
 
 const VALID_MOVEMENT_TYPES = ['MASUK', 'KELUAR', 'PENYESUAIAN', 'OPNAME', 'RUSAK', 'KADALUARSA'];
 
@@ -19,20 +20,15 @@ function getDefaultMinStock() {
     return Number.isInteger(parsed) && parsed >= 0 ? parsed : 5;
 }
 
-function resolveBranchId(req, requestedCabang) {
-    if (req.user && req.user.peran === 'kasir' && req.user.id_cabang) {
-        return req.user.id_cabang;
-    }
-    if (requestedCabang && requestedCabang !== 'all' && requestedCabang !== 'Semua') {
-        return requestedCabang;
-    }
-    return (req.user && req.user.id_cabang) || 'CBG001';
-}
-
 exports.getStockList = (req, res) => {
     try {
         const { cabang, kategori, search, status } = req.query || {};
-        const activeBranchId = resolveBranchId(req, cabang);
+        const resolved = resolveAuthorizedBranch(req, cabang);
+        if (resolved.errorStatus) {
+            return res.status(resolved.errorStatus).json({ success: false, message: resolved.errorMessage });
+        }
+        const activeBranchId = resolved.branchId;
+
         const branchRow = db.get('SELECT id_cabang, nama_cabang FROM cabang WHERE id_cabang = ?', [activeBranchId]) || {
             id_cabang: activeBranchId,
             nama_cabang: activeBranchId === 'CBG002' ? 'NomCherry Cabang Timur (Rungkut)' : 'NomCherry Pusat (Jemur)'
@@ -59,7 +55,7 @@ exports.getStockList = (req, res) => {
         }
 
         const rawItems = db.query(sql, params);
-        const todayStr = new Date().toISOString().slice(0, 10);
+        const businessToday = dateService.today();
         const defaultMin = getDefaultMinStock();
 
         let enhanced = rawItems.map(item => {
@@ -73,18 +69,14 @@ exports.getStockList = (req, res) => {
             if (!expDate) {
                 const latestExp = db.get(
                     `SELECT tanggal_kadaluarsa FROM stok
-                     WHERE id_menu = ? AND (id_cabang = ? OR id_cabang IS NULL) AND tanggal_kadaluarsa IS NOT NULL
+                     WHERE id_menu = ? AND id_cabang = ? AND tanggal_kadaluarsa IS NOT NULL
                      ORDER BY tanggal DESC LIMIT 1`,
                     [item.id_menu, activeBranchId]
                 );
                 expDate = latestExp ? latestExp.tanggal_kadaluarsa : null;
             }
 
-            const daysUntilExpiry = expDate
-                ? Math.round((new Date(expDate + 'T00:00:00Z') - new Date(todayStr + 'T00:00:00Z')) / 86400000)
-                : null;
-            const isExpired = daysUntilExpiry !== null ? daysUntilExpiry < 0 : false;
-            const isNearExpiry = daysUntilExpiry !== null ? (!isExpired && daysUntilExpiry <= 7) : false;
+            const expInfo = dateService.evaluateExpiry(expDate, businessToday);
 
             let statusStok = 'Aman';
             if (stok <= 0) {
@@ -103,10 +95,10 @@ exports.getStockList = (req, res) => {
                 gambar: item.gambar,
                 id_cabang: branchRow.id_cabang,
                 nama_cabang: branchRow.nama_cabang,
-                tanggal_kadaluarsa: expDate,
-                days_until_expiry: daysUntilExpiry,
-                is_expired: isExpired,
-                is_near_expiry: isNearExpiry,
+                tanggal_kadaluarsa: expInfo.tanggal_kadaluarsa,
+                days_until_expiry: expInfo.days_until_expiry,
+                is_expired: expInfo.is_expired,
+                is_near_expiry: expInfo.is_near_expiry,
                 status_stok: statusStok
             };
         });
@@ -116,6 +108,7 @@ exports.getStockList = (req, res) => {
         const summary = {
             id_cabang: branchRow.id_cabang,
             nama_cabang: branchRow.nama_cabang,
+            business_today: businessToday,
             total_items: enhanced.length,
             safe_count: enhanced.filter(i => i.status_stok === 'Aman' && !i.is_expired).length,
             low_stock_count: enhanced.filter(i => i.status_stok === 'Menipis').length,
@@ -179,16 +172,23 @@ exports.adjustStock = (req, res) => {
             }
         }
 
+        if (tanggal_kadaluarsa !== undefined && tanggal_kadaluarsa !== null && String(tanggal_kadaluarsa).trim() !== '') {
+            const expCheck = dateService.validateDateParam(tanggal_kadaluarsa, 'Tanggal kedaluwarsa');
+            if (!expCheck.valid) {
+                return res.status(400).json({ success: false, message: expCheck.message });
+            }
+        }
+
         const menu = db.get('SELECT * FROM menu WHERE id_menu = ?', [id_menu]);
         if (!menu) {
             return res.status(404).json({ success: false, message: 'Menu tidak ditemukan' });
         }
 
-        const activeCabangId = resolveBranchId(req, id_cabang || menu.id_cabang || 'CBG001');
-        if (!db.get('SELECT id_cabang FROM cabang WHERE id_cabang = ?', [activeCabangId])) {
-            return res.status(400).json({ success: false, message: 'Cabang tidak ditemukan' });
+        const resolved = resolveAuthorizedBranch(req, id_cabang || menu.id_cabang || 'CBG001');
+        if (resolved.errorStatus) {
+            return res.status(resolved.errorStatus).json({ success: false, message: resolved.errorMessage });
         }
-
+        const activeCabangId = resolved.branchId;
         const activeUserId = (req.user && req.user.id_pengguna) || id_pengguna || 'USR001';
 
         let insufficientStockError = null;
@@ -206,12 +206,11 @@ exports.adjustStock = (req, res) => {
                 }
                 stokBaru = stokSebelum - qty;
             } else {
-                // PENYESUAIAN or OPNAME sets the target stock directly
                 stokBaru = qty;
             }
 
             const expToStore = tanggal_kadaluarsa !== undefined
-                ? (tanggal_kadaluarsa ? String(tanggal_kadaluarsa).trim() : null)
+                ? (tanggal_kadaluarsa && String(tanggal_kadaluarsa).trim() !== '' ? String(tanggal_kadaluarsa).trim() : null)
                 : (movementType === 'KADALUARSA' && stokBaru === 0 ? null : undefined);
 
             const updated = db.applyBranchStockChange({
@@ -222,7 +221,7 @@ exports.adjustStock = (req, res) => {
                 tanggalKadaluarsa: expToStore
             });
 
-            const nowIso = new Date().toISOString();
+            const nowIso = dateService.nowIso();
             const stkId = 'STK' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
             const selisih = stokBaru - stokSebelum;
 
@@ -251,7 +250,7 @@ exports.adjustStock = (req, res) => {
                     stokSebelum,
                     selisih,
                     stokBaru,
-                    tanggal_kadaluarsa || (branchRow ? branchRow.tanggal_kadaluarsa : null),
+                    updated.tanggal_kadaluarsa,
                     finalNote
                 ]
             );
@@ -299,11 +298,11 @@ exports.performStockOpname = (req, res) => {
             });
         }
 
-        const activeCabangId = resolveBranchId(req, id_cabang || 'CBG001');
-        if (!db.get('SELECT id_cabang FROM cabang WHERE id_cabang = ?', [activeCabangId])) {
-            return res.status(400).json({ success: false, message: 'Cabang tidak ditemukan' });
+        const resolved = resolveAuthorizedBranch(req, id_cabang || 'CBG001');
+        if (resolved.errorStatus) {
+            return res.status(resolved.errorStatus).json({ success: false, message: resolved.errorMessage });
         }
-
+        const activeCabangId = resolved.branchId;
         const activeUserId = (req.user && req.user.id_pengguna) || body.id_pengguna || 'USR001';
 
         for (const entry of opnameItems) {
@@ -326,7 +325,7 @@ exports.performStockOpname = (req, res) => {
             }
         }
 
-        const nowIso = new Date().toISOString();
+        const nowIso = dateService.nowIso();
         const generalNote = typeof catatan === 'string' && catatan.trim() !== ''
             ? catatan.trim()
             : 'Pencocokan stok fisik (Stock Opname)';
@@ -406,6 +405,11 @@ exports.performStockOpname = (req, res) => {
 exports.getMutationLogs = (req, res) => {
     try {
         const { id_menu, cabang, jenis, search } = req.query || {};
+        const resolved = resolveAuthorizedBranch(req, cabang, { allowAll: true });
+        if (resolved.errorStatus) {
+            return res.status(resolved.errorStatus).json({ success: false, message: resolved.errorMessage });
+        }
+
         const rawLimit = parseInt(req.query.limit, 10);
         const limit = Number.isInteger(rawLimit) ? Math.min(500, Math.max(1, rawLimit)) : 50;
 
@@ -427,9 +431,9 @@ exports.getMutationLogs = (req, res) => {
             params.push(id_menu);
         }
 
-        if (cabang && cabang !== 'all' && cabang !== 'Semua') {
+        if (resolved.branchId && resolved.branchId !== 'all') {
             sql += ' AND s.id_cabang = ?';
-            params.push(cabang);
+            params.push(resolved.branchId);
         }
 
         if (jenis && jenis !== 'all' && jenis !== 'Semua') {
@@ -461,10 +465,18 @@ exports.restockAll = (req, res) => {
             return res.status(400).json({ success: false, message: 'Jumlah restock harus berupa angka bulat antara 1 dan 1000' });
         }
 
-        const activeCabangId = resolveBranchId(req, body.id_cabang || 'CBG001');
-        if (!db.get('SELECT id_cabang FROM cabang WHERE id_cabang = ?', [activeCabangId])) {
-            return res.status(400).json({ success: false, message: 'Cabang tidak ditemukan' });
+        if (body.tanggal_kadaluarsa !== undefined && body.tanggal_kadaluarsa !== null && String(body.tanggal_kadaluarsa).trim() !== '') {
+            const expCheck = dateService.validateDateParam(body.tanggal_kadaluarsa, 'Tanggal kedaluwarsa');
+            if (!expCheck.valid) {
+                return res.status(400).json({ success: false, message: expCheck.message });
+            }
         }
+
+        const resolved = resolveAuthorizedBranch(req, body.id_cabang || 'CBG001');
+        if (resolved.errorStatus) {
+            return res.status(resolved.errorStatus).json({ success: false, message: resolved.errorMessage });
+        }
+        const activeCabangId = resolved.branchId;
 
         const onlyLowStock = body.only_low_stock === true || body.only_low_stock === 'true' || body.only_low_stock === 1;
         const expiryDate = typeof body.tanggal_kadaluarsa === 'string' && body.tanggal_kadaluarsa.trim() !== ''
@@ -478,7 +490,7 @@ exports.restockAll = (req, res) => {
         const activeUserId = (req.user && req.user.id_pengguna) || 'USR001';
 
         const updatedCount = db.transaction(() => {
-            const nowIso = new Date().toISOString();
+            const nowIso = dateService.nowIso();
             let count = 0;
 
             menus.forEach((menu, idx) => {
@@ -530,5 +542,52 @@ exports.restockAll = (req, res) => {
         });
     } catch (err) {
         return serverError(res, err, 'restockAll');
+    }
+};
+
+/**
+ * Read-only stock reconciliation report comparing stok_cabang vs cumulative stok ledger per branch & menu.
+ * Does NOT auto-correct operational stock silently.
+ */
+exports.getReconciliation = (req, res) => {
+    try {
+        const resolved = resolveAuthorizedBranch(req, req.query && req.query.cabang, { allowAll: true });
+        if (resolved.errorStatus) {
+            return res.status(resolved.errorStatus).json({ success: false, message: resolved.errorMessage });
+        }
+
+        const params = [];
+        let branchClause = '';
+        if (resolved.branchId && resolved.branchId !== 'all') {
+            branchClause = 'WHERE sc.id_cabang = ?';
+            params.push(resolved.branchId);
+        }
+
+        const rows = db.query(`
+            SELECT sc.id_cabang, c.nama_cabang, sc.id_menu, m.nama_menu,
+                   sc.stok AS stok_aktif,
+                   COALESCE((SELECT SUM(s.perubahan) FROM stok s WHERE s.id_cabang = sc.id_cabang AND s.id_menu = sc.id_menu), 0) AS total_mutasi_log,
+                   (SELECT COUNT(*) FROM stok s WHERE s.id_cabang = sc.id_cabang AND s.id_menu = sc.id_menu) AS jumlah_log
+            FROM stok_cabang sc
+            JOIN menu m ON sc.id_menu = m.id_menu
+            LEFT JOIN cabang c ON sc.id_cabang = c.id_cabang
+            ${branchClause}
+            ORDER BY sc.id_cabang ASC, sc.id_menu ASC
+        `, params).map(r => ({
+            ...r,
+            selisih_audit: r.stok_aktif - r.total_mutasi_log,
+            status_rekonsiliasi: r.stok_aktif === r.total_mutasi_log ? 'Sesuai' : 'Perlu Tinjauan Opname'
+        }));
+
+        return res.json({
+            success: true,
+            data: {
+                total_checked: rows.length,
+                mismatch_count: rows.filter(r => r.selisih_audit !== 0).length,
+                items: rows
+            }
+        });
+    } catch (err) {
+        return serverError(res, err, 'getReconciliation');
     }
 };

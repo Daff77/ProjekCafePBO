@@ -1,9 +1,11 @@
 /**
  * Menu Controller for NomCherry Café
- * Implements test cases 2.1, 2.2, 2.3
+ * Global catalog with per-branch isolated stock allocation and business-date expiry flags.
  */
 
 const db = require('../database/db');
+const dateService = require('../services/dateService');
+const { resolveAuthorizedBranch } = require('../services/authService');
 
 const VALID_CATEGORIES = ['Makanan', 'Minuman', 'Dessert', 'Snack'];
 
@@ -35,9 +37,11 @@ function nextMenuId() {
 exports.getAll = (req, res) => {
     try {
         const { kategori, search, cabang, include_inactive } = req.query || {};
-        const activeBranchId = (req.user && req.user.peran === 'kasir' && req.user.id_cabang)
-            ? req.user.id_cabang
-            : ((cabang && cabang !== 'all' && cabang !== 'Semua') ? cabang : ((req.user && req.user.id_cabang) || 'CBG001'));
+        const resolved = resolveAuthorizedBranch(req, cabang);
+        if (resolved.errorStatus) {
+            return res.status(resolved.errorStatus).json({ success: false, message: resolved.errorMessage });
+        }
+        const activeBranchId = resolved.branchId;
 
         let sql = 'SELECT * FROM menu WHERE 1=1';
         const params = [];
@@ -46,7 +50,7 @@ exports.getAll = (req, res) => {
             sql += ' AND COALESCE(is_available, 1) = 1';
         }
 
-        if (kategori && kategori !== 'Semua') {
+        if (kategori && kategori !== 'Semua' && kategori !== 'all') {
             sql += ' AND kategori = ?';
             params.push(kategori);
         }
@@ -58,13 +62,21 @@ exports.getAll = (req, res) => {
         }
 
         sql += ' ORDER BY kategori ASC, nama_menu ASC';
+        const businessToday = dateService.today();
         const menuList = db.query(sql, params).map(item => {
             const branchStock = db.syncBranchStockRow(activeBranchId, item.id_menu);
+            const expInfo = dateService.evaluateExpiry(
+                branchStock ? branchStock.tanggal_kadaluarsa : null,
+                businessToday
+            );
             return {
                 ...item,
                 stok: branchStock ? branchStock.stok : item.stok,
                 min_stok: branchStock ? branchStock.min_stok : (item.min_stok ?? 5),
-                tanggal_kadaluarsa: branchStock ? branchStock.tanggal_kadaluarsa : null,
+                tanggal_kadaluarsa: expInfo.tanggal_kadaluarsa,
+                days_until_expiry: expInfo.days_until_expiry,
+                is_expired: expInfo.is_expired,
+                is_near_expiry: expInfo.is_near_expiry,
                 id_cabang_aktif: activeBranchId
             };
         });
@@ -78,11 +90,32 @@ exports.getAll = (req, res) => {
 exports.getById = (req, res) => {
     try {
         const { id } = req.params;
+        const resolved = resolveAuthorizedBranch(req, req.query && req.query.cabang);
+        if (resolved.errorStatus) {
+            return res.status(resolved.errorStatus).json({ success: false, message: resolved.errorMessage });
+        }
+
         const item = db.get('SELECT * FROM menu WHERE id_menu = ?', [id]);
         if (!item) {
             return res.status(404).json({ success: false, message: 'Menu tidak ditemukan' });
         }
-        return res.json({ success: true, data: item });
+
+        const branchStock = db.syncBranchStockRow(resolved.branchId, item.id_menu);
+        const expInfo = dateService.evaluateExpiry(branchStock ? branchStock.tanggal_kadaluarsa : null);
+
+        return res.json({
+            success: true,
+            data: {
+                ...item,
+                stok: branchStock ? branchStock.stok : item.stok,
+                min_stok: branchStock ? branchStock.min_stok : (item.min_stok ?? 5),
+                tanggal_kadaluarsa: expInfo.tanggal_kadaluarsa,
+                days_until_expiry: expInfo.days_until_expiry,
+                is_expired: expInfo.is_expired,
+                is_near_expiry: expInfo.is_near_expiry,
+                id_cabang_aktif: resolved.branchId
+            }
+        });
     } catch (err) {
         return serverError(res, err, 'getById');
     }
@@ -90,7 +123,18 @@ exports.getById = (req, res) => {
 
 exports.create = (req, res) => {
     try {
-        const { nama_menu, harga, stok, min_stok, kategori, deskripsi, gambar, id_cabang, tanggal_kadaluarsa } = req.body || {};
+        const {
+            nama_menu,
+            harga,
+            stok,
+            min_stok,
+            kategori,
+            deskripsi,
+            gambar,
+            id_cabang,
+            tanggal_kadaluarsa,
+            alokasi_cabang
+        } = req.body || {};
 
         const name = typeof nama_menu === 'string' ? nama_menu.trim() : '';
         const price = parsePrice(harga);
@@ -106,20 +150,44 @@ exports.create = (req, res) => {
             return res.status(400).json({ success: false, message: 'Kategori menu tidak valid' });
         }
 
+        const expValidation = dateService.validateDateParam(tanggal_kadaluarsa, 'Tanggal kedaluwarsa');
+        if (!expValidation.valid) {
+            return res.status(400).json({ success: false, message: expValidation.message });
+        }
+
         const branchId = id_cabang || (req.user && req.user.id_cabang) || 'CBG001';
         if (!db.get('SELECT id_cabang FROM cabang WHERE id_cabang = ?', [branchId])) {
             return res.status(400).json({ success: false, message: 'Cabang tidak ditemukan' });
         }
 
+        const branches = db.query('SELECT id_cabang FROM cabang');
+        const branchIds = new Set(branches.map(b => b.id_cabang));
+        const allocationMap = new Map();
+
+        if (alokasi_cabang && typeof alokasi_cabang === 'object' && !Array.isArray(alokasi_cabang)) {
+            for (const [bId, qtyVal] of Object.entries(alokasi_cabang)) {
+                if (!branchIds.has(bId)) {
+                    return res.status(400).json({ success: false, message: `Cabang pada alokasi tidak ditemukan: ${bId}` });
+                }
+                const parsedQty = parseStock(qtyVal);
+                if (parsedQty === null) {
+                    return res.status(400).json({ success: false, message: `Jumlah alokasi stok untuk cabang ${bId} tidak valid` });
+                }
+                allocationMap.set(bId, parsedQty);
+            }
+        } else {
+            // Default policy: initial stock is allocated ONLY to the target branch; all other branches start at 0.
+            allocationMap.set(branchId, stock);
+        }
+
+        const primaryBranchStock = allocationMap.has(branchId) ? allocationMap.get(branchId) : 0;
         const newId = nextMenuId();
-        const defaultIcon = category === 'Makanan' ? '🍜' : (category === 'Dessert' ? '🍰' : (category === 'Snack' ? '🍟' : '☕'));
+        const defaultIcon = 'assets/logo.png';
         const activeUserId = (req.user && req.user.id_pengguna) || 'USR001';
-        const expDate = typeof tanggal_kadaluarsa === 'string' && tanggal_kadaluarsa.trim() !== ''
-            ? tanggal_kadaluarsa.trim()
-            : null;
+        const expDate = expValidation.value;
 
         db.transaction(() => {
-            const nowIso = new Date().toISOString();
+            const nowIso = dateService.nowIso();
             db.run(
                 `INSERT INTO menu (id_menu, nama_menu, harga, stok, min_stok, kategori, deskripsi, gambar, id_cabang, is_available)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
@@ -127,7 +195,7 @@ exports.create = (req, res) => {
                     newId,
                     name,
                     price,
-                    stock,
+                    primaryBranchStock,
                     minStock,
                     category,
                     typeof deskripsi === 'string' ? deskripsi.trim() : '',
@@ -136,29 +204,48 @@ exports.create = (req, res) => {
                 ]
             );
 
-            const branches = db.query('SELECT id_cabang FROM cabang');
-            for (const b of branches) {
+            branches.forEach((b, idx) => {
+                const branchQty = allocationMap.has(b.id_cabang) ? allocationMap.get(b.id_cabang) : 0;
+                const branchExp = branchQty > 0 ? expDate : null;
                 db.run(
                     `INSERT OR REPLACE INTO stok_cabang (id_cabang, id_menu, stok, min_stok, tanggal_kadaluarsa, menu_stok_snapshot, updated_at)
                      VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                    [b.id_cabang, newId, stock, minStock, expDate, stock, nowIso]
+                    [b.id_cabang, newId, branchQty, minStock, branchExp, primaryBranchStock, nowIso]
                 );
-            }
 
-            if (stock > 0) {
-                const stkId = 'STK' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-                db.run(
-                    `INSERT INTO stok (id_stok, id_menu, id_cabang, id_pengguna, tanggal, jenis, stok_awal, perubahan, stok_sisa, tanggal_kadaluarsa, keterangan)
-                     VALUES (?, ?, ?, ?, ?, 'MASUK', 0, ?, ?, ?, 'Stok awal menu baru')`,
-                    [stkId, newId, branchId, activeUserId, nowIso, stock, stock, expDate]
-                );
-            }
+                if (branchQty > 0) {
+                    const stkId = 'STK' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + idx;
+                    db.run(
+                        `INSERT INTO stok (id_stok, id_menu, id_cabang, id_pengguna, tanggal, jenis, stok_awal, perubahan, stok_sisa, tanggal_kadaluarsa, keterangan)
+                         VALUES (?, ?, ?, ?, ?, 'MASUK', 0, ?, ?, ?, ?)`,
+                        [
+                            stkId,
+                            newId,
+                            b.id_cabang,
+                            activeUserId,
+                            nowIso,
+                            branchQty,
+                            branchQty,
+                            branchExp,
+                            `Stok awal menu baru (${b.id_cabang})`
+                        ]
+                    );
+                }
+            });
         });
 
         return res.json({
             success: true,
             message: 'Menu berhasil ditambahkan',
-            data: { id_menu: newId, nama_menu: name, harga: price, stok: stock, min_stok: minStock, kategori: category }
+            data: {
+                id_menu: newId,
+                nama_menu: name,
+                harga: price,
+                stok: primaryBranchStock,
+                min_stok: minStock,
+                kategori: category,
+                id_cabang: branchId
+            }
         });
     } catch (err) {
         return serverError(res, err, 'create');
@@ -176,7 +263,18 @@ exports.update = (req, res) => {
             return res.status(404).json({ success: false, message: 'Menu tidak ditemukan' });
         }
 
+        if (tanggal_kadaluarsa !== undefined && tanggal_kadaluarsa !== null && String(tanggal_kadaluarsa).trim() !== '') {
+            const expCheck = dateService.validateDateParam(tanggal_kadaluarsa, 'Tanggal kedaluwarsa');
+            if (!expCheck.valid) {
+                return res.status(400).json({ success: false, message: expCheck.message });
+            }
+        }
+
         const activeBranchId = id_cabang || (req.user && req.user.id_cabang) || existing.id_cabang || 'CBG001';
+        if (!db.get('SELECT id_cabang FROM cabang WHERE id_cabang = ?', [activeBranchId])) {
+            return res.status(400).json({ success: false, message: 'Cabang tidak ditemukan' });
+        }
+
         const branchStock = db.syncBranchStockRow(activeBranchId, id);
         const existingBranchStok = branchStock ? branchStock.stok : existing.stok;
         const existingMinStok = branchStock ? branchStock.min_stok : (existing.min_stok ?? 5);
@@ -203,7 +301,7 @@ exports.update = (req, res) => {
         }
 
         const activeUserId = (req.user && req.user.id_pengguna) || 'USR001';
-        const nowIso = new Date().toISOString();
+        const nowIso = dateService.nowIso();
 
         db.transaction(() => {
             db.run(
